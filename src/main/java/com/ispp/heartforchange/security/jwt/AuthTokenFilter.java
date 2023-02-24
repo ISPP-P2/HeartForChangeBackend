@@ -17,7 +17,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import com.ispp.heartforchange.security.services.AccountDetailsServiceImpl;
+import com.ispp.heartforchange.security.service.AccountDetailsServiceImpl;
 
 public class AuthTokenFilter extends OncePerRequestFilter{
 	

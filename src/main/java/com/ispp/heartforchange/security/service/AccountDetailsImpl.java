@@ -1,18 +1,16 @@
-package com.ispp.heartforchange.security.services;
+package com.ispp.heartforchange.security.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ispp.heartforchange.entity.Account;
-import com.ispp.heartforchange.entity.RolAccount;
 
 public class AccountDetailsImpl implements UserDetails {
 	
