@@ -1,6 +1,7 @@
 package com.ispp.heartforchange.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +53,7 @@ public class AccountController {
 	 * @Return ResponseEntity<SigninDTO>
 	 */
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@RequestBody AccountDTO signUpRequest) {
+	public ResponseEntity<?> registerUser(@Valid @RequestBody AccountDTO signUpRequest) {
 		AccountDTO accountDto = accountServiceImpl.createAccount(signUpRequest);
 		logger.info("Created account with username: {}", accountDto.getUsername());
 		return ResponseEntity.ok(accountDto);
@@ -66,7 +67,7 @@ public class AccountController {
 	 * @Return ResponseEntity<SigninDTO>
 	 */
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@RequestBody AccountDTO loginRequest) {
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody AccountDTO loginRequest) {
 		SigninDTO signinDto = accountServiceImpl.authenticateUser(loginRequest);
 		logger.info("User loged with username {}:", loginRequest.getUsername());
 		return ResponseEntity.ok(signinDto);

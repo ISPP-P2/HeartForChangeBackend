@@ -38,10 +38,12 @@ public class Account implements Serializable {
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Long id;
 	
+	@NotNull
 	@NotBlank
 	@Size(max = 20)
 	private String username;
 	
+	@NotNull
 	@NotBlank
 	@Size(max = 120)
 	private String password;
