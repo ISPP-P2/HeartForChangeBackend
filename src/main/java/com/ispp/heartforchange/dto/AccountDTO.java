@@ -1,9 +1,10 @@
-package com.ispp.hearthforchange.dto;
+package com.ispp.heartforchange.dto;
 
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ispp.heartforchange.entity.Account;
+import com.ispp.heartforchange.entity.RolAccount;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,11 +34,15 @@ public class AccountDTO implements Serializable {
 	@JsonProperty("password")
 	private String password;
 	
+	@JsonProperty("rolAccount")
+	private RolAccount rolAccount;
+	
 	public AccountDTO( Account account ) {
 		super();
 		this.id = account.getId();
 		this.username = account.getUsername();
 		this.password = account.getPassword();
+		this.rolAccount = account.getRolAccount();
 	}
 
 }
