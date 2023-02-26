@@ -19,7 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispp.heartforchange.dto.AccountDTO;
-import com.ispp.heartforchange.dto.SigninDTO;
+import com.ispp.heartforchange.dto.SigninRequestDTO;
+import com.ispp.heartforchange.dto.SigninResponseDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.security.service.AccountDetailsServiceImpl;
 import com.ispp.heartforchange.service.impl.AccountServiceImpl;
@@ -67,8 +68,8 @@ public class AccountController {
 	 * @Return ResponseEntity<SigninDTO>
 	 */
 	@PostMapping("/signin")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody AccountDTO loginRequest) {
-		SigninDTO signinDto = accountServiceImpl.authenticateUser(loginRequest);
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody SigninRequestDTO loginRequest) {
+		SigninResponseDTO signinDto = accountServiceImpl.authenticateUser(loginRequest);
 		logger.info("User loged with username {}:", loginRequest.getUsername());
 		return ResponseEntity.ok(signinDto);
 	}
@@ -108,7 +109,7 @@ public class AccountController {
 			String refresh = jwtUtils.generateJwtRefreshToken(SecurityContextHolder.getContext().getAuthentication());
 			
 			logger.info("Refresh token succesfully in user {}", username);
-			return ResponseEntity.ok(new SigninDTO(jwt2, refresh));
+			return ResponseEntity.ok(new SigninResponseDTO(jwt2, refresh));
 		} catch (Exception e) {
 			logger.error("Cannot refresh: {}", e);
 		}
