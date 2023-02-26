@@ -11,3 +11,81 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 
 # Documentation project
 ## Dependencies
+```xml
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-jpa</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-devtools</artifactId>
+	<scope>runtime</scope>
+	<optional>true</optional>
+</dependency>
+<dependency>
+	<groupId>com.h2database</groupId>
+	<artifactId>h2</artifactId>
+	<scope>runtime</scope>
+</dependency>
+<dependency>
+	<groupId>org.projectlombok</groupId>
+	<artifactId>lombok</artifactId>
+	<optional>true</optional>
+</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-test</artifactId>
+	<scope>test</scope>
+</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<dependency>
+	<groupId>org.hibernate.javax.persistence</groupId>
+	<artifactId>hibernate-jpa-2.0-api</artifactId>
+	<version>1.0.1.Final</version>
+</dependency>
+<dependency>
+  <groupId>io.jsonwebtoken</groupId>
+	<artifactId>jjwt</artifactId>
+	<version>0.9.1</version>
+</dependency>
+<dependency> 
+	<groupId>org.springframework.boot</groupId> 
+	<artifactId>spring-boot-starter-validation</artifactId> 
+</dependency>
+```
+## APIS
+### Account API
+| Url                    | Params        |  Response  | Description                         | 
+| --------------------   | ------------- | ---------  | -----------------------------------
+| /api/accounts/singup   | AccountDTO    | AccountDTO | Create an account ONG               |
+| /api/accounts/singin   | SinginDTORequest | SinginReponseDto | Login an account           |
+| /api/accounts/refresh  | Request        | SignInReponseDto   | Refresh tokens of an account |
+
+## DTOs
+### AccountDTO
+
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| id                     | Long    | 
+| username               |  String |
+| password               | String |
+| rolAccount             | RolAccount |
+
+### SigninRequestDTO
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| username               |  String |
+| password               | String |
+
+### SigninResponseDTO
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| token               |  String |
+| refresh               | String |
