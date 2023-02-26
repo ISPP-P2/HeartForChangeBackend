@@ -12,8 +12,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.ispp.heartforchange.dto.AccountDTO;
-import com.ispp.heartforchange.dto.SigninDTO;
+import com.ispp.heartforchange.dto.SigninRequestDTO;
+import com.ispp.heartforchange.dto.SigninResponseDTO;
 import com.ispp.heartforchange.entity.Account;
+import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.AccountService;
@@ -51,6 +53,7 @@ public class AccountServiceImpl implements AccountService {
 			throw new UsernameNotFoundException("Account already exists!");
 		}
 		accountDto.setId(Long.valueOf(0));
+		accountDto.setRolAccount(RolAccount.ONG);
 
 		// Create new account
 		accountDto.setPassword(encoder.encode(accountDto.getPassword()));
@@ -65,13 +68,13 @@ public class AccountServiceImpl implements AccountService {
 	 * @Return SigninDTO
 	 */
 	@Override
-	public SigninDTO authenticateUser(AccountDTO accountDto) {
+	public SigninResponseDTO authenticateUser(SigninRequestDTO accountDto) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(accountDto.getUsername(), accountDto.getPassword()));
 		logger.info("Atuhenticating account with username = {}", accountDto.getUsername());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
 		String refresh = jwtUtils.generateJwtRefreshToken(authentication);
-		return new SigninDTO(jwt, refresh);
+		return new SigninResponseDTO(jwt, refresh);
 	}
 }
