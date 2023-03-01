@@ -12,7 +12,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ispp.heartforchange.entity.Account;
-import com.ispp.heartforchange.entity.ONG;
+import com.ispp.heartforchange.entity.Ong;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ONGDTO implements Serializable {
+public class OngDTO implements Serializable {
 
 	/**
 	 * 
@@ -34,9 +34,6 @@ public class ONGDTO implements Serializable {
 
 	@JsonProperty("id")
 	private Long id;
-	
-	@NotNull
-	private Account account;
 	
 	@NotNull
 	@NotBlank
@@ -55,10 +52,9 @@ public class ONGDTO implements Serializable {
 	@JsonProperty("description")
 	private String description;
 	
-	public ONGDTO( ONG ong ) {
+	public OngDTO( Ong ong ) {
 		super();
 		this.id = ong.getId();
-		this.account = ong.getAccount();
 		this.name = ong.getName();
 		this.cif = ong.getCif();
 		this.description = ong.getDescription();

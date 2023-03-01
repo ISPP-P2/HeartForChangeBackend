@@ -15,7 +15,7 @@ import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 import com.ispp.heartforchange.dto.AccountDTO;
-import com.ispp.heartforchange.dto.ONGDTO;
+import com.ispp.heartforchange.dto.OngDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,20 +25,14 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ong", 
-	uniqueConstraints = { 
-	  @UniqueConstraint(columnNames = "cif"),
-	})
-public class ONG implements Serializable{
+@Table(name = "ong")
+public class Ong implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Id 
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Long id;
-	
-	@NotNull
-	private Account account;
 	
 	@NotNull
 	@NotBlank
@@ -54,10 +48,9 @@ public class ONG implements Serializable{
 	@Size(max = 250)
 	private String description;
 	
-	public ONG( ONGDTO ongDto ) {
+	public Ong( OngDTO ongDto ) {
 		super();
 		this.id = ongDto.getId();
-		this.account = ongDto.getAccount();
 		this.name = ongDto.getName();
 		this.cif = ongDto.getCif();
 		this.description = ongDto.getDescription();
