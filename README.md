@@ -64,8 +64,8 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ### Account API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/accounts/singup   | AccountDTO    | AccountDTO | Create an account ONG               |
-| /api/accounts/singin   | SinginDTORequest | SinginReponseDto | Login an account           |
+| /api/accounts/signup   | AccountDTO    | AccountDTO | Create an account ONG               |
+| /api/accounts/signin   | SinginDTORequest | SinginReponseDto | Login an account           |
 | /api/accounts/refresh  | Request        | SignInReponseDto   | Refresh tokens of an account |
 
 ## DTOs
