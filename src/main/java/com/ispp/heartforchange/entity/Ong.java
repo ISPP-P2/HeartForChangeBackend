@@ -40,7 +40,6 @@ public class Ong implements Serializable{
 	private String name;
 	
 	@NotNull
-	@Pattern(regexp="^([ABCDEFGHPQSKLMX])(\\d{7})([0-9A-J])$",message="CIF invalid, try again")
 	private String cif;
 	
 	@NotNull

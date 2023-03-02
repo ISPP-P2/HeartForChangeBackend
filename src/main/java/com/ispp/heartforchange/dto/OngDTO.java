@@ -42,7 +42,6 @@ public class OngDTO implements Serializable {
 	private String name;
 	
 	@NotNull
-	@Pattern(regexp="^([ABCDEFGHPQSKLMX])(\\d{7})([0-9A-J])$",message="Invalid format of CIF, try again")
 	@JsonProperty("cif")
 	private String cif;
 	

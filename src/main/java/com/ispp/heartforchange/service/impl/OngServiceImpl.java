@@ -1,12 +1,15 @@
 package com.ispp.heartforchange.service.impl;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import com.aeat.valida.Validador;
 
 import com.ispp.heartforchange.dto.OngDTO;
 import com.ispp.heartforchange.entity.Ong;
@@ -55,8 +58,14 @@ public class OngServiceImpl implements OngService{
 	@Override
 	public OngDTO saveOng(OngDTO ongDTO) {
 		Ong ong = new Ong(ongDTO);
-		Ong ongSaved = ongRepository.save(ong);
-		return new OngDTO(ongSaved);
+		Validador validador = new Validador();
+		if(validador.checkNif(ongDTO.getCif()) > 0) {
+			Ong ongSaved = ongRepository.save(ong);
+			return new OngDTO(ongSaved);
+		}else{
+			throw new IllegalArgumentException("Invalid CIF, try again.");
+		}
+
 	}
 
 	@Override
@@ -74,5 +83,42 @@ public class OngServiceImpl implements OngService{
 		Ong ong = new Ong(ongDTO);
 		ongRepository.delete(ong);	
 	}
+	
+	/*public boolean validateCif(String cif) {
+		boolean res = false;
+		cif = cif.toUpperCase();
+		if(cif.length()==9) {
+			int suma = Integer.valueOf(cif.charAt(2)) + Integer.valueOf(cif.charAt(4)) + Integer.valueOf(cif.charAt(6));
+			logger.info("Sum of pair numbers of CIF = {}", suma);
+			for(int i=0; i<3; i++) {
+				suma = suma + (2*Integer.valueOf(cif.charAt(2*i))%10) + (2*Integer.valueOf(cif.charAt(2*i))/10);
+				logger.info("Sum of pair and none numbers of CIF = {}", suma);
+			}
+			if(cif.charAt(0)=='P' || cif.charAt(0)=='X') {
+				
+				
+				logger.info("P or X letter of CIF = Yes");
+				
+			
+				res = (cif.charAt(8) == (char)(65+10-(suma%10)));
+				logger.info("Last char of CIF = {}", cif.charAt(8));
+				logger.info("Last char of CIF calculated = {}", (char)(64+10-(suma%10)));
+			}else {
+				logger.info("P or X letter of CIF = No");
+				try {
+					res = (Integer.valueOf(""+cif.charAt(8)).equals(Integer.valueOf(10-(suma%10))));
+				}catch(NumberFormatException e) {
+					logger.info("Number Format Exception");
+				}
+			
+				logger.info("Result = {}", res);
+				logger.info("Last number of CIF = {}", cif.charAt(8));
+				logger.info("Last number of CIF calculated = {}", (10-(suma%10)));
+			}
+		}
+		logger.info("Result = {}", res);
+		return res;
+	}*/
+	
 	
 }
