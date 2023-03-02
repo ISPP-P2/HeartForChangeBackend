@@ -53,15 +53,16 @@ public class ONGController {
 		return ResponseEntity.ok(ongSaved);
 	}
 	
-	@PutMapping("/update")
-	public ResponseEntity<?> updateOng(@Valid @RequestBody OngDTO ong) {
-		OngDTO ongUpdated = ongServiceImpl.updateOng(ong);
-		return ResponseEntity.ok(ongUpdated);
+	@PutMapping("/update/{id}")
+	public ResponseEntity<?> updateOng(@PathVariable("id") Long id, @Valid @RequestBody OngDTO ong) {
+		OngDTO ongToUpdate = ongServiceImpl.getOngById(id);
+		ongToUpdate = ongServiceImpl.updateOng(id, ong);
+		return ResponseEntity.ok(ongToUpdate);
 	}
 	
-	@PostMapping("/delete")
-	public ResponseEntity<?> deleteOng(@Valid @RequestBody OngDTO ong) {
-		ongServiceImpl.deleteOng(ong);
+	@PostMapping("/delete/{id}")
+	public ResponseEntity<?> deleteOng(@PathVariable("id") Long id) {
+		ongServiceImpl.deleteOng(id);
 		return ResponseEntity.ok().build();
 	}
 	

@@ -6,14 +6,19 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ispp.heartforchange.entity.Ong;
+import com.ispp.heartforchange.entity.RolAccount;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
+@EqualsAndHashCode(callSuper=false)
 public class OngDTO extends AccountDTO {
 
 	/**

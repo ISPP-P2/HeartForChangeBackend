@@ -15,7 +15,7 @@ public interface OngService {
 	
 	OngDTO saveOng(OngDTO ongDTO);
 	
-	OngDTO updateOng(OngDTO ongDTO);
+	OngDTO updateOng(Long id, OngDTO ongDTO);
 	
-	void deleteOng(OngDTO ongDTO);
+	void deleteOng(Long id);
 }
