@@ -2,6 +2,8 @@ package com.ispp.heartforchange.dto;
 
 import java.io.Serializable;
 
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -18,6 +20,7 @@ import lombok.NoArgsConstructor;
 
 
 @Builder
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
@@ -46,7 +49,7 @@ public class AccountDTO implements Serializable {
 	
 	@JsonProperty("rolAccount")
 	@NotNull
-	private RolAccount rolAccount;
+	private RolAccount rolAccount;		
 	
 	public AccountDTO( Account account ) {
 		super();
@@ -54,6 +57,14 @@ public class AccountDTO implements Serializable {
 		this.username = account.getUsername();
 		this.password = account.getPassword();
 		this.rolAccount = account.getRolAccount();
+	}
+
+	public AccountDTO(@NotNull @NotBlank @Size(max = 20) String username,
+			@NotNull @NotBlank @Size(max = 20) String password, @NotNull RolAccount rolAccount) {
+		super();
+		this.username = username;
+		this.password = password;
+		this.rolAccount = rolAccount;
 	}
 
 }

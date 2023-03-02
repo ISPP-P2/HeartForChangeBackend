@@ -11,7 +11,7 @@ import com.ispp.heartforchange.entity.Ong;
 public interface OngService {
 	List<OngDTO> getAllOngs();
 
-	OngDTO getOngbyId(Long id);
+	OngDTO getOngById(Long id);
 	
 	OngDTO saveOng(OngDTO ongDTO);
 	

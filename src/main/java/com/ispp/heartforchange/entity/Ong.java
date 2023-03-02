@@ -1,32 +1,28 @@
 package com.ispp.heartforchange.entity;
 
-import java.io.Serializable;
+
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.ispp.heartforchange.dto.AccountDTO;
 import com.ispp.heartforchange.dto.OngDTO;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data 
 @Entity
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ong")
-public class Ong implements Serializable{
+public class Ong extends Account{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -48,7 +44,7 @@ public class Ong implements Serializable{
 	private String description;
 	
 	public Ong( OngDTO ongDto ) {
-		super();
+		super(ongDto.getUsername(), ongDto.getPassword(), ongDto.getRolAccount());
 		this.id = ongDto.getId();
 		this.name = ongDto.getName();
 		this.cif = ongDto.getCif();

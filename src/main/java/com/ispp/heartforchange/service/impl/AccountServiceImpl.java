@@ -1,6 +1,9 @@
 package com.ispp.heartforchange.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,9 +15,11 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.ispp.heartforchange.dto.AccountDTO;
+import com.ispp.heartforchange.dto.OngDTO;
 import com.ispp.heartforchange.dto.SigninRequestDTO;
 import com.ispp.heartforchange.dto.SigninResponseDTO;
 import com.ispp.heartforchange.entity.Account;
+import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
@@ -77,4 +82,29 @@ public class AccountServiceImpl implements AccountService {
 		String refresh = jwtUtils.generateJwtRefreshToken(authentication);
 		return new SigninResponseDTO(jwt, refresh);
 	}
+
+	@Override
+	public AccountDTO getAccountById(Long id) {
+		Optional<Account> optAccount = accountRepository.findById(id);
+		Account account = optAccount.get();
+		if(!optAccount.isPresent()) {
+			throw new IllegalArgumentException("This id does not refer to any account.");
+		}
+		AccountDTO accountDTO = new AccountDTO(account);
+		return accountDTO;
+	}
+
+	@Override
+	public List<AccountDTO> getAllAccounts() {
+		List<Account> accounts = accountRepository.findAll();
+		List<AccountDTO> accountsDTOs = new ArrayList<>();
+		for(Account account: accounts) {
+			AccountDTO accountDTO = new AccountDTO(account);
+			accountsDTOs.add(accountDTO);
+		}
+		return accountsDTOs;
+	}
+	
+	
+	
 }

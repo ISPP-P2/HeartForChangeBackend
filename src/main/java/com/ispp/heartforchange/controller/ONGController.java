@@ -43,7 +43,7 @@ public class ONGController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getOngById(@PathVariable("id") Long id) {
-		OngDTO ong = ongServiceImpl.getOngbyId(id);
+		OngDTO ong = ongServiceImpl.getOngById(id);
 		return ResponseEntity.ok(ong);
 	}
 	
