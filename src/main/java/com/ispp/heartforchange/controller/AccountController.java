@@ -1,7 +1,5 @@
 package com.ispp.heartforchange.controller;
 
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -15,14 +13,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ispp.heartforchange.dto.AccountDTO;
-import com.ispp.heartforchange.dto.OngDTO;
 import com.ispp.heartforchange.dto.SigninRequestDTO;
 import com.ispp.heartforchange.dto.SigninResponseDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
@@ -48,20 +43,6 @@ public class AccountController {
 		this.jwtUtils = jwtUtils;
 		this.accountDetailsServiceImpl = accountDetailsServiceImpl;
 		this.accountServiceImpl = accountServiceImpl;
-	}
-
-	/*
-	 * Register an account
-	 * 
-	 * @Params AccountDTO
-	 * 
-	 * @Return ResponseEntity<SigninDTO>
-	 */
-	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody AccountDTO signUpRequest) {
-		AccountDTO accountDto = accountServiceImpl.createAccount(signUpRequest);
-		logger.info("Created account with username: {}", accountDto.getUsername());
-		return ResponseEntity.ok(accountDto);
 	}
 
 	/*
@@ -119,17 +100,4 @@ public class AccountController {
 		}
 		return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 	}
-	
-	@GetMapping
-	public ResponseEntity<?> getAllAccounts() {
-		List<AccountDTO> accounts = accountServiceImpl.getAllAccounts();
-		return ResponseEntity.ok(accounts);
-	}
-	
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getAccountById(@PathVariable("id") Long id) {
-		AccountDTO account = accountServiceImpl.getAccountById(id);
-		return ResponseEntity.ok(account);
-	}
-
 }

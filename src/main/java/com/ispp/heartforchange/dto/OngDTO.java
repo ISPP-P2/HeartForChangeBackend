@@ -6,7 +6,6 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ispp.heartforchange.entity.Ong;
-import com.ispp.heartforchange.entity.RolAccount;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -46,7 +45,7 @@ public class OngDTO extends AccountDTO {
 	private String description;
 	
 	public OngDTO( Ong ong ) {
-		super(ong.getUsername(),ong.getPassword(),ong.getRolAccount());
+		super(ong.getUsername(), ong.getEmail(), ong.getPassword(),ong.getRolAccount());
 		this.id = ong.getId();
 		this.name = ong.getName();
 		this.cif = ong.getCif();

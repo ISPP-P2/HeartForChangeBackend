@@ -1,18 +1,19 @@
 package com.ispp.heartforchange.service.impl;
 
-import java.util.ArrayList; 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.aeat.valida.Validador;
 import com.ispp.heartforchange.dto.OngDTO;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
+import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.service.OngService;
 
@@ -27,12 +28,17 @@ public class OngServiceImpl implements OngService{
 	/*
 	 * Dependency injection 
 	 */
-	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder) {
+	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,
+			AccountRepository accountRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.encoder = encoder;
 	}
 	
+	/*
+	 * Get all ongs
+	 * @Return List<OngDTO>
+	 */
 	@Override
 	public List<OngDTO> getAllOngs() {
 		List<Ong> ongs = ongRepository.findAll();
@@ -43,61 +49,91 @@ public class OngServiceImpl implements OngService{
 		}
 		return ongsDTOs;
 	}
-
+	
+	/*
+	 * Get ong by id
+	 * @Params Long id
+	 * @Return OngDTO
+	 */
 	@Override
 	public OngDTO getOngById(Long id) {
 		Optional<Ong> optOng = ongRepository.findById(id);
-		Ong ong = optOng.get();
+		
 		if(!optOng.isPresent()) {
-			throw new IllegalArgumentException("This id does not refer to any ONG.");
+			throw new UsernameNotFoundException("This ONG not exist!");
 		}
+		Ong ong = optOng.get();
 		OngDTO ongDTO = new OngDTO(ong);
 		return ongDTO;
-
-
 	}
-
+	
+	/*
+	 * Save an ONG with their account.
+	 * @Params OngDTO
+	 * @Return OngDTO
+	 */
 	@Override
 	public OngDTO saveOng(OngDTO ongDTO) {
 		Ong ong = new Ong(ongDTO);
-		Validador validador = new Validador();
-		if(validador.checkNif(ongDTO.getCif()) > 0) {
-			ong.setId(Long.valueOf(0));
-			ong.setRolAccount(RolAccount.ONG);
-			ong.setPassword(encoder.encode(ong.getPassword()));
+		ong.setId(Long.valueOf(0));
+		ong.setRolAccount(RolAccount.ONG);
+		ong.setPassword(encoder.encode(ong.getPassword()));
+		logger.info("Saving ONG with username={}", ong.getUsername());
+		try {
 			Ong ongSaved = ongRepository.save(ong);
 			return new OngDTO(ongSaved);
-		}else{
-			throw new IllegalArgumentException("Invalid CIF, try again.");
+		} catch (Exception e) {
+			throw new UsernameNotFoundException(e.getMessage());
 		}
-
-	}
-
-	@Override
-	public OngDTO updateOng(Long id, OngDTO newOngDTO) {
-		OngDTO ongToUpdate = getOngById(id);
-		ongToUpdate.setId(id);
-		ongToUpdate.setUsername(newOngDTO.getUsername());
-		ongToUpdate.setPassword(encoder.encode(newOngDTO.getPassword()));
-		ongToUpdate.setName(newOngDTO.getName());
-		ongToUpdate.setCif(newOngDTO.getCif());
-		ongToUpdate.setDescription(newOngDTO.getDescription());
-		Ong ong = new Ong(ongToUpdate);
-		Validador validador = new Validador();
-		if(validador.checkNif(newOngDTO.getCif()) > 0) {
-			Ong ongSaved = ongRepository.save(ong);
-			return new OngDTO(ongSaved);
-		}else{
-			throw new IllegalArgumentException("Invalid CIF, try again.");
-		}
-	}
-
-	@Override
-	public void deleteOng(Long id) {
-		OngDTO ongDTO = getOngById(id);
-		Ong ongToDelete = new Ong(ongDTO);
-		ongRepository.delete(ongToDelete);	
 	}
 	
+	/*
+	 * Update ong
+	 * @Params Long id
+	 * @Params OngDTO
+	 * @Return OngDTO
+	 */
+	@Override
+	public OngDTO updateOng(Long id, OngDTO newOngDTO) {
+		Optional<Ong> ongToUpdate = ongRepository.findById(id);
+		logger.info("ONG is updating with id={}", id);
+		if( ongToUpdate.isPresent() ) {
+			ongToUpdate.get().setUsername(newOngDTO.getUsername());
+			ongToUpdate.get().setPassword(encoder.encode(newOngDTO.getPassword()));
+			ongToUpdate.get().setName(newOngDTO.getName());
+			ongToUpdate.get().setCif(newOngDTO.getCif());
+			ongToUpdate.get().setEmail(newOngDTO.getEmail());
+			ongToUpdate.get().setDescription(newOngDTO.getDescription());
+			
+		} else {
+			throw new UsernameNotFoundException("This ONG not exist!");
+		}
+		try {
+			Ong ongSaved = ongRepository.save(ongToUpdate.get());
+			return new OngDTO(ongSaved);
+		} catch (Exception e) {
+			throw new UsernameNotFoundException(e.getMessage());
+		}
+	}
+	
+	/*
+	 * Delete ong
+	 * @Params Long id
+	 * @Params OngDTO
+	 * @Return void
+	 */
+	@Override
+	public void deleteOng(Long id) {
+		logger.info("Deleting ONG with id={}", id);
+		OngDTO ongDTO = getOngById(id);
+		System.out.println(ongDTO);
+		Ong ongToDelete = new Ong(ongDTO);
+		ongToDelete.setId(id);
+		try {
+			ongRepository.delete(ongToDelete);	
+		} catch (Exception e) {
+			throw new UsernameNotFoundException(e.getMessage());
+		}
+	}
 	
 }
