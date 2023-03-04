@@ -100,9 +100,7 @@ public class ONGController {
 	    logger.info("Trying to authenticate with username={} and password={}", ongToUpdate.getUsername(), ongToUpdate.getPassword());
 	    Authentication authentication = authenticationManager.authenticate(
 	            new UsernamePasswordAuthenticationToken(ongToUpdate.getUsername(), ong.getPassword()));
-	    System.out.println("hola");
 	    SecurityContextHolder.getContext().setAuthentication(authentication);
-	    System.out.println("hola2");
 	    String jwt = jwtUtils.generateJwtToken(authentication);
 	    String refresh = jwtUtils.generateJwtRefreshToken(authentication);
 	    HttpHeaders responseHeaders = new HttpHeaders();

@@ -32,10 +32,7 @@ import com.ispp.heartforchange.dto.AccountDTO;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "account", 
-	uniqueConstraints = { 
-	  @UniqueConstraint(columnNames = "username"),
-	})
+@Table(name = "account")
 public class Account implements Serializable {
 	
 	private static final long serialVersionUID = 1L;

@@ -1,6 +1,6 @@
 package com.ispp.heartforchange.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDate; 
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -31,7 +30,6 @@ public class Person extends Account{
 	
 	private static final long serialVersionUID = 1L;
 
-	
 	@Id 
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	private Long id;
@@ -58,6 +56,8 @@ public class Person extends Account{
 	private DocumentType documentType;
 	
 	@NotNull
+	@NotBlank
+	@Size(min=9, max=9)
 	private String documentNumber;
 	
 	@NotNull
@@ -74,24 +74,38 @@ public class Person extends Account{
 	private int numberOfChildren;
 	
 	@NotNull
+	@NotBlank
+	@Size(max=50)
 	private String address;
 	
 	@NotNull
 	@NotBlank
+	@Size(max=10)
 	private String postalCode;
 	
+	@Size(max=50)
 	private String registrationAddress;
 	
 	@NotNull
+	@NotBlank
+	@Size(max=20)
 	private String town;
 	
 	@NotNull
+	@NotBlank
+	@Size(max=15)
 	private String telephone;
 	
 	private LocalDate leavingDate;
 	
+	@NotNull
+	@NotBlank
+	@Size(max=100)
 	private String driveLicenses;
 	
+	@NotNull
+	@NotBlank
+	@Size(max=350)
 	private String otherSkills;
 
 }

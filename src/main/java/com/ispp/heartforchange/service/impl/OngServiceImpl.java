@@ -126,7 +126,6 @@ public class OngServiceImpl implements OngService{
 	public void deleteOng(Long id) {
 		logger.info("Deleting ONG with id={}", id);
 		OngDTO ongDTO = getOngById(id);
-		System.out.println(ongDTO);
 		Ong ongToDelete = new Ong(ongDTO);
 		ongToDelete.setId(id);
 		try {

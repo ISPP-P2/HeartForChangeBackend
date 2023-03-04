@@ -35,6 +35,7 @@ public class Ong extends Account{
 	@Pattern(regexp = "([a-z]|[A-Z]|[0-9])[0-9]{7}([a-z]|[A-Z]|[0-9])")
 	@Column(unique=true)
 	@NotNull
+	@NotBlank
 	private String cif;
 	
 	@NotNull
