@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ispp.heartforchange.dto.AccountDTO;
 import com.ispp.heartforchange.dto.SigninRequestDTO;
 import com.ispp.heartforchange.dto.SigninResponseDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
@@ -44,20 +43,6 @@ public class AccountController {
 		this.jwtUtils = jwtUtils;
 		this.accountDetailsServiceImpl = accountDetailsServiceImpl;
 		this.accountServiceImpl = accountServiceImpl;
-	}
-
-	/*
-	 * Register an account
-	 * 
-	 * @Params AccountDTO
-	 * 
-	 * @Return ResponseEntity<SigninDTO>
-	 */
-	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody AccountDTO signUpRequest) {
-		AccountDTO accountDto = accountServiceImpl.createAccount(signUpRequest);
-		logger.info("Created account with username: {}", accountDto.getUsername());
-		return ResponseEntity.ok(accountDto);
 	}
 
 	/*
@@ -115,5 +100,4 @@ public class AccountController {
 		}
 		return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 	}
-
 }

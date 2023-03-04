@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -32,23 +33,29 @@ public class AuthTokenFilter extends OncePerRequestFilter{
 	  @Override
 	  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 	      throws ServletException, IOException {
-		  if(request.getServletPath().equals("/api/accounts/login") || request.getServletPath().equals("/api/accounts/refresh")){  
+		  if(request.getServletPath().equals("/api/accounts/signin") || request.getServletPath().equals("/api/accounts/refresh")){  
 			  filterChain.doFilter(request, response);     
 		  } else {
 			  try {
 			      String jwt = parseJwt(request);
 			      if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 			        String username = jwtUtils.getUserNameFromJwtToken(jwt);
+			        UserDetails userDetails = null;
+			        try {
+			            userDetails = accountDetailsServiceImpl.loadUserByUsername(username);
+			        } catch (UsernameNotFoundException e) {
+			           logger.error("User not found with username: {}", username);
+			        }
+			        if (userDetails != null) {
+			            UsernamePasswordAuthenticationToken authentication =
+			                new UsernamePasswordAuthenticationToken(
+			                    userDetails,
+			                    null,
+			                    userDetails.getAuthorities());
+			            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-			        UserDetails userDetails = accountDetailsServiceImpl.loadUserByUsername(username);
-			        UsernamePasswordAuthenticationToken authentication =
-			            new UsernamePasswordAuthenticationToken(
-			                userDetails,
-			                null,
-			                userDetails.getAuthorities());
-			        authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-			        SecurityContextHolder.getContext().setAuthentication(authentication);
+			            SecurityContextHolder.getContext().setAuthentication(authentication);
+			        }
 			      }
 			    } catch (Exception e) {
 			      logger.error("Cannot set user authentication: {}", e);

@@ -59,11 +59,8 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-				.antMatchers("/accounts/signup/**").permitAll().antMatchers("/accounts/signin/**").permitAll()
-				.antMatchers("/accounts/refresh/**").permitAll().antMatchers("/swagger-ui/**").permitAll()
-				.antMatchers("/accounts/all/**").permitAll().antMatchers("/webjars/**").permitAll()
-				.antMatchers("/v2/**").permitAll().antMatchers("/swagger-resources/**").permitAll()
-
+				.antMatchers("/accounts/signin/**").permitAll()
+				.antMatchers("/ongs/signup/**").permitAll()
 				.anyRequest().authenticated();
 
 		http.authenticationProvider(authenticationProvider());
