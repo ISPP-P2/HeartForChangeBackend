@@ -8,11 +8,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+
+import com.ispp.heartforchange.dto.PersonDTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -107,5 +111,36 @@ public class Person extends Account{
 	@NotBlank
 	@Size(max=350)
 	private String otherSkills;
+
+	@ManyToOne
+	private Ong ong;
+	
+	public Person( PersonDTO personDto ) {
+		super(personDto.getUsername(),personDto.getEmail(), personDto.getPassword(), personDto.getRolAccount());
+		this.id = personDto.getId();
+		this.name = personDto.getName();
+		this.address = personDto.getAddress();
+		this.birthday = personDto.getBirthday();
+		this.civilStatus = personDto.getCivilStatus();
+		this.documentNumber = personDto.getDocumentNumber();
+		this.documentType = personDto.getDocumentType();
+		this.driveLicenses = personDto.getDriveLicenses();
+		this.entryDate = personDto.getEntryDate();
+		this.firstSurname = personDto.getFirstSurname();
+		this.secondSurname = personDto.getSecondSurname();
+		this.gender = personDto.getGender();
+		this.leavingDate = personDto.getLeavingDate();
+		this.numberOfChildren = personDto.getNumberOfChildren();
+		this.otherSkills = personDto.getOtherSkills();
+		this.postalCode = personDto.getPostalCode();
+		this.registrationAddress = personDto.getRegistrationAddress();
+		this.telephone = personDto.getTelephone();
+		this.town = personDto.getTown();
+	}
+
+	
+	
+	
+	
 
 }

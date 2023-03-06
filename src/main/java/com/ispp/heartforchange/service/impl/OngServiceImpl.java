@@ -58,7 +58,6 @@ public class OngServiceImpl implements OngService{
 	@Override
 	public OngDTO getOngById(Long id) {
 		Optional<Ong> optOng = ongRepository.findById(id);
-		
 		if(!optOng.isPresent()) {
 			throw new UsernameNotFoundException("This ONG not exist!");
 		}
