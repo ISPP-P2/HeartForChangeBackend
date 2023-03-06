@@ -64,20 +64,19 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ### Account API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/accounts/signup   | AccountDTO    | AccountDTO | Create an account ONG               |
-| /api/accounts/signin   | SinginDTORequest | SinginReponseDto | Login an account           |
-| /api/accounts/refresh  | Request        | SignInReponseDto   | Refresh tokens of an account |
+| /api/accounts/signin   | SigninRequestDTO | SigninResponseDTO | Login an account           |
+| /api/accounts/refresh  | -        | SigninResponseDTO   | Refresh tokens of an account |
+
+### Grant API
+| Url                    | Params        |  Response  | Description                         | 
+| --------------------   | ------------- | ---------  | -----------------------------------
+| /api/grants/save   | GrantDTO | GrantDTO | save a grant        |
+| /api/grants/get/ong  | -        | List<GrantDTO>   | Get all grants of an ong |
+| /api/grants/get/{id}  | -        | List<GrantDTO>   | Get grant by id |
+| /api/grants/update  | GrantDTO        | GrantDTO   | Update a grant |
+| /api/grants/delete/{id}  | -        | String   | Delete a grant |
 
 ## DTOs
-### AccountDTO
-
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| id                     | Long    | 
-| username               |  String |
-| password               | String |
-| rolAccount             | RolAccount |
-
 ### SigninRequestDTO
 | PROPERTY               | Type        |  
 | --------------------   | ------------- | 
@@ -89,3 +88,14 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | --------------------   | ------------- | 
 | token               |  String |
 | refresh               | String |
+
+### GrantDTO
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| id               |  Long |
+| privateGrant               | Boolean |
+| gubernamental               | Boolean |
+| state               | GrantState(REQUESTED, ACCEPTED, DENIED, REFORMULATION) |
+| justification               | String |
+| amount               | Integer |
+
