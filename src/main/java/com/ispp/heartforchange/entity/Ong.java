@@ -2,8 +2,13 @@ package com.ispp.heartforchange.entity;
 
 
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -42,6 +47,9 @@ public class Ong extends Account{
 	@NotBlank
 	@Size(max = 250)
 	private String description;
+	
+	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "ong")
+	private List<Grant> grants;
 	
 	public Ong( OngDTO ongDto ) {
 		super(ongDto.getUsername(),ongDto.getEmail(), ongDto.getPassword(), ongDto.getRolAccount());
