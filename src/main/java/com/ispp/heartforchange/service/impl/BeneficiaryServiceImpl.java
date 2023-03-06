@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -11,24 +12,32 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
+import com.ispp.heartforchange.dto.OngDTO;
 import com.ispp.heartforchange.entity.Beneficiary;
+import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
+import com.ispp.heartforchange.repository.ONGRepository;
+import com.ispp.heartforchange.security.service.AccountDetailsServiceImpl;
 import com.ispp.heartforchange.service.BeneficiaryService;
 
 @Service
 public class BeneficiaryServiceImpl implements BeneficiaryService{
 
+	
+
+	
 	private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
+	private ONGRepository ongRepository;
 	private BeneficiaryRepository beneficiaryRepository;
 	private PasswordEncoder encoder;
 	
-	
-	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository, PasswordEncoder encoder,
+	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder,
 			AccountRepository accountRepository) {
 		super();
+		this.ongRepository = ongRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
 		this.encoder = encoder;
 	}
@@ -117,7 +126,11 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	}
 
 	@Override
-	public BeneficiaryDTO saveBeneficiary(BeneficiaryDTO beneficiaryDTO) {		
+	public BeneficiaryDTO saveBeneficiary(BeneficiaryDTO beneficiaryDTO, String username ) {
+		System.out.println(username);
+		Ong ong = ongRepository.findByUsername(username);
+
+		
 		Beneficiary beneficiary = new Beneficiary(beneficiaryDTO, 
 				beneficiaryDTO.getNationality(), 
 				beneficiaryDTO.isDoublenationality(), 
@@ -138,6 +151,11 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		beneficiary.setRolAccount(RolAccount.BENEFICIARY);
 		beneficiary.setPassword(encoder.encode(beneficiary.getPassword()));
 		logger.info("Saving Beneficiary with username={}", beneficiary.getUsername());
+		
+		//Guardar ONG en beneficiario
+		beneficiary.setOng(ong);
+		
+		
 		try {
 			Beneficiary beneficiarySaved = beneficiaryRepository.save(beneficiary);
 			return new BeneficiaryDTO(beneficiary, 
@@ -230,7 +248,36 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	}
 
 	@Override
-	public void deteleBeneficiary(Long id) {
+	public List<BeneficiaryDTO> getAllBeneficiaresByOng(String username){
+		
+		List<Beneficiary> beneficiaries = beneficiaryRepository.findBeneficiariesByOng(username);
+		List<BeneficiaryDTO> beneficiariesDTOs = new ArrayList<>();
+		for(Beneficiary beneficiary: beneficiaries) {
+			BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
+					beneficiary.getId(), 
+					beneficiary.getNationality(), 
+					beneficiary.isDoublenationality(), 
+					beneficiary.getArrived_date(), 
+					beneficiary.isEuropean_citizen_authorization(), 
+					beneficiary.isTourist_visa(), 
+					beneficiary.getDate_tourist_visa(), 
+					beneficiary.isHealth_card(), 
+					beneficiary.getEmployment_sector(), 
+					beneficiary.getPerception_aid(), 
+					beneficiary.isSavings_possesion(),
+					beneficiary.isSae_inscription(),
+					beneficiary.isWorking(), 
+					beneficiary.isComputer_knowledge(),
+					beneficiary.getOwned_devices(), 
+					beneficiary.getLanguages());
+			
+			beneficiariesDTOs.add(beneficiaryDTO);
+		}
+		return beneficiariesDTOs;
+	}
+	
+	@Override
+ 	public void deteleBeneficiary(Long id) {
 		logger.info("Deleting Beneficiary with id={}", id);
 		BeneficiaryDTO beneficiaryDTO = getBeneficiaryById(id);
 		Beneficiary beneficiaryToDelete = new Beneficiary(beneficiaryDTO, 

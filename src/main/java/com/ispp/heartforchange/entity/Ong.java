@@ -46,7 +46,7 @@ public class Ong extends Account{
 	@Size(max = 250)
 	private String description;
 	
-	@OneToMany(mappedBy="Ong")
+	@OneToMany(mappedBy="ong")
 	private List<Person> person ;
 	
 	

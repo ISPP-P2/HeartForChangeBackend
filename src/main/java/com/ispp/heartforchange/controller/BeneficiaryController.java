@@ -2,6 +2,7 @@ package com.ispp.heartforchange.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,9 +58,30 @@ public class BeneficiaryController {
 		return ResponseEntity.ok(beneficiary);
 	}
 	
+	
+	@GetMapping("ong/{username}")
+	public ResponseEntity<?> getBeneficiariesByOng(@PathVariable("username") String username) {
+		List<BeneficiaryDTO> beneficiaries = beneficiaryServiceImpl.getAllBeneficiaresByOng(username);
+		return ResponseEntity.ok(beneficiaries);
+	}
+	
 	@PostMapping("/signup")
-	public ResponseEntity<?> saveBeneficiary(@Valid @RequestBody BeneficiaryDTO beneficiary) {
-		BeneficiaryDTO beneficiarySaved = beneficiaryServiceImpl.saveBeneficiary(beneficiary);
+	public ResponseEntity<?> saveBeneficiary(HttpServletRequest request, @Valid @RequestBody BeneficiaryDTO beneficiary) {
+		
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		String username = jwtUtils.getUserNameFromJwtToken(jwt);
+
+		BeneficiaryDTO beneficiarySaved = beneficiaryServiceImpl.saveBeneficiary(beneficiary, username);
 		logger.info("Beneficiary saved with username={}", beneficiarySaved.getUsername());
 		return ResponseEntity.ok(beneficiarySaved);
 	}
