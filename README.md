@@ -67,6 +67,15 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | /api/accounts/signin   | SigninRequestDTO | SigninResponseDTO | Login an account           |
 | /api/accounts/refresh  | -        | SigninResponseDTO   | Refresh tokens of an account |
 
+### Ong API
+| Url                    | Params        |  Response  | Description                         | 
+| --------------------   | ------------- | ---------  | -----------------------------------
+| /api/ongs | -        | List<OngDTO>   | Get all ongs |
+| /api/ongs/{id}   | - | OngDTO | Get ong by id   |
+| /api/ongs/signup   | OngDTO | OngDTO | Register an ong        |
+| /api/ongs/update/{id}  | OngDTO       | OngDTO | Get grant by id |
+| /api/ongs/delete/{id}  | -        | String   | Delete an ong |
+
 ### Grant API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
@@ -89,6 +98,18 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | token               |  String |
 | refresh               | String |
 
+### OngDTO
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| id               |  Long |
+| name               | String |
+| cif               | String |
+| description      | String |
+| username               | String |
+| email               | String |
+| password               | String |
+| rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY) |
+	
 ### GrantDTO
 | PROPERTY               | Type        |  
 | --------------------   | ------------- | 
@@ -98,4 +119,6 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | state               | GrantState(REQUESTED, ACCEPTED, DENIED, REFORMULATION) |
 | justification               | String |
 | amount               | Integer |
+	
+
 
