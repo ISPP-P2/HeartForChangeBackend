@@ -4,6 +4,7 @@ package com.ispp.heartforchange.entity;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
+
 
 import com.ispp.heartforchange.dto.OngDTO;
 
@@ -46,8 +48,8 @@ public class Ong extends Account{
 	@Size(max = 250)
 	private String description;
 	
-	@OneToMany(mappedBy = "ong")
-	List<Person> people;
+	@OneToMany(mappedBy = "ong", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Person> people;
 	
 	public Ong( OngDTO ongDto ) {
 		super(ongDto.getUsername(),ongDto.getEmail(), ongDto.getPassword(), ongDto.getRolAccount());
@@ -56,4 +58,4 @@ public class Ong extends Account{
 		this.description = ongDto.getDescription();
 	}
 	
-}
+} 

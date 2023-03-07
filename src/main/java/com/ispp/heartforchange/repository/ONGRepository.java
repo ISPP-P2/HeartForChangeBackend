@@ -9,4 +9,5 @@ import com.ispp.heartforchange.entity.Ong;
 public interface ONGRepository extends JpaRepository<Ong, Long> {
 	
 	Ong findByUsername(String username);
+	
 }

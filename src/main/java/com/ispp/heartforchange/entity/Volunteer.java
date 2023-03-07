@@ -36,17 +36,5 @@ public class Volunteer extends Person{
 		super(personDto);
 		this.hourOfAvailability = hourOfAvailability;
 		this.sexCrimes = sexCrimes;
-	}
-	
-	
-	/*public Volunteer(VolunteerDTO voluntierDto) {
-		super(voluntierDto.getUsername(), voluntierDto.getEmail(), voluntierDto.getPassword(),voluntierDto.getRolAccount(), voluntierDto.getEntryDate(), voluntierDto.getFirstSurname(), voluntierDto.getSecondSurname(), voluntierDto.getName(), voluntierDto.getDocumentType(), voluntierDto.getDocumentNumber(),
-				voluntierDto.getGender(), voluntierDto.getBirthday(), voluntierDto.getCivilStatus(), voluntierDto.getNumberOfChildren(), voluntierDto.getAddress(), 
-				voluntierDto.getPostalCode(), voluntierDto.getRegistrationAddress(), voluntierDto.getTown(), voluntierDto.getTelephone(), voluntierDto.getLeavingDate(), voluntierDto.getDriveLicenses(), voluntierDto.getOtherSkills());
-		this.hourOfAvailability = voluntierDto.getHourOfAvailability();
-		this.sexCrimes = voluntierDto.getSexCrimes();
-	}*/
-	
-	
-	
+	} 
 }

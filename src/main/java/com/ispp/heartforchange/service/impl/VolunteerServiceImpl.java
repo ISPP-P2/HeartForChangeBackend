@@ -14,7 +14,6 @@ import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Volunteer;
-import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.VolunteerRepository;
 import com.ispp.heartforchange.service.VolunteerService;
@@ -27,12 +26,11 @@ public class VolunteerServiceImpl implements VolunteerService{
 	private VolunteerRepository volunteerRepository;
 	private PasswordEncoder encoder;
 	private ONGRepository ongRepository;
-
 	/*
 	 * Dependency injection 
 	 */
 	public VolunteerServiceImpl(VolunteerRepository volunteerRepository, PasswordEncoder encoder,
-			AccountRepository accountRepository, ONGRepository ongRepository) {
+			ONGRepository ongRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.volunteerRepository = volunteerRepository;
@@ -163,7 +161,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 */
 	@Override
 	public void deleteVolunteer(Long id) {
-		logger.info("Deleting ONG with id={}", id);
+		logger.info("Deleting Volunteer with id={}", id);
 		VolunteerDTO volunteerDTO = getVolunteerById(id);
 		Volunteer volunteerToDelete = new Volunteer(volunteerDTO, volunteerDTO.getHourOfAvailability(), volunteerDTO.getSexCrimes());
 		volunteerToDelete.setId(id);
@@ -173,11 +171,4 @@ public class VolunteerServiceImpl implements VolunteerService{
 			throw new UsernameNotFoundException(e.getMessage());
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
 }
