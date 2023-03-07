@@ -94,7 +94,7 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | /api/volunteer/signup   | VolunteerDTO | VolunteerDTO | Register a volunteer        |
 | /api/volunteer/update/{id}  | VolunteerDTO       | VolunteerDTO | Update volunteer by id |
 | /api/volunteer/delete/{id}  | -        | String   | Delete a volunteer |
-| /api/volunteer/ong/{username}  | -        | List   | Get beneficiaries by ong |
+| /api/volunteer/ong/{username}  | -        | List   | Get volunteer by ong |
 
 ### Grant API
 | Url                    | Params        |  Response  | Description                         | 
@@ -151,6 +151,12 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | owned_devices               | String |	
 | languages               | String |	
 
+### VolunteerDTO
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| hourOfAvailability       |  String |
+| sexCrimes               | Boolean |
+	
 ### GrantDTO
 | PROPERTY               | Type        |  
 | --------------------   | ------------- | 
