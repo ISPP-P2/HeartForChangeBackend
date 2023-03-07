@@ -82,9 +82,19 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | /api/beneficiaries | -        | List<BeneficiaryDTO>   | Get all beneficiaries |
 | /api/beneficiaries/{id}   | - | BeneficiaryDTO | Get beneficiary by id   |
 | /api/beneficiaries/signup   | BeneficiaryDTO | BeneficiaryDTO | Register a beneficiary        |
-| /api/beneficiaries/update/{id}  | BeneficiaryDTO       | BeneficiaryDTO | Get grant by id |
+| /api/beneficiaries/update/{id}  | BeneficiaryDTO       | BeneficiaryDTO | Update beneficiary by id |
 | /api/beneficiaries/delete/{id}  | -        | String   | Delete a beneficiary |
 | /api/beneficiaries/ong/{username}  | -        | List<BeneficiaryDTO>   | Get beneficiaries by ong |
+
+### Volunteer API
+| Url                    | Params        |  Response  | Description                         | 
+| --------------------   | ------------- | ---------  | -----------------------------------
+| /api/volunteer | -        | List   | Get all volunteers |
+| /api/volunteer/{id}   | - | VolunteerDTO | Get volunteer by id   |
+| /api/volunteer/signup   | VolunteerDTO | VolunteerDTO | Register a volunteer        |
+| /api/volunteer/update/{id}  | VolunteerDTO       | VolunteerDTO | Update volunteer by id |
+| /api/volunteer/delete/{id}  | -        | String   | Delete a volunteer |
+| /api/volunteer/ong/{username}  | -        | List   | Get beneficiaries by ong |
 
 ### Grant API
 | Url                    | Params        |  Response  | Description                         | 
