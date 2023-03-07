@@ -2,7 +2,7 @@ package com.ispp.heartforchange.dto;
 
 import java.time.LocalDate;
 
-import javax.persistence.Entity;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -35,7 +35,7 @@ public class BeneficiaryDTO extends PersonDTO{
 	@JsonProperty("doublenationality")
 	private boolean doublenationality;
 	
-	@NotNull
+	
 	@JsonProperty("arrived_date")
 	private LocalDate arrived_date;
 	
@@ -105,7 +105,7 @@ public class BeneficiaryDTO extends PersonDTO{
 
 
 	public BeneficiaryDTO(Person person, Long id, @NotNull @NotBlank @Size(max = 50) String nationality,
-			@NotNull boolean doublenationality, @NotNull LocalDate arrived_date, boolean european_citizen_authorization,
+			@NotNull boolean doublenationality,  LocalDate arrived_date, boolean european_citizen_authorization,
 			boolean tourist_visa, LocalDate date_tourist_visa, boolean health_card,
 			@NotBlank @Size(max = 50) String employment_sector, @NotBlank @Size(max = 100) String perception_aid,
 			boolean savings_possesion, boolean sae_inscription, boolean working, boolean computer_knowledge,

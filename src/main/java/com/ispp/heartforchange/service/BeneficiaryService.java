@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
-import com.ispp.heartforchange.entity.Beneficiary;
+
 
 @Service
 public interface BeneficiaryService {

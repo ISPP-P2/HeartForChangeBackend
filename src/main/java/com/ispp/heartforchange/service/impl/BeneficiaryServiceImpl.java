@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.security.core.userdetails.UserDetails;
+
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -12,14 +12,12 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
-import com.ispp.heartforchange.dto.OngDTO;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
-import com.ispp.heartforchange.security.service.AccountDetailsServiceImpl;
 import com.ispp.heartforchange.service.BeneficiaryService;
 
 @Service
@@ -127,7 +125,6 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 
 	@Override
 	public BeneficiaryDTO saveBeneficiary(BeneficiaryDTO beneficiaryDTO, String username ) {
-		System.out.println(username);
 		Ong ong = ongRepository.findByUsername(username);
 
 		

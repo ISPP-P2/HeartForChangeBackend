@@ -4,6 +4,7 @@ package com.ispp.heartforchange.entity;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
@@ -46,7 +47,7 @@ public class Ong extends Account{
 	@Size(max = 250)
 	private String description;
 	
-	@OneToMany(mappedBy="ong")
+	@OneToMany(mappedBy="ong", cascade = CascadeType.ALL)
 	private List<Person> person ;
 	
 	

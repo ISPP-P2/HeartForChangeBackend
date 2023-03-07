@@ -11,9 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.OngDTO;
+import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
-import com.ispp.heartforchange.repository.AccountRepository;
+import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.service.OngService;
 
@@ -24,15 +25,17 @@ public class OngServiceImpl implements OngService{
 
 	private ONGRepository ongRepository;
 	private PasswordEncoder encoder;
+	private BeneficiaryRepository beneficiaryRepository;
 	
 	/*
 	 * Dependency injection 
 	 */
-	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,
-			AccountRepository accountRepository) {
+	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,BeneficiaryRepository beneficiaryRepository
+			) {
 		super();
 		this.ongRepository = ongRepository;
 		this.encoder = encoder;
+		this.beneficiaryRepository = beneficiaryRepository;
 	}
 	
 	/*
@@ -128,7 +131,11 @@ public class OngServiceImpl implements OngService{
 		OngDTO ongDTO = getOngById(id);
 		Ong ongToDelete = new Ong(ongDTO);
 		ongToDelete.setId(id);
+		List<Beneficiary> beneficiariesONG = beneficiaryRepository.findBeneficiariesByOng(ongToDelete.getUsername());
 		try {
+			for( Beneficiary b : beneficiariesONG) {
+				beneficiaryRepository.delete(b);
+			}
 			ongRepository.delete(ongToDelete);	
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
