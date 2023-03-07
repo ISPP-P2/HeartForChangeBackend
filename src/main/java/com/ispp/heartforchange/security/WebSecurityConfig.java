@@ -61,6 +61,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/accounts/signin/**").permitAll()
 				.antMatchers("/ongs/signup/**").permitAll()
+				.antMatchers("/grants/**").hasAnyAuthority("ONG")
 				.anyRequest().authenticated();
 
 		http.authenticationProvider(authenticationProvider());
