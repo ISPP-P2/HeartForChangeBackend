@@ -76,6 +76,16 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | /api/ongs/update/{id}  | OngDTO       | OngDTO | Get grant by id |
 | /api/ongs/delete/{id}  | -        | String   | Delete an ong |
 
+### Beneficiary API
+| Url                    | Params        |  Response  | Description                         | 
+| --------------------   | ------------- | ---------  | -----------------------------------
+| /api/beneficiaries | -        | List<BeneficiaryDTO>   | Get all beneficiaries |
+| /api/beneficiaries/{id}   | - | BeneficiaryDTO | Get beneficiary by id   |
+| /api/beneficiaries/signup   | BeneficiaryDTO | BeneficiaryDTO | Register a beneficiary        |
+| /api/beneficiaries/update/{id}  | BeneficiaryDTO       | BeneficiaryDTO | Get grant by id |
+| /api/beneficiaries/delete/{id}  | -        | String   | Delete a beneficiary |
+| /api/beneficiaries/ong/{username}  | -        | List<BeneficiaryDTO>   | Get beneficiaries by ong |
+
 ### Grant API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
@@ -110,6 +120,27 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | password               | String |
 | rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY) |
 	
+	
+### BeneficiaryDTO
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| id               |  Long |
+| nationality               | String |
+| doublenationality               | Boolean |
+| arrived_date      | LocalDate |
+| european_citizen_authorization               | Boolean |
+| tourist_visa               | Boolean |
+| date_tourist_visa               | LocalDate |
+| health_card               | Boolean |	
+| employment_sector               | String |	
+| perception_aid               | String |	
+| savings_possesion               | Boolean |	
+| sae_inscription               | Boolean |	
+| working               | Boolean |	
+| computer_knowledge               | Boolean |	
+| owned_devices               | String |	
+| languages               | String |	
+
 ### GrantDTO
 | PROPERTY               | Type        |  
 | --------------------   | ------------- | 
