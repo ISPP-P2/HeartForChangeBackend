@@ -129,7 +129,28 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | email               | String |
 | password               | String |
 | rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY) |
-	
+
+### PersonDTO
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| id               |  Long |
+| entryDate               | LocalDate |
+| firstSurname               | String |
+| secondSurname      | String |
+| name               | String |
+| documentType               | DocumentType(DNI, NIE, PASSPORT) |
+| documentNumber               | String |
+| gender               | Gender |	
+| birthday               | LocalDate |	
+| civilStatus               | CivilStatus(SINGLE, MARRIED, WIDOWED, DIVORCED) |	
+| numberOfChildren               | int |	
+| address               | String |	
+| postalCode               | String |	
+| registrationAddres               | String |	
+| town               | String |	
+| leavingDate               | LocalDate |
+| otherSkills               | String |	
+| driveLicenses               | String |
 	
 ### BeneficiaryDTO
 | PROPERTY               | Type        |  
