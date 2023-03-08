@@ -36,6 +36,10 @@ public class BeneficiaryController {
 	private JwtUtils jwtUtils;
 	private AuthenticationManager authenticationManager;
 	
+
+	/*
+	 * Dependency injection
+	 */
 	public BeneficiaryController(BeneficiaryServiceImpl beneficiaryServiceImpl, JwtUtils jwtUtils,
 			AuthenticationManager authenticationManager) {
 		super();
@@ -45,6 +49,13 @@ public class BeneficiaryController {
 	}
 	
 	
+	/*
+	 * Get all beneficiaries
+	 * 
+	 * @Params HttpServletRequest
+	 * 
+	 * @Return ResponseEntity<BeneficiaryDTO>
+	 */
 	@GetMapping
 	public ResponseEntity<?> getAllBeneficiaries() {
 		List<BeneficiaryDTO> beneficiaries = beneficiaryServiceImpl.getAllBeneficiares();
@@ -52,6 +63,13 @@ public class BeneficiaryController {
 	}
 	
 	
+	/*
+	 * Get beneficiary by id
+	 * 
+	 * @Paramas id
+	 * 
+	 * @Return ResponseEntity
+	 */
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getBeneficiaryById(@PathVariable("id") Long id) {
 		BeneficiaryDTO beneficiary = beneficiaryServiceImpl.getBeneficiaryById(id);
@@ -65,6 +83,14 @@ public class BeneficiaryController {
 		return ResponseEntity.ok(beneficiaries);
 	}
 	
+	
+	/*
+	 * Signup beneficiary
+	 * 
+	 * @Param beneficiaryDTO
+	 * 
+	 * @Return ResponseEntity
+	 */
 	@PostMapping("/signup")
 	public ResponseEntity<?> saveBeneficiary(HttpServletRequest request, @Valid @RequestBody BeneficiaryDTO beneficiary) {
 		
@@ -86,6 +112,16 @@ public class BeneficiaryController {
 		return ResponseEntity.ok(beneficiarySaved);
 	}
 	
+	
+	/*
+	 * Update beneficiary
+	 * 
+	 * @Param id
+	 * 
+	 * @Param beneficiaryDTO
+	 * 
+	 * @Return ResponseEntity
+	 */
 	@PutMapping("/update/{id}")
 	public ResponseEntity<?> updateBeneficiary(@PathVariable("id") Long id, @Valid @RequestBody BeneficiaryDTO beneficiary) {
 	    BeneficiaryDTO beneficiaryToUpdate = beneficiaryServiceImpl.updateBeneficiary(id, beneficiary);
@@ -102,7 +138,13 @@ public class BeneficiaryController {
 	    return ResponseEntity.ok().headers(responseHeaders).body(beneficiaryToUpdate);
 	}
 	
-	
+	/*
+	 * Delete beneficiary
+	 * 
+	 * @Params Long id
+	 * 
+	 * @Return ResponseEntity
+	 */
 	@PostMapping("/delete/{id}")
 	public ResponseEntity<?> deleteBeneficiary(@PathVariable("id") Long id) {
 		beneficiaryServiceImpl.deteleBeneficiary(id);

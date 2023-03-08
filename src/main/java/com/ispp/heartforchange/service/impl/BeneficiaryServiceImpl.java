@@ -40,6 +40,10 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		this.encoder = encoder;
 	}
 	
+	/*
+	 * Get all beneficiaries
+	 * @Return List<BeneficiaryDTO>
+	 */
 	@Override
 	public List<BeneficiaryDTO> getAllBeneficiares() {
 		List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
@@ -67,12 +71,17 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		return beneficiariesDTOs;
 	}
 
+	/*
+	 * Get beneficiary by id
+	 * @Params Long id
+	 * @Return BeneficiaryDTO
+	 */
 	@Override
 	public BeneficiaryDTO getBeneficiaryById(Long id) {
 		Optional<Beneficiary> optBenficiary = beneficiaryRepository.findById(id);
 		
 		if(!optBenficiary.isPresent()) {
-			throw new UsernameNotFoundException("This ONG not exist!");
+			throw new UsernameNotFoundException("This Beneficiary not exist!");
 		}
 		Beneficiary beneficiary = optBenficiary.get();
 		BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
@@ -95,6 +104,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		return beneficiaryDTO;
 	}
 
+	
 	@Override
 	public List<BeneficiaryDTO> getBeneficiaryByOng(Long id) {
 		// TODO Auto-generated method stub
@@ -123,6 +133,12 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		return beneficiariesDTOs;
 	}
 
+	
+	/*
+	 * Save an beneficiary with their account.
+	 * @Params beneficiaryDTO
+	 * @Return BeneficiaryDTO
+	 */
 	@Override
 	public BeneficiaryDTO saveBeneficiary(BeneficiaryDTO beneficiaryDTO, String username ) {
 		Ong ong = ongRepository.findByUsername(username);
@@ -177,6 +193,13 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		}
 	}
 
+	
+	/*
+	 * Update beneficiary
+	 * @Params Long id
+	 * @Params BeneficiaryDTO
+	 * @Return BeneficiaryDTO
+	 */
 	@Override
 	public BeneficiaryDTO updateBeneficiary(Long id, BeneficiaryDTO newBeneficiaryDTO) {
 		Optional<Beneficiary> beneficiaryToUpdate = beneficiaryRepository.findById(id);
@@ -244,6 +267,11 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		}
 	}
 
+	/*
+	 * get all beneficiaries by ong
+	 * @Params String username
+	 * @Return List<BeneficiaryDTO>
+	 */
 	@Override
 	public List<BeneficiaryDTO> getAllBeneficiaresByOng(String username){
 		
@@ -273,6 +301,12 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		return beneficiariesDTOs;
 	}
 	
+	
+	/*
+	 * delete beneficiary
+	 * @Params Long id
+	 * @Return void
+	 */
 	@Override
  	public void deteleBeneficiary(Long id) {
 		logger.info("Deleting Beneficiary with id={}", id);
