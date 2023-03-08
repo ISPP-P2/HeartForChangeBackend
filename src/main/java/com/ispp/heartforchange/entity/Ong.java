@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+
 import com.ispp.heartforchange.dto.OngDTO;
 
 import lombok.AllArgsConstructor;
@@ -51,6 +52,10 @@ public class Ong extends Account{
 	private String description;
 	
 
+
+	@OneToMany(mappedBy = "ong", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Person> people;
+
 	@OneToMany(mappedBy="ong", cascade = CascadeType.ALL)
 	private List<Person> person ;
 
@@ -65,4 +70,4 @@ public class Ong extends Account{
 		this.description = ongDto.getDescription();
 	}
 	
-}
+} 
