@@ -54,7 +54,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 	
 	/*
 	 * Get volunteer by ong
-	 * @Params Long id
+	 * @Params String username
 	 * @Return VolunteerDTO
 	 */
 	@Override
@@ -89,6 +89,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 	/*
 	 * Save a Volunteer with their account.
 	 * @Params VolunteerDTO
+	 * @Params String username
 	 * @Return VolunteerDTO
 	 */
 	@Override
@@ -156,7 +157,6 @@ public class VolunteerServiceImpl implements VolunteerService{
 	/*
 	 * Delete volunteer
 	 * @Params Long id
-	 * @Params VolunteerDTO
 	 * @Return void
 	 */
 	@Override

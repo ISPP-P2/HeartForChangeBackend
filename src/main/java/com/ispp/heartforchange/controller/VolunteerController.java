@@ -30,7 +30,7 @@ import org.springframework.util.StringUtils;
 
 
 @RestController
-@RequestMapping("/volunteer")
+@RequestMapping("/volunteers")
 public class VolunteerController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
@@ -64,6 +64,8 @@ public class VolunteerController {
 	/*
 	 * Get all volunteer by ONG
 	 * 
+	 * @Params username
+	 * 
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("ong/{username}")
@@ -75,7 +77,7 @@ public class VolunteerController {
 	/*
 	 * Get volunteer by id
 	 * 
-	 * @Paramas id
+	 * @Param id
 	 * 
 	 * @Return ResponseEntity
 	 */
