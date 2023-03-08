@@ -7,7 +7,9 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+
 import javax.persistence.FetchType;
+
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -48,8 +50,13 @@ public class Ong extends Account{
 	@Size(max = 250)
 	private String description;
 	
+
+	@OneToMany(mappedBy="ong", cascade = CascadeType.ALL)
+	private List<Person> person ;
+
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "ong")
 	private List<Grant> grants;
+
 	
 	public Ong( OngDTO ongDto ) {
 		super(ongDto.getUsername(),ongDto.getEmail(), ongDto.getPassword(), ongDto.getRolAccount());
