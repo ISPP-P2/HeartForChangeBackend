@@ -48,19 +48,19 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 			BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
 					beneficiary.getId(), 
 					beneficiary.getNationality(), 
-					beneficiary.isDoublenationality(), 
-					beneficiary.getArrived_date(), 
-					beneficiary.isEuropean_citizen_authorization(), 
-					beneficiary.isTourist_visa(), 
-					beneficiary.getDate_tourist_visa(), 
-					beneficiary.isHealth_card(), 
-					beneficiary.getEmployment_sector(), 
-					beneficiary.getPerception_aid(), 
-					beneficiary.isSavings_possesion(),
-					beneficiary.isSae_inscription(),
+					beneficiary.isDoubleNationality(), 
+					beneficiary.getArrivedDate(), 
+					beneficiary.isEuropeanCitizenAuthorization(), 
+					beneficiary.isTouristVisa(), 
+					beneficiary.getDateTouristVisa(), 
+					beneficiary.isHealthCard(), 
+					beneficiary.getEmploymentSector(), 
+					beneficiary.getPerceptionAid(), 
+					beneficiary.isSavingsPossesion(),
+					beneficiary.isSaeInscription(),
 					beneficiary.isWorking(), 
-					beneficiary.isComputer_knowledge(),
-					beneficiary.getOwned_devices(), 
+					beneficiary.isComputerKnowledge(),
+					beneficiary.getOwnedDevices(), 
 					beneficiary.getLanguages());
 			beneficiariesDTOs.add(beneficiaryDTO);
 		}
@@ -78,19 +78,19 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
 				beneficiary.getId(), 
 				beneficiary.getNationality(), 
-				beneficiary.isDoublenationality(), 
-				beneficiary.getArrived_date(), 
-				beneficiary.isEuropean_citizen_authorization(), 
-				beneficiary.isTourist_visa(), 
-				beneficiary.getDate_tourist_visa(), 
-				beneficiary.isHealth_card(), 
-				beneficiary.getEmployment_sector(), 
-				beneficiary.getPerception_aid(), 
-				beneficiary.isSavings_possesion(),
-				beneficiary.isSae_inscription(),
+				beneficiary.isDoubleNationality(), 
+				beneficiary.getArrivedDate(), 
+				beneficiary.isEuropeanCitizenAuthorization(), 
+				beneficiary.isTouristVisa(), 
+				beneficiary.getDateTouristVisa(), 
+				beneficiary.isHealthCard(), 
+				beneficiary.getEmploymentSector(), 
+				beneficiary.getPerceptionAid(), 
+				beneficiary.isSavingsPossesion(),
+				beneficiary.isSaeInscription(),
 				beneficiary.isWorking(), 
-				beneficiary.isComputer_knowledge(),
-				beneficiary.getOwned_devices(), 
+				beneficiary.isComputerKnowledge(),
+				beneficiary.getOwnedDevices(), 
 				beneficiary.getLanguages());
 		return beneficiaryDTO;
 	}
@@ -104,19 +104,19 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 			BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
 					beneficiary.getId(), 
 					beneficiary.getNationality(), 
-					beneficiary.isDoublenationality(), 
-					beneficiary.getArrived_date(), 
-					beneficiary.isEuropean_citizen_authorization(), 
-					beneficiary.isTourist_visa(), 
-					beneficiary.getDate_tourist_visa(), 
-					beneficiary.isHealth_card(), 
-					beneficiary.getEmployment_sector(), 
-					beneficiary.getPerception_aid(), 
-					beneficiary.isSavings_possesion(),
-					beneficiary.isSae_inscription(),
+					beneficiary.isDoubleNationality(), 
+					beneficiary.getArrivedDate(), 
+					beneficiary.isEuropeanCitizenAuthorization(), 
+					beneficiary.isTouristVisa(), 
+					beneficiary.getDateTouristVisa(), 
+					beneficiary.isHealthCard(), 
+					beneficiary.getEmploymentSector(), 
+					beneficiary.getPerceptionAid(), 
+					beneficiary.isSavingsPossesion(),
+					beneficiary.isSaeInscription(),
 					beneficiary.isWorking(), 
-					beneficiary.isComputer_knowledge(),
-					beneficiary.getOwned_devices(), 
+					beneficiary.isComputerKnowledge(),
+					beneficiary.getOwnedDevices(), 
 					beneficiary.getLanguages());
 			beneficiariesDTOs.add(beneficiaryDTO);
 		}
@@ -130,19 +130,19 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		
 		Beneficiary beneficiary = new Beneficiary(beneficiaryDTO, 
 				beneficiaryDTO.getNationality(), 
-				beneficiaryDTO.isDoublenationality(), 
-				beneficiaryDTO.getArrived_date(), 
-				beneficiaryDTO.isEuropean_citizen_authorization(), 
-				beneficiaryDTO.isTourist_visa(), 
-				beneficiaryDTO.getDate_tourist_visa(), 
-				beneficiaryDTO.isHealth_card(), 
-				beneficiaryDTO.getEmployment_sector(), 
-				beneficiaryDTO.getPerception_aid(), 
-				beneficiaryDTO.isSavings_possesion(),
-				beneficiaryDTO.isSae_inscription(),
+				beneficiaryDTO.isDoubleNationality(), 
+				beneficiaryDTO.getArrivedDate(), 
+				beneficiaryDTO.isEuropeanCitizenAuthorization(), 
+				beneficiaryDTO.isTouristVisa(), 
+				beneficiaryDTO.getDateTouristVisa(), 
+				beneficiaryDTO.isHealthCard(), 
+				beneficiaryDTO.getEmploymentSector(), 
+				beneficiaryDTO.getPerceptionAid(), 
+				beneficiaryDTO.isSavingsPossesion(),
+				beneficiaryDTO.isSaeInscription(),
 				beneficiaryDTO.isWorking(), 
-				beneficiaryDTO.isComputer_knowledge(),
-				beneficiaryDTO.getOwned_devices(), 
+				beneficiaryDTO.isComputerKnowledge(),
+				beneficiaryDTO.getOwnedDevices(), 
 				beneficiaryDTO.getLanguages());
 		beneficiary.setId(Long.valueOf(0));
 		beneficiary.setRolAccount(RolAccount.BENEFICIARY);
@@ -155,22 +155,22 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		
 		try {
 			Beneficiary beneficiarySaved = beneficiaryRepository.save(beneficiary);
-			return new BeneficiaryDTO(beneficiary, 
+			return new BeneficiaryDTO(beneficiarySaved, 
 					beneficiarySaved.getId(), 
 					beneficiarySaved.getNationality(), 
-					beneficiarySaved.isDoublenationality(), 
-					beneficiarySaved.getArrived_date(), 
-					beneficiarySaved.isEuropean_citizen_authorization(), 
-					beneficiarySaved.isTourist_visa(), 
-					beneficiarySaved.getDate_tourist_visa(), 
-					beneficiarySaved.isHealth_card(), 
-					beneficiarySaved.getEmployment_sector(), 
-					beneficiarySaved.getPerception_aid(), 
-					beneficiarySaved.isSavings_possesion(),
-					beneficiarySaved.isSae_inscription(),
+					beneficiarySaved.isDoubleNationality(), 
+					beneficiarySaved.getArrivedDate(), 
+					beneficiarySaved.isEuropeanCitizenAuthorization(), 
+					beneficiarySaved.isTouristVisa(), 
+					beneficiarySaved.getDateTouristVisa(), 
+					beneficiarySaved.isHealthCard(), 
+					beneficiarySaved.getEmploymentSector(), 
+					beneficiarySaved.getPerceptionAid(), 
+					beneficiarySaved.isSavingsPossesion(),
+					beneficiarySaved.isSaeInscription(),
 					beneficiarySaved.isWorking(), 
-					beneficiarySaved.isComputer_knowledge(),
-					beneficiarySaved.getOwned_devices(), 
+					beneficiarySaved.isComputerKnowledge(),
+					beneficiarySaved.getOwnedDevices(), 
 					beneficiarySaved.getLanguages());
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
@@ -204,18 +204,18 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 			beneficiaryToUpdate.get().setTown(newBeneficiaryDTO.getTown());
 			beneficiaryToUpdate.get().setUsername(newBeneficiaryDTO.getUsername());
 			beneficiaryToUpdate.get().setNationality(newBeneficiaryDTO.getNationality());
-			beneficiaryToUpdate.get().setDoublenationality(newBeneficiaryDTO.isDoublenationality());
-			beneficiaryToUpdate.get().setArrived_date(newBeneficiaryDTO.getArrived_date());
-			beneficiaryToUpdate.get().setEuropean_citizen_authorization(newBeneficiaryDTO.isEuropean_citizen_authorization());
-			beneficiaryToUpdate.get().setTourist_visa(newBeneficiaryDTO.isTourist_visa());
-			beneficiaryToUpdate.get().setDate_tourist_visa(newBeneficiaryDTO.getDate_tourist_visa());
-			beneficiaryToUpdate.get().setHealth_card(newBeneficiaryDTO.isHealth_card());
-			beneficiaryToUpdate.get().setEmployment_sector(newBeneficiaryDTO.getEmployment_sector());
-			beneficiaryToUpdate.get().setPerception_aid(newBeneficiaryDTO.getPerception_aid());
-			beneficiaryToUpdate.get().setSavings_possesion(newBeneficiaryDTO.isSavings_possesion());
+			beneficiaryToUpdate.get().setDoubleNationality(newBeneficiaryDTO.isDoubleNationality());
+			beneficiaryToUpdate.get().setArrivedDate(newBeneficiaryDTO.getArrivedDate());
+			beneficiaryToUpdate.get().setEuropeanCitizenAuthorization(newBeneficiaryDTO.isEuropeanCitizenAuthorization());
+			beneficiaryToUpdate.get().setTouristVisa(newBeneficiaryDTO.isTouristVisa());
+			beneficiaryToUpdate.get().setDateTouristVisa(newBeneficiaryDTO.getDateTouristVisa());
+			beneficiaryToUpdate.get().setHealthCard(newBeneficiaryDTO.isHealthCard());
+			beneficiaryToUpdate.get().setEmploymentSector(newBeneficiaryDTO.getEmploymentSector());
+			beneficiaryToUpdate.get().setPerceptionAid(newBeneficiaryDTO.getPerceptionAid());
+			beneficiaryToUpdate.get().setSavingsPossesion(newBeneficiaryDTO.isSavingsPossesion());
 			beneficiaryToUpdate.get().setWorking(newBeneficiaryDTO.isWorking());
-			beneficiaryToUpdate.get().setComputer_knowledge(newBeneficiaryDTO.isComputer_knowledge());
-			beneficiaryToUpdate.get().setOwned_devices(newBeneficiaryDTO.getOwned_devices());
+			beneficiaryToUpdate.get().setComputerKnowledge(newBeneficiaryDTO.isComputerKnowledge());
+			beneficiaryToUpdate.get().setOwnedDevices(newBeneficiaryDTO.getOwnedDevices());
 			beneficiaryToUpdate.get().setLanguages(newBeneficiaryDTO.getLanguages());
 		}else {
 			throw new UsernameNotFoundException("This Beneficiary not exist!");
@@ -225,19 +225,19 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 			return new BeneficiaryDTO(beneficiarySaved, 
 					beneficiarySaved.getId(), 
 					beneficiarySaved.getNationality(), 
-					beneficiarySaved.isDoublenationality(), 
-					beneficiarySaved.getArrived_date(), 
-					beneficiarySaved.isEuropean_citizen_authorization(), 
-					beneficiarySaved.isTourist_visa(), 
-					beneficiarySaved.getDate_tourist_visa(), 
-					beneficiarySaved.isHealth_card(), 
-					beneficiarySaved.getEmployment_sector(), 
-					beneficiarySaved.getPerception_aid(), 
-					beneficiarySaved.isSavings_possesion(),
-					beneficiarySaved.isSae_inscription(),
+					beneficiarySaved.isDoubleNationality(), 
+					beneficiarySaved.getArrivedDate(), 
+					beneficiarySaved.isEuropeanCitizenAuthorization(), 
+					beneficiarySaved.isTouristVisa(), 
+					beneficiarySaved.getDateTouristVisa(), 
+					beneficiarySaved.isHealthCard(), 
+					beneficiarySaved.getEmploymentSector(), 
+					beneficiarySaved.getPerceptionAid(), 
+					beneficiarySaved.isSavingsPossesion(),
+					beneficiarySaved.isSaeInscription(),
 					beneficiarySaved.isWorking(), 
-					beneficiarySaved.isComputer_knowledge(),
-					beneficiarySaved.getOwned_devices(), 
+					beneficiarySaved.isComputerKnowledge(),
+					beneficiarySaved.getOwnedDevices(), 
 					beneficiarySaved.getLanguages());
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
@@ -253,19 +253,19 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 			BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
 					beneficiary.getId(), 
 					beneficiary.getNationality(), 
-					beneficiary.isDoublenationality(), 
-					beneficiary.getArrived_date(), 
-					beneficiary.isEuropean_citizen_authorization(), 
-					beneficiary.isTourist_visa(), 
-					beneficiary.getDate_tourist_visa(), 
-					beneficiary.isHealth_card(), 
-					beneficiary.getEmployment_sector(), 
-					beneficiary.getPerception_aid(), 
-					beneficiary.isSavings_possesion(),
-					beneficiary.isSae_inscription(),
+					beneficiary.isDoubleNationality(), 
+					beneficiary.getArrivedDate(), 
+					beneficiary.isEuropeanCitizenAuthorization(), 
+					beneficiary.isTouristVisa(), 
+					beneficiary.getDateTouristVisa(), 
+					beneficiary.isHealthCard(), 
+					beneficiary.getEmploymentSector(), 
+					beneficiary.getPerceptionAid(), 
+					beneficiary.isSavingsPossesion(),
+					beneficiary.isSaeInscription(),
 					beneficiary.isWorking(), 
-					beneficiary.isComputer_knowledge(),
-					beneficiary.getOwned_devices(), 
+					beneficiary.isComputerKnowledge(),
+					beneficiary.getOwnedDevices(), 
 					beneficiary.getLanguages());
 			
 			beneficiariesDTOs.add(beneficiaryDTO);
@@ -279,19 +279,19 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		BeneficiaryDTO beneficiaryDTO = getBeneficiaryById(id);
 		Beneficiary beneficiaryToDelete = new Beneficiary(beneficiaryDTO, 
 				beneficiaryDTO.getNationality(), 
-				beneficiaryDTO.isDoublenationality(), 
-				beneficiaryDTO.getArrived_date(), 
-				beneficiaryDTO.isEuropean_citizen_authorization(), 
-				beneficiaryDTO.isTourist_visa(), 
-				beneficiaryDTO.getDate_tourist_visa(), 
-				beneficiaryDTO.isHealth_card(), 
-				beneficiaryDTO.getEmployment_sector(), 
-				beneficiaryDTO.getPerception_aid(), 
-				beneficiaryDTO.isSavings_possesion(),
-				beneficiaryDTO.isSae_inscription(),
+				beneficiaryDTO.isDoubleNationality(), 
+				beneficiaryDTO.getArrivedDate(), 
+				beneficiaryDTO.isEuropeanCitizenAuthorization(), 
+				beneficiaryDTO.isTouristVisa(), 
+				beneficiaryDTO.getDateTouristVisa(), 
+				beneficiaryDTO.isHealthCard(), 
+				beneficiaryDTO.getEmploymentSector(), 
+				beneficiaryDTO.getPerceptionAid(), 
+				beneficiaryDTO.isSavingsPossesion(),
+				beneficiaryDTO.isSaeInscription(),
 				beneficiaryDTO.isWorking(), 
-				beneficiaryDTO.isComputer_knowledge(),
-				beneficiaryDTO.getOwned_devices(), 
+				beneficiaryDTO.isComputerKnowledge(),
+				beneficiaryDTO.getOwnedDevices(), 
 				beneficiaryDTO.getLanguages());
 		beneficiaryToDelete.setId(id);
 		try {

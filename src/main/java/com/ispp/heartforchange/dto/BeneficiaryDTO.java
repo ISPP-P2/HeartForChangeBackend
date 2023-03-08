@@ -32,54 +32,54 @@ public class BeneficiaryDTO extends PersonDTO{
 	private String nationality;
 	
 	@NotNull
-	@JsonProperty("doublenationality")
-	private boolean doublenationality;
+	@JsonProperty("doubleNationality")
+	private boolean doubleNationality;
 	
 	
-	@JsonProperty("arrived_date")
-	private LocalDate arrived_date;
-	
-	
-	
-	@JsonProperty("european_citizen_authorization")
-	private boolean european_citizen_authorization;
+	@JsonProperty("arrivedDate")
+	private LocalDate arrivedDate;
 	
 	
 	
-	@JsonProperty("tourist_visa")
-	private boolean tourist_visa;
+	@JsonProperty("europeanCitizenAuthorization")
+	private boolean europeanCitizenAuthorization;
 	
 	
 	
-	@JsonProperty("date_tourist_visa")
-	private LocalDate date_tourist_visa;
+	@JsonProperty("touristVisa")
+	private boolean touristVisa;
 	
 	
 	
-	@JsonProperty("health_card")
-	private boolean health_card;
+	@JsonProperty("dateTouristVisa")
+	private LocalDate dateTouristVisa;
+	
+	
+	
+	@JsonProperty("healthCard")
+	private boolean healthCard;
 	
 	
 	@NotBlank
 	@Size(max=50)
-	@JsonProperty("employment_sector")
-	private String employment_sector;
+	@JsonProperty("employmentSector")
+	private String employmentSector;
 	
 	
 	@NotBlank
 	@Size(max=100)
-	@JsonProperty("perception_aid")
-	private String perception_aid;
+	@JsonProperty("perceptionAid")
+	private String perceptionAid;
 	
 	
 	
-	@JsonProperty("savings_possesion")
-	private boolean savings_possesion;
+	@JsonProperty("savingsPossesion")
+	private boolean savingsPossesion;
 	
 	
 	
-	@JsonProperty("sae_inscription")
-	private boolean sae_inscription;
+	@JsonProperty("saeInscription")
+	private boolean saeInscription;
 	
 	
 	
@@ -88,14 +88,14 @@ public class BeneficiaryDTO extends PersonDTO{
 	
 	
 	
-	@JsonProperty("computer_knowledge")
-	private boolean computer_knowledge;
+	@JsonProperty("computerKnowledge")
+	private boolean computerKnowledge;
 	
 	
 	@NotBlank
 	@Size(max=200)
-	@JsonProperty("owned_devices")
-	private String owned_devices;
+	@JsonProperty("ownedDevices")
+	private String ownedDevices;
 	
 	
 	@NotBlank
@@ -105,29 +105,31 @@ public class BeneficiaryDTO extends PersonDTO{
 
 
 	public BeneficiaryDTO(Person person, Long id, @NotNull @NotBlank @Size(max = 50) String nationality,
-			@NotNull boolean doublenationality,  LocalDate arrived_date, boolean european_citizen_authorization,
-			boolean tourist_visa, LocalDate date_tourist_visa, boolean health_card,
-			@NotBlank @Size(max = 50) String employment_sector, @NotBlank @Size(max = 100) String perception_aid,
-			boolean savings_possesion, boolean sae_inscription, boolean working, boolean computer_knowledge,
-			@NotBlank @Size(max = 200) String owned_devices, @NotBlank @Size(max = 100) String languages) {
+			@NotNull boolean doubleNationality, LocalDate arrivedDate, boolean europeanCitizenAuthorization,
+			boolean touristVisa, LocalDate dateTouristVisa, boolean healthCard,
+			@NotBlank @Size(max = 50) String employmentSector, @NotBlank @Size(max = 100) String perceptionAid,
+			boolean savingsPossesion, boolean saeInscription, boolean working, boolean computerKnowledge,
+			@NotBlank @Size(max = 200) String ownedDevices, @NotBlank @Size(max = 100) String languages) {
 		super(person);
 		this.id = id;
 		this.nationality = nationality;
-		this.doublenationality = doublenationality;
-		this.arrived_date = arrived_date;
-		this.european_citizen_authorization = european_citizen_authorization;
-		this.tourist_visa = tourist_visa;
-		this.date_tourist_visa = date_tourist_visa;
-		this.health_card = health_card;
-		this.employment_sector = employment_sector;
-		this.perception_aid = perception_aid;
-		this.savings_possesion = savings_possesion;
-		this.sae_inscription = sae_inscription;
+		this.doubleNationality = doubleNationality;
+		this.arrivedDate = arrivedDate;
+		this.europeanCitizenAuthorization = europeanCitizenAuthorization;
+		this.touristVisa = touristVisa;
+		this.dateTouristVisa = dateTouristVisa;
+		this.healthCard = healthCard;
+		this.employmentSector = employmentSector;
+		this.perceptionAid = perceptionAid;
+		this.savingsPossesion = savingsPossesion;
+		this.saeInscription = saeInscription;
 		this.working = working;
-		this.computer_knowledge = computer_knowledge;
-		this.owned_devices = owned_devices;
+		this.computerKnowledge = computerKnowledge;
+		this.ownedDevices = ownedDevices;
 		this.languages = languages;
 	}
+
+
 
 
 	

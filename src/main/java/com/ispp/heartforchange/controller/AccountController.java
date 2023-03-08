@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ispp.heartforchange.dto.SigninRequestDTO;
 import com.ispp.heartforchange.dto.SigninResponseDTO;
+import com.ispp.heartforchange.entity.Account;
+import com.ispp.heartforchange.entity.RolAccount;
+import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.security.service.AccountDetailsServiceImpl;
 import com.ispp.heartforchange.service.impl.AccountServiceImpl;
@@ -33,16 +36,18 @@ public class AccountController {
 	private JwtUtils jwtUtils;
 	private AccountDetailsServiceImpl accountDetailsServiceImpl;
 	private AccountServiceImpl accountServiceImpl;
+	private AccountRepository accountRepository;
 
 	/*
 	 * Dependency injection
 	 */
 	public AccountController(JwtUtils jwtUtils, AccountDetailsServiceImpl accountDetailsServiceImpl,
-			AccountServiceImpl accountServiceImpl) {
+			AccountServiceImpl accountServiceImpl, AccountRepository accountRepository) {
 		super();
 		this.jwtUtils = jwtUtils;
 		this.accountDetailsServiceImpl = accountDetailsServiceImpl;
 		this.accountServiceImpl = accountServiceImpl;
+		this.accountRepository = accountRepository;
 	}
 
 	/*
@@ -54,9 +59,21 @@ public class AccountController {
 	 */
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody SigninRequestDTO loginRequest) {
-		SigninResponseDTO signinDto = accountServiceImpl.authenticateUser(loginRequest);
-		logger.info("User loged with username {}:", loginRequest.getUsername());
-		return ResponseEntity.ok(signinDto);
+		try{
+			Account account = accountRepository.findByUsername(loginRequest.getUsername());
+			if(!account.getRolAccount().equals(RolAccount.BENEFICIARY)) {
+				SigninResponseDTO signinDto = accountServiceImpl.authenticateUser(loginRequest);
+				logger.info("User loged with username {}:", loginRequest.getUsername());
+				return ResponseEntity.ok(signinDto);
+			}
+		}catch(Exception e){
+			logger.error("Cannot find the account: {}", e);
+
+		}
+		
+		
+		
+		return new ResponseEntity<String>("You don´t have permissions or account doesn´t exists", HttpStatus.BAD_REQUEST);
 	}
 
 	/*

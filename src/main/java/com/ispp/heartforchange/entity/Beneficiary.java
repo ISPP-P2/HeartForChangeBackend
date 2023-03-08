@@ -32,44 +32,44 @@ private static final long serialVersionUID = 1L;
 	private String nationality;
 	
 	@NotNull
-	private boolean doublenationality;
+	private boolean doubleNationality;
 	
 	
-	private LocalDate arrived_date;
-	
-	
-	
-	private boolean european_citizen_authorization;
+	private LocalDate arrivedDate;
 	
 	
 	
-	private boolean tourist_visa;
+	private boolean europeanCitizenAuthorization;
 	
 	
 	
-	private LocalDate date_tourist_visa;
+	private boolean touristVisa;
 	
 	
 	
-	private boolean health_card;
+	private LocalDate dateTouristVisa;
+	
+	
+	
+	private boolean healthCard;
 	
 	
 	@NotBlank
 	@Size(max=50)
-	private String employment_sector;
+	private String employmentSector;
 	
 	
 	@NotBlank
 	@Size(max=100)
-	private String perception_aid;
+	private String perceptionAid;
 	
 	
 	
-	private boolean savings_possesion;
+	private boolean savingsPossesion;
 	
 	
 	
-	private boolean sae_inscription;
+	private boolean saeInscription;
 	
 	
 	
@@ -77,12 +77,12 @@ private static final long serialVersionUID = 1L;
 	
 	
 	
-	private boolean computer_knowledge;
+	private boolean computerKnowledge;
 	
 	
 	@NotBlank
 	@Size(max=200)
-	private String owned_devices;
+	private String ownedDevices;
 	
 	
 	@NotBlank
@@ -91,30 +91,31 @@ private static final long serialVersionUID = 1L;
 
 
 	public Beneficiary(PersonDTO personDTO, @NotNull @NotBlank @Size(max = 50) String nationality,
-			@NotNull boolean doublenationality,  LocalDate arrived_date, boolean european_citizen_authorization,
-			boolean tourist_visa, LocalDate date_tourist_visa, boolean health_card,
-			@NotBlank @Size(max = 50) String employment_sector, @NotBlank @Size(max = 100) String perception_aid,
-			boolean savings_possesion, boolean sae_inscription, boolean working, boolean computer_knowledge,
-			@NotBlank @Size(max = 200) String owned_devices, @NotBlank @Size(max = 100) String languages) {
+			@NotNull boolean doubleNationality, LocalDate arrivedDate, boolean europeanCitizenAuthorization,
+			boolean touristVisa, LocalDate dateTouristVisa, boolean healthCard,
+			@NotBlank @Size(max = 50) String employmentSector, @NotBlank @Size(max = 100) String perceptionAid,
+			boolean savingsPossesion, boolean saeInscription, boolean working, boolean computerKnowledge,
+			@NotBlank @Size(max = 200) String ownedDevices, @NotBlank @Size(max = 100) String languages) {
 		super(personDTO);
 		this.nationality = nationality;
-		this.doublenationality = doublenationality;
-		this.arrived_date = arrived_date;
-		this.european_citizen_authorization = european_citizen_authorization;
-		this.tourist_visa = tourist_visa;
-		this.date_tourist_visa = date_tourist_visa;
-		this.health_card = health_card;
-		this.employment_sector = employment_sector;
-		this.perception_aid = perception_aid;
-		this.savings_possesion = savings_possesion;
-		this.sae_inscription = sae_inscription;
+		this.doubleNationality = doubleNationality;
+		this.arrivedDate = arrivedDate;
+		this.europeanCitizenAuthorization = europeanCitizenAuthorization;
+		this.touristVisa = touristVisa;
+		this.dateTouristVisa = dateTouristVisa;
+		this.healthCard = healthCard;
+		this.employmentSector = employmentSector;
+		this.perceptionAid = perceptionAid;
+		this.savingsPossesion = savingsPossesion;
+		this.saeInscription = saeInscription;
 		this.working = working;
-		this.computer_knowledge = computer_knowledge;
-		this.owned_devices = owned_devices;
+		this.computerKnowledge = computerKnowledge;
+		this.ownedDevices = ownedDevices;
 		this.languages = languages;
 	}
 
 
+	
 	
 
 
