@@ -11,10 +11,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.OngDTO;
+
 import com.ispp.heartforchange.dto.VolunteerDTO;
+
+import com.ispp.heartforchange.entity.Beneficiary;
+
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
-import com.ispp.heartforchange.repository.AccountRepository;
+import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.service.OngService;
 
@@ -25,18 +29,23 @@ public class OngServiceImpl implements OngService{
 
 	private ONGRepository ongRepository;
 	private PasswordEncoder encoder;
+
 	private AccountRepository accountRepository;
 	private VolunteerServiceImpl volunteerService;
+	private BeneficiaryRepository beneficiaryRepository;
+	
 	/*
 	 * Dependency injection 
 	 */
-	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,
-			AccountRepository accountRepository, VolunteerServiceImpl volunteerService) {
+	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,BeneficiaryRepository beneficiaryRepository
+			) {
 		super();
 		this.ongRepository = ongRepository;
 		this.encoder = encoder;
-		this.accountRepository = accountRepository;
+		this.beneficiaryRepository = beneficiaryRepository;
+    this.accountRepository = accountRepository;
 		this.volunteerService = volunteerService;
+
 	}
 	
 	/*
@@ -131,13 +140,18 @@ public class OngServiceImpl implements OngService{
 		OngDTO ongDTO = getOngById(id);
 		Ong ongToDelete = new Ong(ongDTO);
 		ongToDelete.setId(id);
+
 		//Get all the volunteers that belong to the Ong to delete
 		List<VolunteerDTO> volunteerList = volunteerService.getVolunteersByOng(ongToDelete.getUsername());
+		List<Beneficiary> beneficiariesONG = beneficiaryRepository.findBeneficiariesByOng(ongToDelete.getUsername());
 		try {
-			//Delete all the volunteer before delete the Ong
+			for( Beneficiary b : beneficiariesONG) {
+				beneficiaryRepository.delete(b);
+			}
+      //Delete all the volunteer before delete the Ong
 			for(VolunteerDTO volunteer: volunteerList) {
 				accountRepository.deleteById(volunteer.getId());
-			}
+      }
 			ongRepository.delete(ongToDelete);	
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());

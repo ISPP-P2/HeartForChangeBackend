@@ -10,6 +10,5 @@ public interface ONGRepository extends JpaRepository<Ong, Long> {
 	
 	Ong findByUsername(String username);
 
-	
 
 }

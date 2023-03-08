@@ -124,6 +124,7 @@ public class PersonDTO extends AccountDTO{
 	private String otherSkills;
 
 	
+
 	public PersonDTO( Person person ) {
 		super(person.getUsername(),person.getEmail(), person.getPassword(), person.getRolAccount());
 		this.id = person.getId(); 
@@ -146,6 +147,7 @@ public class PersonDTO extends AccountDTO{
 		this.telephone = person.getTelephone();
 		this.town = person.getTown();
 	}
+
 
 
 }

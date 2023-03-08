@@ -115,32 +115,37 @@ public class Person extends Account{
 	@ManyToOne
 	private Ong ong;
 	
-	public Person( PersonDTO personDto ) {
-		super(personDto.getUsername(),personDto.getEmail(), personDto.getPassword(), personDto.getRolAccount());
-		this.id = personDto.getId();
-		this.name = personDto.getName();
-		this.address = personDto.getAddress();
-		this.birthday = personDto.getBirthday();
-		this.civilStatus = personDto.getCivilStatus();
-		this.documentNumber = personDto.getDocumentNumber();
-		this.documentType = personDto.getDocumentType();
-		this.driveLicenses = personDto.getDriveLicenses();
-		this.entryDate = personDto.getEntryDate();
-		this.firstSurname = personDto.getFirstSurname();
-		this.secondSurname = personDto.getSecondSurname();
-		this.gender = personDto.getGender();
-		this.leavingDate = personDto.getLeavingDate();
-		this.numberOfChildren = personDto.getNumberOfChildren();
-		this.otherSkills = personDto.getOtherSkills();
-		this.postalCode = personDto.getPostalCode();
-		this.registrationAddress = personDto.getRegistrationAddress();
-		this.telephone = personDto.getTelephone();
-		this.town = personDto.getTown();
+
+
+	
+	
+	
+	
+
+
+	
+	public Person( PersonDTO personDTO ) {
+		super(personDTO.getUsername(),personDTO.getEmail(), personDTO.getPassword(), personDTO.getRolAccount());
+		this.id = personDTO.getId(); 
+		this.name = personDTO.getName();
+		this.address = personDTO.getAddress();
+		this.birthday = personDTO.getBirthday();
+		this.civilStatus = personDTO.getCivilStatus();
+		this.documentNumber = personDTO.getDocumentNumber();
+		this.documentType = personDTO.getDocumentType();
+		this.driveLicenses = personDTO.getDriveLicenses();
+		this.entryDate = personDTO.getEntryDate();
+		this.firstSurname = personDTO.getFirstSurname();
+		this.secondSurname = personDTO.getSecondSurname();
+		this.gender = personDTO.getGender();
+		this.leavingDate = personDTO.getLeavingDate();
+		this.numberOfChildren = personDTO.getNumberOfChildren();
+		this.otherSkills = personDTO.getOtherSkills();
+		this.postalCode = personDTO.getPostalCode();
+		this.registrationAddress = personDTO.getRegistrationAddress();
+		this.telephone = personDTO.getTelephone();
+		this.town = personDTO.getTown();
 	}
-
 	
 	
-	
-	
-
 }
