@@ -62,6 +62,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 				.antMatchers("/accounts/signin/**").permitAll()
 				.antMatchers("/ongs/signup/**").permitAll()
 				.antMatchers("/volunteer/signup/**").hasAnyAuthority("ONG")
+				.antMatchers("/grants/**").hasAnyAuthority("ONG")
 				.anyRequest().authenticated();
 
 		http.authenticationProvider(authenticationProvider());
