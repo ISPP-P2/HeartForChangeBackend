@@ -77,6 +77,13 @@ public class BeneficiaryController {
 	}
 	
 	
+	/*
+	 * Get beneficiaries by ong
+	 * 
+	 * @Paramas username
+	 * 
+	 * @Return ResponseEntity
+	 */
 	@GetMapping("ong/{username}")
 	public ResponseEntity<?> getBeneficiariesByOng(@PathVariable("username") String username) {
 		List<BeneficiaryDTO> beneficiaries = beneficiaryServiceImpl.getAllBeneficiaresByOng(username);
