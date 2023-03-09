@@ -112,7 +112,7 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | /api/task/ong/{username}  | -        | List<TaskDTO>   | Get all task of an ong |
 | /api/task/{id} | - | TaskDTO | Get task by id|
 | /api/task/new | TaskDTO | TaskDTO | Save new task |
-| /api/task/update/{id} | - | TaskDTO | Update task |
+| /api/task/update/{id} | TaskDTO | TaskDTO | Update task |
 | /api/task/delete/{id} | - | String | Delete task |
 
 ### Attendance API
