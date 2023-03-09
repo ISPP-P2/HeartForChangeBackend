@@ -1,5 +1,6 @@
 package com.ispp.heartforchange.dto;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -12,18 +13,26 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ispp.heartforchange.entity.Attendance;
 import com.ispp.heartforchange.entity.AttendanceType;
+import com.ispp.heartforchange.entity.GrantState;
 import com.ispp.heartforchange.entity.Person;
 import com.ispp.heartforchange.entity.PetitionState;
 import com.ispp.heartforchange.entity.Task;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-public class AttendanceDTO {
+@EqualsAndHashCode(callSuper=false)
+public class AttendanceDTO implements Serializable{
 
 	
 	private static final long serialVersionUID = 1L;
@@ -34,24 +43,16 @@ public class AttendanceDTO {
 	@JsonProperty("type")
 	private AttendanceType type;
 	
-	@NotNull
-	@JsonProperty("person")
-	private Person person;
-	
-	@NotNull
-	@JsonProperty("task")
-	private Task task;
 	
 	@JsonProperty("state")
 	@NotNull
 	private PetitionState state;
+
 	
 	
 	public AttendanceDTO(Attendance attendance) {
 		this.id = attendance.getId();
-		this.person = attendance.getPerson();
 		this.state = attendance.getState();
-		this.task = attendance.getTask();
 		this.type = attendance.getType();
 	}
 }

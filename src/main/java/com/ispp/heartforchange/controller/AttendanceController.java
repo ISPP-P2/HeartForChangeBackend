@@ -18,11 +18,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ispp.heartforchange.dto.AttendanceDTO;
-import com.ispp.heartforchange.dto.TaskDTO;
 import com.ispp.heartforchange.entity.AttendanceType;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.AttendanceServiceImpl;
-import com.ispp.heartforchange.service.impl.TaskServiceImpl;
+
 
 @Controller
 @RequestMapping("/attendance")
@@ -96,6 +95,7 @@ public class AttendanceController {
 		}
 		
 		AttendanceDTO attendance = attendanceService.createPetition(id, jwt);
+		logger.info("Created Petition on Task with name={} by User with username={}");
 		return ResponseEntity.ok(attendance);
 	}
 	
@@ -184,8 +184,8 @@ public class AttendanceController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		attendanceService.addBeneficiary(idTask, jwt, idPerson);
-		return ResponseEntity.ok("Attendance Deleted");
+		AttendanceDTO attendanceDTO = attendanceService.addBeneficiary(idTask, jwt, idPerson);
+		return ResponseEntity.ok(attendanceDTO);
 	}
 	
 	@PostMapping("/task/quit/{idTask}/{idPerson}")

@@ -13,13 +13,16 @@ import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ispp.heartforchange.entity.GrantState;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.Person;
 import com.ispp.heartforchange.entity.TaskType;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Getter
 @Setter
@@ -72,15 +75,13 @@ public class TaskDTO implements Serializable{
 	@NotNull
 	private String place;
 	
-	@JsonProperty("ong")
-	private Ong ong;
 	
 
 
 
 	public TaskDTO(Long id, @NotNull @NotBlank @Size(max = 32) String name, 	@NotNull LocalDateTime date, @NotNull String teacher,
 			@NotNull Boolean certificate, @Length(max = 256) String observations, @Length(max = 256) List<String> incidences,
-			@NotNull String coordinator, Integer numParticipants, @NotNull TaskType taskType, @NotNull String place, @NotNull Ong ong) {
+			@NotNull String coordinator, Integer numParticipants, @NotNull TaskType taskType, @NotNull String place) {
 		
 		this.id = id;
 		this.name = name;
@@ -93,6 +94,5 @@ public class TaskDTO implements Serializable{
 		this.numParticipants = numParticipants;
 		this.type = taskType;
 		this.place = place;
-		this.ong = ong;
 	}
 }

@@ -16,6 +16,7 @@ import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.Person;
 import com.ispp.heartforchange.entity.PetitionState;
 import com.ispp.heartforchange.entity.Task;
+import com.ispp.heartforchange.entity.TaskType;
 import com.ispp.heartforchange.repository.AttendanceRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.PersonRepository;
@@ -100,11 +101,12 @@ public class AttendanceServiceImpl implements AttendanceService{
 			System.out.println(person);
 			Attendance attendance = new Attendance(person, task.get());
 			attendance.setId(Long.valueOf(0));
-			logger.info("Create Petition on Task with name={} by User with username={}", task.get().getName(), person.getName());
 			System.out.println(attendance);
 			try {
 				Attendance attendanceSaved = attendanceRepository.save(attendance);
-//				return new AttendanceDTO(attendanceSaved);
+				logger.info("Create Petition on Task with name={} by User with username={}", task.get().getName(), person.getName());
+				AttendanceDTO attendanceDTO = new AttendanceDTO(attendanceSaved);
+				return attendanceDTO;
 			} catch (Exception e) {
 				throw new UsernameNotFoundException(e.getMessage());
 			}
@@ -221,12 +223,12 @@ public class AttendanceServiceImpl implements AttendanceService{
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Person> person = personRepository.findById(idPerson);
 		Optional<Task> task = taskRepository.findById(idTask);
-		if (task.isPresent() && person.isPresent()) {
+		if (task.isPresent() && person.isPresent() && task.get().getType() == TaskType.CURSO || task.get().getType() == TaskType.TALLER) {
 			Attendance attendance = new Attendance(person.get(), task.get(), PetitionState.ACEPTADA);
 			attendance.setId(Long.valueOf(0));
 			logger.info("Create Petition on Task with name={} by User with username={}", task.get().getName());
 			try {
-				Attendance attendanceSaved = attendanceRepository.save(attendance);
+				Attendance attendanceSaved = attendanceRepository.save(attendance); 
 				return new AttendanceDTO(attendanceSaved);
 			} catch (Exception e) {
 				throw new UsernameNotFoundException(e.getMessage());

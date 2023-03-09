@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -36,10 +37,12 @@ public class Attendance implements Serializable {
 	
 	@NotNull
 	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "person_id")
 	private Person person;
 	
 	@NotNull
 	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "task_id")
 	private Task task;
 	
 	@NotNull

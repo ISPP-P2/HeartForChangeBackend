@@ -57,8 +57,7 @@ public class TaskServiceImpl implements TaskService{
 					task.getCoordinator(),
 					task.getNumParticipants(),
 					task.getType(),
-					task.getPlace(),
-					task.getOng());
+					task.getPlace());
 			tasksDTO.add(tasktDTO);
 		}
 		return tasksDTO;
@@ -84,8 +83,7 @@ public class TaskServiceImpl implements TaskService{
 						task.getCoordinator(),
 						task.getNumParticipants(),
 						task.getType(),
-						task.getPlace(),
-						task.getOng());
+						task.getPlace());
 				return tasktDTO;
 			}
 			throw new UsernameNotFoundException("Dont have the permisions");
@@ -109,8 +107,7 @@ public class TaskServiceImpl implements TaskService{
 					task.getCoordinator(),
 					task.getNumParticipants(),
 					task.getType(),
-					task.getPlace(),
-					task.getOng());
+					task.getPlace());
 			tasksDTO.add(tasktDTO);
 		}
 		return tasksDTO;
@@ -136,8 +133,7 @@ public class TaskServiceImpl implements TaskService{
 					taskSave.getCoordinator(),
 					taskSave.getNumParticipants(),
 					taskSave.getType(),
-					taskSave.getPlace(),
-					taskSave.getOng());
+					taskSave.getPlace());
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
 		}
@@ -158,13 +154,11 @@ public class TaskServiceImpl implements TaskService{
 				taskToUpdate.get().setName(newTaskDTO.getName());
 				taskToUpdate.get().setNumParticipants(newTaskDTO.getNumParticipants());
 				taskToUpdate.get().setObservations(newTaskDTO.getObservations());
-				taskToUpdate.get().setOng(newTaskDTO.getOng());
 				taskToUpdate.get().setPlace(newTaskDTO.getPlace());
 				taskToUpdate.get().setTeacher(newTaskDTO.getTeacher());
 				taskToUpdate.get().setOng(ong);
 				Task taskSave = taskRepository.save(taskToUpdate.get());
 				newTaskDTO.setId(taskSave.getId());
-				newTaskDTO.setOng(ong);
 				return newTaskDTO;
 			}
 			throw new UsernameNotFoundException("Dont have the permisions");
