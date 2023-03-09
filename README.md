@@ -105,6 +105,28 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | /api/grants/update  | GrantDTO        | GrantDTO   | Update a grant |
 | /api/grants/delete/{id}  | -        | String   | Delete a grant |
 
+### Task API
+| Url                    | Params        |  Response  | Description                         | 
+| --------------------   | ------------- | ---------  | -----------------------------------
+| /api/task/   |  | List<DTO>| Get all task        |
+| /api/task/ong/{username}  | -        | List<TaskDTO>   | Get all task of an ong |
+| /api/task/{id} | - | TaskDTO | Get task by id|
+| /api/task/new | TaskDTO | TaskDTO | Save new task |
+| /api/task/update/{id} | - | TaskDTO | Update task |
+| /api/task/delete/{id} | - | String | Delete task |
+
+### Attendance API
+| Url                    | Params        |  Response  | Description                         | 
+| --------------------   | ------------- | ---------  | -----------------------------------
+| /api/attendance/{id} | - | AttendanceDTO | Get attendance by id |
+| /api/attendance/new/{idTask} | - | AttendanceDTO | Create a petition by Volunteer |
+| /api/attendance/delete/{idTask} | - | String | Delete a petition by Volunteer |
+| /api/attendance/accept/{id} | - | AttendanceDTO | Accept a petition by ONG |
+| /api/attendance/deny/{id} | - | AttendanceDTO | Deny a petition by ONG |
+| /api/attendance/confirm/{id}/{type} | - | AttendanceDTO | Confirm attendance by ONG. Type = [1 = "TOTAL", 2 = "PARCIAL", 3 = "NO_ASISTIDA"] |
+| /api/attendance/add/{idTask}/{idPerson} | - | AttendanceDTO | Add beneficiary to a Attendance by ONG |
+| /api/attendance/quit/{idTask}/{idPerson} | - | AttendanceDTO | Delete beneficiary to a Attendance by ONG |
+
 ## DTOs
 ### SigninRequestDTO
 | PROPERTY               | Type        |  
@@ -190,5 +212,23 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | justification               | String |
 | amount               | Integer |
 	
+### TaskDTO
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| id | Long |
+| name | String |
+| type | TaskType(CURSO, ACTIVIDAD, TALLER )|
+| date | LocalDateTime (format: "yyyy-MM-dd HH:mm:ss")|
+| teacher | String |
+| certificate | Boolean |
+| observations | String |
+| incidences | List<String> |
+| coordinator | String |
+| place | String |
 
-
+### AttendanceDao
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| id | Long |
+| type | AttendanceType(TOTAL, PARCIAL, NO_ASISTIDA) |
+| state | PetitionState(ESPERA, ACEPTADA, DENEGADA)|
