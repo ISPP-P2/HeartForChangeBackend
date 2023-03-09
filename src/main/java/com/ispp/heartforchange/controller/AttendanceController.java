@@ -82,8 +82,8 @@ public class AttendanceController {
 	}
 	
 	
-	@PostMapping("/task/new/{id}")
-	public ResponseEntity<?> createPetition(HttpServletRequest request, @PathVariable("id") Long id) {
+	@PostMapping("/new/{idTask}")
+	public ResponseEntity<?> createPetition(HttpServletRequest request, @PathVariable("idTask") Long id) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -99,8 +99,8 @@ public class AttendanceController {
 		return ResponseEntity.ok(attendance);
 	}
 	
-	@PostMapping("/task/delete/{id}")
-	public ResponseEntity<?> deletePetition(HttpServletRequest request, @PathVariable("id") Long id) {
+	@PostMapping("/delete/{idTask}")
+	public ResponseEntity<?> deletePetition(HttpServletRequest request, @PathVariable("idTask") Long id) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -171,7 +171,7 @@ public class AttendanceController {
 	
 	
 	
-	@PostMapping("/task/add/{idTask}/{idPerson}")
+	@PostMapping("/add/{idTask}/{idPerson}")
 	public ResponseEntity<?> addBeneficiary(HttpServletRequest request,
 			@PathVariable("idTask") Long idTask,@PathVariable("idPerson") Long idPerson) {
 		String jwt = null;
@@ -188,7 +188,7 @@ public class AttendanceController {
 		return ResponseEntity.ok(attendanceDTO);
 	}
 	
-	@PostMapping("/task/quit/{idTask}/{idPerson}")
+	@PostMapping("/quit/{idTask}/{idPerson}")
 	public ResponseEntity<?> deleteBeneficiary(HttpServletRequest request,
 			@PathVariable("idTask") Long idTask,@PathVariable("idPerson") Long idPerson) {
 		String jwt = null;
