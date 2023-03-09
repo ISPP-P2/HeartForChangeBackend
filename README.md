@@ -130,27 +130,6 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | password               | String |
 | rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY) |
 
-### PersonDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| id               |  Long |
-| entryDate               | LocalDate |
-| firstSurname               | String |
-| secondSurname      | String |
-| name               | String |
-| documentType               | DocumentType(DNI, NIE, PASSPORT) |
-| documentNumber               | String |
-| gender               | Gender |	
-| birthday               | LocalDate |	
-| civilStatus               | CivilStatus(SINGLE, MARRIED, WIDOWED, DIVORCED) |	
-| numberOfChildren               | int |	
-| address               | String |	
-| postalCode               | String |	
-| registrationAddres               | String |	
-| town               | String |	
-| leavingDate               | LocalDate |
-| otherSkills               | String |	
-| driveLicenses               | String |
 	
 ### BeneficiaryDTO
 | PROPERTY               | Type        |  
@@ -175,8 +154,31 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ### VolunteerDTO
 | PROPERTY               | Type        |  
 | --------------------   | ------------- | 
+| id               |  Long |
+| username               | String |
+| email               | String |
+| password               | String |
+| rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY) |
+| entryDate               | LocalDate |
+| firstSurname               | String |
+| secondSurname      | String |
+| name               | String |
+| documentType               | DocumentType(DNI, NIE, PASSPORT) |
+| documentNumber               | String |
+| gender               | Gender |	
+| birthday               | LocalDate |	
+| civilStatus               | CivilStatus(SINGLE, MARRIED, WIDOWED, DIVORCED) |	
+| numberOfChildren               | int |	
+| address               | String |	
+| postalCode               | String |	
+| registrationAddres               | String |	
+| town               | String |	
+| leavingDate               | LocalDate |
+| otherSkills               | String |	
+| driveLicenses               | String |
 | hourOfAvailability       |  String |
 | sexCrimes               | Boolean |
+| telephone               | String |
 	
 ### GrantDTO
 | PROPERTY               | Type        |  
