@@ -91,17 +91,17 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 					if(workExperience.get().getBeneficiary().getOng().getUsername().equals(username)) {
 						return new WorkExperienceDTO(workExperience.get());
 					}else {
-						throw new UsernameNotFoundException("You don't have access11111111111!");
+						throw new UsernameNotFoundException("You don't have access!");
 					}
 				}
 				else if(workExperience.get().getVolunteer() != null) {
 					if(workExperience.get().getVolunteer().getOng().getUsername().equals(username)) {
 						return new WorkExperienceDTO(workExperience.get());
 					}else {
-						throw new UsernameNotFoundException("You don't have access2222222222!");
+						throw new UsernameNotFoundException("You don't have access!");
 					}
 				}else {
-					throw new UsernameNotFoundException("You don't have access333333333!");
+					throw new UsernameNotFoundException("You don't have access!");
 				}
 			}
 		}
