@@ -4,19 +4,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
 import com.ispp.heartforchange.entity.Beneficiary;
+import com.ispp.heartforchange.entity.ComplementaryFormation;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
+import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.service.BeneficiaryService;
 
@@ -31,12 +32,16 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	private ONGRepository ongRepository;
 	private BeneficiaryRepository beneficiaryRepository;
 	private PasswordEncoder encoder;
+	private ComplementaryFormationRepository complementaryFormationRepository;
 	
 	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder,
-			AccountRepository accountRepository) {
+			AccountRepository accountRepository, 
+			ComplementaryFormationRepository complementaryFormationRepository) {
+		
 		super();
 		this.ongRepository = ongRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
+		this.complementaryFormationRepository = complementaryFormationRepository;
 		this.encoder = encoder;
 	}
 	
@@ -328,7 +333,17 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 				beneficiaryDTO.getOwnedDevices(), 
 				beneficiaryDTO.getLanguages());
 		beneficiaryToDelete.setId(id);
+		
+		List<ComplementaryFormation> complementaryFormationList = 
+				complementaryFormationRepository.findComplementaryFormationByBeneficiary
+				(beneficiaryToDelete.getUsername()).get();
+		
 		try {
+			
+			for(ComplementaryFormation c : complementaryFormationList) {
+				complementaryFormationRepository.delete(c);
+			}
+			
 			beneficiaryRepository.delete(beneficiaryToDelete);	
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
