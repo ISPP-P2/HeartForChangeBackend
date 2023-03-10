@@ -11,9 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.VolunteerDTO;
+import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Volunteer;
+import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.VolunteerRepository;
 import com.ispp.heartforchange.service.VolunteerService;
@@ -26,15 +28,17 @@ public class VolunteerServiceImpl implements VolunteerService{
 	private VolunteerRepository volunteerRepository;
 	private PasswordEncoder encoder;
 	private ONGRepository ongRepository;
+	private AcademicExperienceRepository academicExperienceRepository;
 	/*
 	 * Dependency injection 
 	 */
 	public VolunteerServiceImpl(VolunteerRepository volunteerRepository, PasswordEncoder encoder,
-			ONGRepository ongRepository) {
+			ONGRepository ongRepository, AcademicExperienceRepository academicExperienceRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.volunteerRepository = volunteerRepository;
 		this.encoder = encoder;
+		this.academicExperienceRepository = academicExperienceRepository;
 	}
 	
 	/*
@@ -165,7 +169,11 @@ public class VolunteerServiceImpl implements VolunteerService{
 		VolunteerDTO volunteerDTO = getVolunteerById(id);
 		Volunteer volunteerToDelete = new Volunteer(volunteerDTO, volunteerDTO.getHourOfAvailability(), volunteerDTO.getSexCrimes());
 		volunteerToDelete.setId(id);
+		List<AcademicExperience> academicExps = academicExperienceRepository.findByVolunteer(volunteerToDelete.getUsername()).get();
 		try {
+			for(AcademicExperience a: academicExps) {
+				academicExperienceRepository.delete(a);
+			}
 			volunteerRepository.delete(volunteerToDelete);
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());

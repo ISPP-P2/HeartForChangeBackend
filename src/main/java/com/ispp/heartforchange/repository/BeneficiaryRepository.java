@@ -1,5 +1,6 @@
 package com.ispp.heartforchange.repository;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,4 +13,5 @@ public interface BeneficiaryRepository extends JpaRepository<Beneficiary, Long>{
 
 	@Query("Select distinct b from Beneficiary b, Person p where p.ong.username = :username")
 	List<Beneficiary> findBeneficiariesByOng(String username);
+
 }
