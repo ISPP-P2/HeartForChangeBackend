@@ -68,7 +68,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 	 * Get work experience by id
 	 * @Params Long id
 	 * @Params String token
-	 * @Return List<WorkExperienceDTO>
+	 * @Return WorkExperienceDTO
 	 */
 	@Override
 	public WorkExperienceDTO getWorkExperienceById(Long id, String token) {
