@@ -86,7 +86,7 @@ public class WorkExperienceController {
      * @Return ResponseEntity
      */
     @GetMapping("/get/volunteer/{username}")
-    public ResponseEntity<?> getAcademicExperienceByVolunteerUsername(HttpServletRequest request,
+    public ResponseEntity<?> getWorkExperienceByVolunteerUsername(HttpServletRequest request,
             @PathVariable("username") String username) {
         String jwt = null;
         String headerAuth = request.getHeader("Authorization");
@@ -98,8 +98,8 @@ public class WorkExperienceController {
             return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
         }
 
-        List<WorkExperienceDTO> acadExp = workExperienceService.getWorkExperienceByVolunteerUsername(username, jwt);
-        return ResponseEntity.ok(acadExp);
+        List<WorkExperienceDTO> workExperiences = workExperienceService.getWorkExperienceByVolunteerUsername(username, jwt);
+        return ResponseEntity.ok(workExperiences);
     }
     
     
@@ -112,7 +112,7 @@ public class WorkExperienceController {
      * @Return ResponseEntity
      */
     @GetMapping("/get/beneficiary/{username}")
-    public ResponseEntity<?> getAcademicExperienceByBeneficiaryUsername(HttpServletRequest request,
+    public ResponseEntity<?> getWorkExperienceByBeneficiaryUsername(HttpServletRequest request,
             @PathVariable("username") String username) {
         String jwt = null;
         String headerAuth = request.getHeader("Authorization");
@@ -124,8 +124,8 @@ public class WorkExperienceController {
             return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
         }
 
-        List<WorkExperienceDTO> acadExp = workExperienceService.getWorkExperienceByBeneficiaryUsername(username, jwt);
-        return ResponseEntity.ok(acadExp);
+        List<WorkExperienceDTO> workExperiences = workExperienceService.getWorkExperienceByBeneficiaryUsername(username, jwt);
+        return ResponseEntity.ok(workExperiences);
     }
     
     
