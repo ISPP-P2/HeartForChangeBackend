@@ -79,14 +79,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 		if (!workExperience.isPresent()) {
 			throw new UsernameNotFoundException("Work Experience not found!");
 		} else {
-			if(rol == RolAccount.BENEFICIARY) {
-				if(workExperience.get().getBeneficiary().getUsername().equals(username)) {
-					return new WorkExperienceDTO(workExperience.get());
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-			}
-			else if(rol == RolAccount.VOLUNTEER) {
+			if(rol == RolAccount.VOLUNTEER) {
 				if(workExperience.get().getVolunteer().getUsername().equals(username)) {
 					return new WorkExperienceDTO(workExperience.get());
 				}else {
@@ -98,17 +91,17 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 					if(workExperience.get().getBeneficiary().getOng().getUsername().equals(username)) {
 						return new WorkExperienceDTO(workExperience.get());
 					}else {
-						throw new UsernameNotFoundException("You don't have access!");
+						throw new UsernameNotFoundException("You don't have access11111111111!");
 					}
 				}
 				else if(workExperience.get().getVolunteer() != null) {
 					if(workExperience.get().getVolunteer().getOng().getUsername().equals(username)) {
 						return new WorkExperienceDTO(workExperience.get());
 					}else {
-						throw new UsernameNotFoundException("You don't have access!");
+						throw new UsernameNotFoundException("You don't have access2222222222!");
 					}
 				}else {
-					throw new UsernameNotFoundException("You don't have access!");
+					throw new UsernameNotFoundException("You don't have access333333333!");
 				}
 			}
 		}
@@ -183,15 +176,6 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 				}else {
 					throw new UsernameNotFoundException("You don't have access!");
 				}
-			}else if(rol == RolAccount.BENEFICIARY) {
-				if (username.equals(beneficiaryUserName)) {
-					for (WorkExperience workExperience : workExperiences.get()) {
-						WorkExperienceDTO workExperienceDTO = new WorkExperienceDTO(workExperience);
-						workExperiencesDTO.add(workExperienceDTO);
-					}
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
 			}else {
 				throw new UsernameNotFoundException("You don't have access!");
 			}
@@ -213,23 +197,30 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     	workExperience.setId(Long.valueOf(0));
         List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
         List<Volunteer> volunteers = volunteerRepository.findAll();
-
+        Beneficiary beneficiaryAux = new Beneficiary();
+        Volunteer volunteerAux = new Volunteer();
         for (Beneficiary beneficiary: beneficiaries) {
             if(beneficiary.getUsername().equals(username)) {
+            	beneficiaryAux = beneficiary;
             	workExperience.setBeneficiary(beneficiary);
             }
         }
 
         for (Volunteer volunteer: volunteers) {
             if(volunteer.getUsername().equals(username)) {
+            	volunteerAux = volunteer;
             	workExperience.setVolunteer(volunteer);
             }
         }
 
         logger.info("Work Experience saved associated with {}", username);
         try {
-        	WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience);
-            return new WorkExperienceDTO(workExperienceSaved);
+        	if(volunteerAux.getUsername() != null || beneficiaryAux.getUsername() != null) {
+        		WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience);
+                return new WorkExperienceDTO(workExperienceSaved);
+        	}else {
+        		throw new UsernameNotFoundException("The username doesn't exist");
+        	}
         } catch (Exception e) {
             throw new UsernameNotFoundException(e.getMessage());
         }
@@ -250,23 +241,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 		logger.info("Work Experience is updating with id={}", workExperienceDTO.getId());
 		
 		if (workExperience.isPresent()) {
-			if(rol == RolAccount.BENEFICIARY) {
-				if(workExperience.get().getBeneficiary().getUsername().equals(username)) {
-					workExperience.get().setJob(workExperienceDTO.getJob());
-					workExperience.get().setPlace(workExperienceDTO.getPlace());
-					workExperience.get().setReasonToFinish(workExperienceDTO.getReasonToFinish());
-					workExperience.get().setTime(workExperienceDTO.getTime());
-					try {
-						WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience.get());
-						return new WorkExperienceDTO(workExperienceSaved);
-					} catch (Exception e) {
-						throw new UsernameNotFoundException(e.getMessage());
-					}
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-			}
-			else if(rol == RolAccount.VOLUNTEER) {
+			if(rol == RolAccount.VOLUNTEER) {
 				if(workExperience.get().getVolunteer().getUsername().equals(username)) {
 					workExperience.get().setJob(workExperienceDTO.getJob());
 					workExperience.get().setPlace(workExperienceDTO.getPlace());
@@ -338,14 +313,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 		Optional<WorkExperience> workExperience = workExperienceRepository.findById(id);
 		
 		if (workExperience.isPresent()) {
-			if(rol == RolAccount.BENEFICIARY) {
-				if(workExperience.get().getBeneficiary().getUsername().equals(username)) {
-					workExperienceRepository.delete(workExperience.get());
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-			}
-			else if(rol == RolAccount.VOLUNTEER) {
+			if(rol == RolAccount.VOLUNTEER) {
 				if(workExperience.get().getVolunteer().getUsername().equals(username)) {
 					workExperienceRepository.delete(workExperience.get());
 				}else {
