@@ -33,22 +33,22 @@ public class WorkExperience implements Serializable {
 
 	@NotBlank
 	@NotNull
-	@Size(max = 255)
+	@Size(max = 100)
 	private String job;
 
 	@NotBlank
 	@NotNull
-	@Size(max = 100)
+	@Size(max = 50)
 	private String time;
 
 	@NotBlank
 	@NotNull
-	@Size(max = 255)
+	@Size(max = 100)
 	private String place;
 
 	@NotBlank
 	@NotNull
-	@Size(max = 1000)
+	@Size(max = 400)
 	private String reasonToFinish;
 
 

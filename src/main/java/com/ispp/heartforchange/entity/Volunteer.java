@@ -36,7 +36,7 @@ public class Volunteer extends Person{
 	private Boolean sexCrimes;
 	
 	
-	@OneToMany(mappedBy = "volunteer", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
 	private List<WorkExperience> listWorkExperience;
 	
 

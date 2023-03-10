@@ -92,7 +92,7 @@ private static final long serialVersionUID = 1L;
 	private String languages;
 	
 	
-	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
 	private List<WorkExperience> listWorkExperience;
 
 
