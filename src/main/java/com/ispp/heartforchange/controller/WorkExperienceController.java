@@ -81,7 +81,7 @@ public class WorkExperienceController {
      * Get all work experiences by volunteer username
      * 
      * @Param HttpServletRequest
-     * @Param Long id
+     * @Param String username
      * 
      * @Return ResponseEntity
      */
@@ -107,7 +107,7 @@ public class WorkExperienceController {
      * Get all work experiences by beneficiary username
      * 
      * @Param HttpServletRequest
-     * @Param Long id
+     * @Param String username
      * 
      * @Return ResponseEntity
      */
