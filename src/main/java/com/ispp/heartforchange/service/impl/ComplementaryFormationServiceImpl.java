@@ -166,8 +166,11 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 		} else {
 			
 			if(rol == RolAccount.ONG) {
-				
-				if(complementaryFormations.get().get(0).getVolunteer().getOng().getUsername().equals(username)) {
+				if(complementaryFormations.get().size() == 0) {
+					throw new UsernameNotFoundException("This volunteer has no complementary formation!");
+
+				}
+				else if(complementaryFormations.get().get(0).getVolunteer().getOng().getUsername().equals(username)) {
 					for (ComplementaryFormation complementaryFormation : complementaryFormations.get()) {
 						
 						ComplementaryFormationDTO complementaryFormationDTO = new ComplementaryFormationDTO(complementaryFormation);
@@ -239,6 +242,10 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 			
 		} else {
 			if(rol == RolAccount.ONG) {
+				if(complementaryFormations.get().size() == 0) {
+					throw new UsernameNotFoundException("This beneficiary has no complementary formation!");
+
+				}
 				
 				if(complementaryFormations.get().get(0).getBeneficiary().getOng().getUsername().equals(username)) {
 					for (ComplementaryFormation complementaryFormation: complementaryFormations.get()) {
