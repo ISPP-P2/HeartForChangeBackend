@@ -154,7 +154,10 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
         } else {
             if(rol == RolAccount.ONG) {
               
-                if(academicExperience.get().get(0).getVolunteer().getOng().getUsername().equals(username)) {
+            	if(academicExperience.get().size() == 0) {
+					throw new UsernameNotFoundException("This volunteer has no complementary formation!");
+
+				}else if(academicExperience.get().get(0).getVolunteer().getOng().getUsername().equals(username)) {
                     for(AcademicExperience acaExp: academicExperience.get()) {
                     	AcademicExperienceDTO acadExpDTO = new AcademicExperienceDTO(acaExp);
                     	res.add(acadExpDTO);
@@ -212,8 +215,11 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
             throw new UsernameNotFoundException("Academic Experience not found!");
         } else {
             if(rol == RolAccount.ONG) {
-              
-                if(academicExperience.get().get(0).getBeneficiary().getOng().getUsername().equals(username)) {
+            	
+            	if(academicExperience.get().size() == 0) {
+					throw new UsernameNotFoundException("This volunteer has no complementary formation!");
+
+				}else if(academicExperience.get().get(0).getBeneficiary().getOng().getUsername().equals(username)) {
                     for(AcademicExperience acaExp: academicExperience.get()) {
                     	AcademicExperienceDTO acadExpDTO = new AcademicExperienceDTO(acaExp);
                     	res.add(acadExpDTO);
