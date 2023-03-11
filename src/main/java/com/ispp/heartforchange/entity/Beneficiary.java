@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -94,6 +95,9 @@ private static final long serialVersionUID = 1L;
 	
 	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
 	private List<WorkExperience> listWorkExperience;
+	
+	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
+	private List<Appointment> listAppointments;
 
 
 	public Beneficiary(PersonDTO personDTO, @NotNull @NotBlank @Size(max = 50) String nationality,

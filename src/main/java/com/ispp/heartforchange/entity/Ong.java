@@ -61,6 +61,9 @@ public class Ong extends Account{
 
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "ong")
 	private List<Grant> grants;
+	
+	@OneToMany(mappedBy = "ong", cascade = CascadeType.REMOVE)
+	private List<Appointment> listAppointments;
 
 	
 	public Ong( OngDTO ongDto ) {

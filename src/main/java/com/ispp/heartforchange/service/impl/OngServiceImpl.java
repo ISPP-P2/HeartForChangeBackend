@@ -13,12 +13,13 @@ import org.springframework.stereotype.Service;
 import com.ispp.heartforchange.dto.OngDTO;
 
 import com.ispp.heartforchange.dto.VolunteerDTO;
-
+import com.ispp.heartforchange.entity.Appointment;
 import com.ispp.heartforchange.entity.Beneficiary;
 
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.repository.AccountRepository;
+import com.ispp.heartforchange.repository.AppointmentRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.service.OngService;
@@ -34,16 +35,18 @@ public class OngServiceImpl implements OngService{
 	private AccountRepository accountRepository;
 	private VolunteerServiceImpl volunteerService;
 	private BeneficiaryRepository beneficiaryRepository;
+	private AppointmentRepository appointmentRepository;
 	
 	/*
 	 * Dependency injection 
 	 */
-	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,BeneficiaryRepository beneficiaryRepository
-			) {
+	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,BeneficiaryRepository beneficiaryRepository,
+			AppointmentRepository appointmentRepository, VolunteerServiceImpl volunteerService, AccountRepository accountRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.encoder = encoder;
 		this.beneficiaryRepository = beneficiaryRepository;
+		this.appointmentRepository = appointmentRepository;
 		this.accountRepository = accountRepository;
 		this.volunteerService = volunteerService;
 
@@ -145,6 +148,7 @@ public class OngServiceImpl implements OngService{
 		//Get all the volunteers that belong to the Ong to delete
 		List<VolunteerDTO> volunteerList = volunteerService.getVolunteersByOng(ongToDelete.getUsername());
 		List<Beneficiary> beneficiariesONG = beneficiaryRepository.findBeneficiariesByOng(ongToDelete.getUsername());
+		List<Appointment> appointments = appointmentRepository.findAppointmentsByOngUsername(ongToDelete.getUsername()).get();
 		try {
 			for( Beneficiary b : beneficiariesONG) {
 				beneficiaryRepository.delete(b);
@@ -152,7 +156,10 @@ public class OngServiceImpl implements OngService{
       //Delete all the volunteer before delete the Ong
 			for(VolunteerDTO volunteer: volunteerList) {
 				accountRepository.deleteById(volunteer.getId());
-      }
+            }
+			for( Appointment a : appointments) {
+				appointmentRepository.delete(a);
+			}
 			ongRepository.delete(ongToDelete);	
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
