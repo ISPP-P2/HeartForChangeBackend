@@ -16,12 +16,10 @@ import com.ispp.heartforchange.entity.Appointment;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
-import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.AppointmentRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
-import com.ispp.heartforchange.repository.WorkExperienceRepository;
 import com.ispp.heartforchange.service.BeneficiaryService;
 
 @Service
@@ -32,16 +30,14 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 
 	private ONGRepository ongRepository;
 	private BeneficiaryRepository beneficiaryRepository;
-	private WorkExperienceRepository workExperienceRepository;
 	private AppointmentRepository appointmentRepository;
 	private PasswordEncoder encoder;
 	
 	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder,
-			WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository, AppointmentRepository appointmentRepository) {
+			 AccountRepository accountRepository, AppointmentRepository appointmentRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
-		this.workExperienceRepository = workExperienceRepository;
 		this.appointmentRepository = appointmentRepository;
 		this.encoder = encoder;
 	}
@@ -336,13 +332,8 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		beneficiaryToDelete.setId(id);
 		
 		
-		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryUserName(beneficiaryToDelete.getUsername()).get();
 		List<Appointment> appointments = appointmentRepository.findAppointmentsByBeneficiaryUsername(beneficiaryToDelete.getUsername()).get();
 		try {
-			for(WorkExperience w : workExperiencesList) {
-				workExperienceRepository.delete(w);
-			}
-			
 			for(Appointment a : appointments) {
 				appointmentRepository.delete(a);
 			}

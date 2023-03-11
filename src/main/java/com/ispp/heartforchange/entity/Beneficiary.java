@@ -94,9 +94,6 @@ private static final long serialVersionUID = 1L;
 	
 	
 	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
-	private List<WorkExperience> listWorkExperience;
-	
-	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
 	private List<Appointment> listAppointments;
 
 
