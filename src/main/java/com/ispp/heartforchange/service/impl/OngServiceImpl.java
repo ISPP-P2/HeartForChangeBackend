@@ -18,6 +18,7 @@ import com.ispp.heartforchange.entity.Beneficiary;
 
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
+import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.service.OngService;
@@ -43,7 +44,7 @@ public class OngServiceImpl implements OngService{
 		this.ongRepository = ongRepository;
 		this.encoder = encoder;
 		this.beneficiaryRepository = beneficiaryRepository;
-    this.accountRepository = accountRepository;
+		this.accountRepository = accountRepository;
 		this.volunteerService = volunteerService;
 
 	}

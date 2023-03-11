@@ -57,7 +57,7 @@ public class Ong extends Account{
 	private List<Person> people;
 
 	@OneToMany(mappedBy="ong", cascade = CascadeType.ALL)
-	private List<Person> person ;
+	private List<Person> person;
 
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "ong")
 	private List<Grant> grants;
