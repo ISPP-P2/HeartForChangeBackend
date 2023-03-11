@@ -337,15 +337,15 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		
 		
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryUserName(beneficiaryToDelete.getUsername()).get();
-		//List<Appointment> appointments = appointmentRepository.findAppointmentsByOngUsername(beneficiaryToDelete.getOng().getUsername()).get();
+		List<Appointment> appointments = appointmentRepository.findAppointmentsByBeneficiaryUsername(beneficiaryToDelete.getUsername()).get();
 		try {
 			for(WorkExperience w : workExperiencesList) {
 				workExperienceRepository.delete(w);
 			}
-			/*
+			
 			for(Appointment a : appointments) {
 				appointmentRepository.delete(a);
-			}*/
+			}
 			beneficiaryRepository.delete(beneficiaryToDelete);	
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());

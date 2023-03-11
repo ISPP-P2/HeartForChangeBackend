@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import com.ispp.heartforchange.dto.AppointmentDTO;
 import com.ispp.heartforchange.entity.Appointment;
 import com.ispp.heartforchange.entity.Beneficiary;
+import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.AppointmentRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
+import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.AppointmentService;
 
@@ -27,6 +29,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
 	private AppointmentRepository appointmentRepository;
 	private BeneficiaryRepository beneficiaryRepository;
+	private ONGRepository ongRepository;
 	private JwtUtils jwtUtils;
 	
 	
@@ -34,10 +37,11 @@ public class AppointmentServiceImpl implements AppointmentService {
 	 * Dependency injection
 	 */
 	public AppointmentServiceImpl(AppointmentRepository appointmentRepository, AccountRepository accountRepository,
-			BeneficiaryRepository beneficiaryRepository, JwtUtils jwtUtils) {
+			BeneficiaryRepository beneficiaryRepository, ONGRepository ongRepository, JwtUtils jwtUtils) {
 		super();
 		this.appointmentRepository = appointmentRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
+		this.ongRepository = ongRepository;
 		this.jwtUtils = jwtUtils;
 	}
 	
@@ -89,18 +93,35 @@ public class AppointmentServiceImpl implements AppointmentService {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Optional<List<Appointment>> appointments = appointmentRepository.findAppointmentsByOngUsername(ongUsername);
 		
+		List<Ong> auxOngs = ongRepository.findAll();
+ 		boolean exception = true;
+ 		for(Ong o: auxOngs) {
+ 			if (ongUsername.equals(o.getUsername())){
+ 				exception = false;
+ 			}
+ 		}
+
+ 		if(exception==true) {
+ 			throw new UsernameNotFoundException("The username of the ONG doesn't exist!");
+
+ 		}
+		
 		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
 
 		if (!appointments.isPresent()) {
 			throw new UsernameNotFoundException("Appointments not found!");
 		} else {
-			if(appointments.get().get(0).getBeneficiary().getOng().getUsername().equals(username)) {
-				for (Appointment appointment : appointments.get()) {
-					AppointmentDTO appointmentDTO = new AppointmentDTO(appointment);
-					appointmentsDTO.add(appointmentDTO);
-				}
+			if(appointments.get().size() == 0) {
+				throw new UsernameNotFoundException("This ONG has not appointments!");
 			}else {
-				throw new UsernameNotFoundException("You don't have access!");
+				if(appointments.get().get(0).getBeneficiary().getOng().getUsername().equals(username)) {
+					for (Appointment appointment : appointments.get()) {
+						AppointmentDTO appointmentDTO = new AppointmentDTO(appointment);
+						appointmentsDTO.add(appointmentDTO);
+					}
+				}else {
+					throw new UsernameNotFoundException("You don't have access!");
+				}
 			}
 		}
 		return appointmentsDTO;
