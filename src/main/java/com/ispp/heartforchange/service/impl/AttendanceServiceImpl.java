@@ -74,22 +74,6 @@ public class AttendanceServiceImpl implements AttendanceService{
 		}
 	}
 	
-	@Override
-	public AttendanceDTO getAttendanceByIdVolunteer(Long id, String token) {
-		String username = jwtUtils.getUserNameFromJwtToken(token);
-		Person person = personRepository.findByUsername(username);
-		Optional<Attendance> attendance = attendanceRepository.findById(id);
-
-		if (!attendance.isPresent()) {
-			throw new UsernameNotFoundException("Attendace not found!");
-		} else {
-			if (attendance.get().getPerson().getId() == person.getId()) {
-				return new AttendanceDTO(attendance.get());
-			} else {
-				throw new UsernameNotFoundException("You don't have access!");
-			}
-		}
-	}
 	
 	
 	@Override
@@ -98,10 +82,8 @@ public class AttendanceServiceImpl implements AttendanceService{
 		Person person = personRepository.findByUsername(username);
 		Optional<Task> task = taskRepository.findById(id);
 		if (task.isPresent()) {
-			System.out.println(person);
 			Attendance attendance = new Attendance(person, task.get());
 			attendance.setId(Long.valueOf(0));
-			System.out.println(attendance);
 			try {
 				Attendance attendanceSaved = attendanceRepository.save(attendance);
 				logger.info("Create Petition on Task with name={} by User with username={}", task.get().getName(), person.getName());
@@ -123,7 +105,6 @@ public class AttendanceServiceImpl implements AttendanceService{
 		Optional<Attendance> attendance = attendanceRepository.findById(id);
 		if (attendance.isPresent()) {
 			if (attendance.get().getPerson().getId() == person.getId()) {
-				System.out.println(attendance);
 				attendanceRepository.delete(attendance.get());
 			} else {
 				throw new UsernameNotFoundException("Error deleting attendance");
@@ -223,16 +204,23 @@ public class AttendanceServiceImpl implements AttendanceService{
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Person> person = personRepository.findById(idPerson);
 		Optional<Task> task = taskRepository.findById(idTask);
-		if (task.isPresent() && person.isPresent() && task.get().getType() == TaskType.CURSO || task.get().getType() == TaskType.TALLER) {
-			Attendance attendance = new Attendance(person.get(), task.get(), PetitionState.ACEPTADA);
-			attendance.setId(Long.valueOf(0));
-			logger.info("Create Petition on Task with name={} by User with username={}", task.get().getName());
-			try {
-				Attendance attendanceSaved = attendanceRepository.save(attendance); 
-				return new AttendanceDTO(attendanceSaved);
-			} catch (Exception e) {
-				throw new UsernameNotFoundException(e.getMessage());
+		if (task.isPresent() && person.isPresent()) {
+			if(task.get().getType() == TaskType.CURSO || task.get().getType() == TaskType.TALLER) {
+				if(task.get().getOng().getId() == ong.getId()) {
+					
+					Attendance attendance = new Attendance(person.get(), task.get(), PetitionState.ACEPTADA);
+					attendance.setId(Long.valueOf(0));
+					logger.info("Create Petition on Task with name={} by User with username={}", task.get().getName());
+					try {
+						Attendance attendanceSaved = attendanceRepository.save(attendance); 
+						return new AttendanceDTO(attendanceSaved);
+					} catch (Exception e) {
+						throw new UsernameNotFoundException(e.getMessage());
+					}
+				}
+				throw new UsernameNotFoundException("You dont have the permissions!");
 			}
+			throw new UsernameNotFoundException("This task isnt a CURSO or a Taller!");
 		}
 		throw new UsernameNotFoundException("Attendance or Person doesn't exist!");
 		

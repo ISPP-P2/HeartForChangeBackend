@@ -21,11 +21,6 @@ public interface AttendanceService {
 
 	AttendanceDTO addBeneficiary(Long idTask, String token, Long idPerson);
 
-
-	AttendanceDTO getAttendanceByIdVolunteer(Long id, String token);
-
-	//AttendanceDTO getAttendanceByIdOng(Long id, String token);
-
 	void deleteBeneficiary(Long idTask, String token, Long idPerson);
 
 	AttendanceDTO getAttendanceById(Long id, String token);

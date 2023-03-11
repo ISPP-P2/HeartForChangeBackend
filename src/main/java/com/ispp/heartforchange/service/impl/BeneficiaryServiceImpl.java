@@ -107,7 +107,6 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	
 	@Override
 	public List<BeneficiaryDTO> getBeneficiaryByOng(Long id) {
-		// TODO Auto-generated method stub
 		List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
 		List<BeneficiaryDTO> beneficiariesDTOs = new ArrayList<>();
 		for(Beneficiary beneficiary: beneficiaries) {

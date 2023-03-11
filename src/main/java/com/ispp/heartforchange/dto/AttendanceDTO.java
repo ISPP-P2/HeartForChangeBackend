@@ -1,23 +1,12 @@
 package com.ispp.heartforchange.dto;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.List;
-
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ispp.heartforchange.entity.Attendance;
 import com.ispp.heartforchange.entity.AttendanceType;
-import com.ispp.heartforchange.entity.GrantState;
-import com.ispp.heartforchange.entity.Person;
 import com.ispp.heartforchange.entity.PetitionState;
-import com.ispp.heartforchange.entity.Task;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;

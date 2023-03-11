@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.TaskDTO;
-import com.ispp.heartforchange.entity.Ong;
 
 @Service
 public interface TaskService {

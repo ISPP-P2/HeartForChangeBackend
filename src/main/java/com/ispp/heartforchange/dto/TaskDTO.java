@@ -2,9 +2,6 @@ package com.ispp.heartforchange.dto;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
-
-import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -13,12 +10,8 @@ import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ispp.heartforchange.entity.GrantState;
-import com.ispp.heartforchange.entity.Ong;
-import com.ispp.heartforchange.entity.Person;
 import com.ispp.heartforchange.entity.TaskType;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -62,7 +55,7 @@ public class TaskDTO implements Serializable{
 	private String observations;
 	
 	@JsonProperty("incidences")
-	private List<String> incidences;
+	private String incidences;
 	
 	@JsonProperty("coordinator")
 	@NotNull
@@ -80,7 +73,7 @@ public class TaskDTO implements Serializable{
 
 
 	public TaskDTO(Long id, @NotNull @NotBlank @Size(max = 32) String name, 	@NotNull LocalDateTime date, @NotNull String teacher,
-			@NotNull Boolean certificate, @Length(max = 256) String observations, @Length(max = 256) List<String> incidences,
+			@NotNull Boolean certificate, @Length(max = 256) String observations, @Length(max = 256) String incidences,
 			@NotNull String coordinator, Integer numParticipants, @NotNull TaskType taskType, @NotNull String place) {
 		
 		this.id = id;

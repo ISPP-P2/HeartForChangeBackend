@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,21 +23,18 @@ import com.ispp.heartforchange.service.impl.AttendanceServiceImpl;
 
 
 @Controller
-@RequestMapping("/attendance")
+@RequestMapping("/attendances")
 public class AttendanceController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
 	private AttendanceServiceImpl attendanceService;
 	private JwtUtils jwtUtils;
-	private AuthenticationManager authenticationManager;
 	
-	public AttendanceController(AttendanceServiceImpl attendanceService, JwtUtils jwtUtils,
-			AuthenticationManager authenticationManager) {
+	public AttendanceController(AttendanceServiceImpl attendanceService, JwtUtils jwtUtils) {
 		super();
 		this.attendanceService = attendanceService;
 		this.jwtUtils = jwtUtils;
-		this.authenticationManager = authenticationManager;
 	}
 	
 	
@@ -50,7 +46,7 @@ public class AttendanceController {
 	
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getAttendanceByIdOng(HttpServletRequest request, @PathVariable("id") Long id) {
+	public ResponseEntity<?> getAttendanceById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -64,23 +60,7 @@ public class AttendanceController {
 		AttendanceDTO attendance = attendanceService.getAttendanceById(id, jwt);
 		return ResponseEntity.ok(attendance);
 	}
-	
-	@GetMapping("volunteer/{id}")
-	public ResponseEntity<?> getAttendanceByIdVolunteer(HttpServletRequest request, @PathVariable("id") Long id) {
-		String jwt = null;
-		String headerAuth = request.getHeader("Authorization");
-
-		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
-			jwt = headerAuth.substring(7, headerAuth.length());
-		}
-		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
-			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
-		}
 		
-		AttendanceDTO attendance = attendanceService.getAttendanceByIdVolunteer(id, jwt);
-		return ResponseEntity.ok(attendance);
-	}
-	
 	
 	@PostMapping("/new/{idTask}")
 	public ResponseEntity<?> createPetition(HttpServletRequest request, @PathVariable("idTask") Long id) {
