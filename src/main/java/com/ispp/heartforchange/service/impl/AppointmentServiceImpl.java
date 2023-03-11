@@ -203,8 +203,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Optional<Appointment> appointment = appointmentRepository.findById(id);
 		
-		logger.info(appointment.get().toString());
-		
 		if (appointment.isPresent()) {
 			if(appointment.get().getBeneficiary().getOng().getUsername().equals(username)) {
 				appointmentRepository.delete(appointment.get());
