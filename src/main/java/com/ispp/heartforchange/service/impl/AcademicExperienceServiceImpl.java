@@ -136,7 +136,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
         List<AcademicExperienceDTO> res = new ArrayList<>();
         
         if (!academicExperience.isPresent()) {
-            throw new UsernameNotFoundException("Work Experience not found!");
+            throw new UsernameNotFoundException("Academic Experience not found!");
         } else {
             if(rol == RolAccount.ONG) {
               
@@ -181,7 +181,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
         List<AcademicExperienceDTO> res = new ArrayList<>();
         
         if (!academicExperience.isPresent()) {
-            throw new UsernameNotFoundException("Work Experience not found!");
+            throw new UsernameNotFoundException("Academic Experience not found!");
         } else {
             if(rol == RolAccount.ONG) {
               
@@ -232,7 +232,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 			}
 		}
 
-		logger.info("Experience Academic saved associated with {}", username);
+		logger.info("Academic Experience saved associated with {}", username);
 		try {
 			if(volunteerAux.getUsername() !=null || beneficiaryAux.getUsername() != null) {
 				AcademicExperience acdemicExpSaved = academicExperienceRepository.save(acadExp);
@@ -318,7 +318,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 
 
 		} else {
-			throw new UsernameNotFoundException("Work Experience not exist!");
+			throw new UsernameNotFoundException("Academic Experience does not exist!");
 		}
 	}
 	
@@ -362,7 +362,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
             }
 
         } else {
-            throw new UsernameNotFoundException("Work Experience not exist!");
+            throw new UsernameNotFoundException("Academic Experience not exist!");
         }
     }
 	
