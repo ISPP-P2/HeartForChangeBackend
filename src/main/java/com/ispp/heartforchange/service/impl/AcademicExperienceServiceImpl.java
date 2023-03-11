@@ -223,7 +223,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
             if(rol == RolAccount.ONG) {
             	
             	if(academicExperience.get().size() == 0) {
-					throw new UsernameNotFoundException("This volunteer has no academic experience!");
+					throw new UsernameNotFoundException("This beneficiary has no academic experience!");
 
 				}else if(academicExperience.get().get(0).getBeneficiary().getOng().getUsername().equals(username)) {
                     for(AcademicExperience acaExp: academicExperience.get()) {
