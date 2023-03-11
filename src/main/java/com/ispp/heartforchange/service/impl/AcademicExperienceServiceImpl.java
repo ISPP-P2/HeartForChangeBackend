@@ -132,6 +132,20 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
     public List<AcademicExperienceDTO> getAcademicExperienceByVolunteerUsername(String volunteerUserName, String token) {
         String username = jwtUtils.getUserNameFromJwtToken(token);
         RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
+        
+		List<Volunteer> aux = volunteerRepository.findAll();
+		int a = 0;
+		for(Volunteer v: aux) {
+			if (volunteerUserName.equals(v.getUsername())){
+				a = 1;
+			}
+		}
+		
+		if(a==0) {
+			throw new UsernameNotFoundException("The username doesn't exist!");
+
+		}        
+        
         Optional<List<AcademicExperience>> academicExperience = academicExperienceRepository.findByVolunteer(volunteerUserName);
         List<AcademicExperienceDTO> res = new ArrayList<>();
         
@@ -177,6 +191,20 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
     public List<AcademicExperienceDTO> getAcademicExperienceByBeneficiaryUsername(String beneficiaryUserName, String token) {
         String username = jwtUtils.getUserNameFromJwtToken(token);
         RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
+        
+		List<Beneficiary> aux = beneficiaryRepository.findAll();
+		int a = 0;
+		for(Beneficiary b: aux) {
+			if (beneficiaryUserName.equals(b.getUsername())){
+				a = 1;
+			}
+		}
+		
+		if(a==0) {
+			throw new UsernameNotFoundException("The username doesn't exist!");
+
+		}
+        
         Optional<List<AcademicExperience>> academicExperience = academicExperienceRepository.findByBeneficiary(beneficiaryUserName);
         List<AcademicExperienceDTO> res = new ArrayList<>();
         
