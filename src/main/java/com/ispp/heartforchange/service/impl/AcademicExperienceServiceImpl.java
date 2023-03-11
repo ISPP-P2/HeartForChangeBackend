@@ -167,13 +167,19 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
                 }
             }
             else if(rol == RolAccount.VOLUNTEER) {
-                if (username.equals(volunteerUserName)) {
+                if(academicExperience.get().size() == 0) {
+					throw new UsernameNotFoundException("This volunteer has no academic experience!");
+
+	        }
+                else{
+                    if (username.equals(volunteerUserName)) {
                 	for(AcademicExperience acaExp: academicExperience.get()) {
                     	AcademicExperienceDTO acadExpDTO = new AcademicExperienceDTO(acaExp);
                     	res.add(acadExpDTO);
+                        }
+                    }else {
+                        throw new UsernameNotFoundException("You don't have access!");
                     }
-                }else {
-                    throw new UsernameNotFoundException("You don't have access!");
                 }
             }else {
                 throw new UsernameNotFoundException("You don't have access!");
