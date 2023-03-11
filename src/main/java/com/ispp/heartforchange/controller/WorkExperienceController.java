@@ -153,7 +153,7 @@ public class WorkExperienceController {
        }
 
        WorkExperienceDTO workExperienceSaved = workExperienceService.saveWorkExperience(workExperienceDTO, username);
-       logger.info("Work Academic saved associated with {}", username);
+       logger.info("Work Experience saved associated with {}", username);
        return ResponseEntity.ok(workExperienceSaved);
    }
    
