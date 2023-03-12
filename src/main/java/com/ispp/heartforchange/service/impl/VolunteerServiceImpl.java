@@ -11,6 +11,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.VolunteerDTO;
+import com.ispp.heartforchange.entity.AcademicExperience;
+import com.ispp.heartforchange.entity.Ong;
+import com.ispp.heartforchange.entity.RolAccount;
+import com.ispp.heartforchange.entity.Volunteer;
+import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.dto.WorkExperienceDTO;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
@@ -31,16 +36,18 @@ public class VolunteerServiceImpl implements VolunteerService{
 	private WorkExperienceRepository workExperienceRepository;
 	private PasswordEncoder encoder;
 	private ONGRepository ongRepository;
+	private AcademicExperienceRepository academicExperienceRepository;
 	/*
 	 * Dependency injection 
 	 */
-	public VolunteerServiceImpl(VolunteerRepository volunteerRepository, PasswordEncoder encoder,
-			WorkExperienceRepository workExperienceRepository, ONGRepository ongRepository) {
+	public VolunteerServiceImpl(VolunteerRepository volunteerRepository, PasswordEncoder encoder,	WorkExperienceRepository workExperienceRepository, ONGRepository ongRepository, AcademicExperienceRepository academicExperienceRepository) {
+
 		super();
 		this.ongRepository = ongRepository;
 		this.volunteerRepository = volunteerRepository;
 		this.workExperienceRepository = workExperienceRepository;
 		this.encoder = encoder;
+		this.academicExperienceRepository = academicExperienceRepository;
 	}
 	
 	/*
@@ -171,13 +178,20 @@ public class VolunteerServiceImpl implements VolunteerService{
 		VolunteerDTO volunteerDTO = getVolunteerById(id);
 		Volunteer volunteerToDelete = new Volunteer(volunteerDTO, volunteerDTO.getHourOfAvailability(), volunteerDTO.getSexCrimes());
 		volunteerToDelete.setId(id);
-		//Get all the work experiences that belong to the volunteer to delete
+    
+		List<AcademicExperience> academicExps = academicExperienceRepository.findByVolunteer(volunteerToDelete.getUsername()).get();
+    //Get all the work experiences that belong to the volunteer to delete
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByVolunteerUserName(volunteerToDelete.getUsername()).get();
 		try {
-			for(WorkExperience w : workExperiencesList) {
+			for(AcademicExperience a: academicExps) {
+				academicExperienceRepository.delete(a);
+      }
+      
+      for(WorkExperience w : workExperiencesList) {
 				workExperienceRepository.delete(w);
 			}
 			volunteerRepository.delete(volunteerToDelete);
+		
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
 		}

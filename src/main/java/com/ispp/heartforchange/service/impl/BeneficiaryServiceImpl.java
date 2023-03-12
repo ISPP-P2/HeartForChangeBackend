@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
+import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
+import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
@@ -30,16 +32,19 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 
 	private ONGRepository ongRepository;
 	private BeneficiaryRepository beneficiaryRepository;
-	private WorkExperienceRepository workExperienceRepository;
+	private WorkExperienceRepository workExperienceRepository;	
+	private AcademicExperienceRepository academicExperienceRepository;
 	private PasswordEncoder encoder;
-	
+
 	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder,
-			WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository) {
+			WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository, AcademicExperienceRepository academicExperienceRepository) {
+
 		super();
 		this.ongRepository = ongRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
 		this.workExperienceRepository = workExperienceRepository;
 		this.encoder = encoder;
+		this.academicExperienceRepository = academicExperienceRepository;
 	}
 	
 	/*
@@ -313,6 +318,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
  	public void deteleBeneficiary(Long id) {
 		logger.info("Deleting Beneficiary with id={}", id);
 		BeneficiaryDTO beneficiaryDTO = getBeneficiaryById(id);
+		List<AcademicExperience> acadExps = academicExperienceRepository.findByBeneficiary(beneficiaryDTO.getUsername()).get();
 		Beneficiary beneficiaryToDelete = new Beneficiary(beneficiaryDTO, 
 				beneficiaryDTO.getNationality(), 
 				beneficiaryDTO.isDoubleNationality(), 
@@ -333,6 +339,9 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryUserName(beneficiaryToDelete.getUsername()).get();
 		try {
+			for(AcademicExperience a: acadExps) {
+				academicExperienceRepository.delete(a);
+      }
 			for(WorkExperience w : workExperiencesList) {
 				workExperienceRepository.delete(w);
 			}

@@ -95,6 +95,8 @@ private static final long serialVersionUID = 1L;
 	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
 	private List<WorkExperience> listWorkExperience;
 
+	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
+	private List<AcademicExperience> listAcademicExperience;
 
 	public Beneficiary(PersonDTO personDTO, @NotNull @NotBlank @Size(max = 50) String nationality,
 			@NotNull boolean doubleNationality, LocalDate arrivedDate, boolean europeanCitizenAuthorization,
