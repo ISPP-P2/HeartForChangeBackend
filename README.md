@@ -108,24 +108,24 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ### Task API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/task/   |  | List<DTO>| Get all task        |
-| /api/task/ong/{username}  | -        | List<TaskDTO>   | Get all task of an ong |
-| /api/task/{id} | - | TaskDTO | Get task by id|
-| /api/task/new | TaskDTO | TaskDTO | Save new task |
-| /api/task/update/{id} | TaskDTO | TaskDTO | Update task |
-| /api/task/delete/{id} | - | String | Delete task |
+| /api/tasks/   |  | List<DTO>| Get all task        |
+| /api/tasks/ong/{username}  | -        | List<TaskDTO>   | Get all task of an ong |
+| /api/tasks/{id} | - | TaskDTO | Get task by id|
+| /api/tasks/new | TaskDTO | TaskDTO | Save new task |
+| /api/tasks/update/{id} | TaskDTO | TaskDTO | Update task |
+| /api/tasks/delete/{id} | - | String | Delete task |
 
 ### Attendance API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/attendance/{id} | - | AttendanceDTO | Get attendance by id |
-| /api/attendance/new/{idTask} | - | AttendanceDTO | Create a petition by Volunteer |
-| /api/attendance/delete/{idTask} | - | String | Delete a petition by Volunteer |
-| /api/attendance/accept/{id} | - | AttendanceDTO | Accept a petition by ONG |
-| /api/attendance/deny/{id} | - | AttendanceDTO | Deny a petition by ONG |
-| /api/attendance/confirm/{id}/{type} | - | AttendanceDTO | Confirm attendance by ONG. Type = [1 = "TOTAL", 2 = "PARCIAL", 3 = "NO_ASISTIDA"] |
-| /api/attendance/add/{idTask}/{idPerson} | - | AttendanceDTO | Add beneficiary to a Attendance by ONG |
-| /api/attendance/quit/{idTask}/{idPerson} | - | AttendanceDTO | Delete beneficiary to a Attendance by ONG |
+| /api/attendances/{id} | - | AttendanceDTO | Get attendance by id |
+| /api/attendances/new/{idTask} | - | AttendanceDTO | Create a petition by Volunteer |
+| /api/attendances/delete/{idTask} | - | String | Delete a petition by Volunteer |
+| /api/attendances/accept/{id} | - | AttendanceDTO | Accept a petition by ONG |
+| /api/attendances/deny/{id} | - | AttendanceDTO | Deny a petition by ONG |
+| /api/attendances/confirm/{id}/{type} | - | AttendanceDTO | Confirm attendance by ONG. Type = [1 = "TOTAL", 2 = "PARCIAL", 3 = "NO_ASISTIDA"] |
+| /api/attendances/add/{idTask}/{idPerson} | - | AttendanceDTO | Add beneficiary to a Attendance by ONG |
+| /api/attendances/quit/{idTask}/{idPerson} | - | AttendanceDTO | Delete beneficiary to a Attendance by ONG |
 
 ## DTOs
 ### SigninRequestDTO
