@@ -61,8 +61,12 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/accounts/signin/**").permitAll()
 				.antMatchers("/ongs/signup/**").permitAll()
+				.antMatchers("/ongs/**").permitAll()
 				.antMatchers("/volunteer/signup/**").hasAnyAuthority("ONG")
 				.antMatchers("/beneficiaries/signup").hasAnyAuthority("ONG")
+				.antMatchers("/tasks/**").hasAnyAuthority("ONG")
+				.antMatchers("/attendances/ong/**", "/attendances/{id}", "/attendances/accept/**", "/attendances/deny/**", "/attendances/confirm/**", "/attendances/add/**", "/attendances/quit/**").hasAnyAuthority("ONG")
+				.antMatchers("/attendances/volunteer/**", "/attendances/{id}", "/attendances/new/**", "/attendances/delete/**").hasAnyAuthority("VOLUNTEER")
 				.antMatchers("/grants/**").hasAnyAuthority("ONG")
 				.anyRequest().authenticated();
 
