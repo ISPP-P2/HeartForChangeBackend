@@ -1,6 +1,10 @@
 package com.ispp.heartforchange.entity;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,6 +34,17 @@ public class Volunteer extends Person{
 	
 	@NotNull
 	private Boolean sexCrimes;
+	
+	@OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
+	private List<ComplementaryFormation> complementaryFormation;
+	
+	
+
+	private List<AcademicExperience> listAcademicExperience;
+
+	@OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
+	private List<WorkExperience> listWorkExperience;
+
 
 	public Volunteer(PersonDTO personDto, @NotNull @NotBlank @Size(max = 50) String hourOfAvailability,
 			@NotNull Boolean sexCrimes) {

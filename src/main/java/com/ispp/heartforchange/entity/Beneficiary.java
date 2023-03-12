@@ -1,9 +1,11 @@
 package com.ispp.heartforchange.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
-
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -88,7 +90,16 @@ private static final long serialVersionUID = 1L;
 	@NotBlank
 	@Size(max=100)
 	private String languages;
+	
+	
+	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
+	private List<ComplementaryFormation> listComplementaryFormation;
 
+	private List<WorkExperience> listWorkExperience;
+ 
+
+	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
+	private List<AcademicExperience> listAcademicExperience;
 
 	public Beneficiary(PersonDTO personDTO, @NotNull @NotBlank @Size(max = 50) String nationality,
 			@NotNull boolean doubleNationality, LocalDate arrivedDate, boolean europeanCitizenAuthorization,
