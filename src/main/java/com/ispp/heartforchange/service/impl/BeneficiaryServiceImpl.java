@@ -4,22 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
 import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.Beneficiary;
+import com.ispp.heartforchange.entity.ComplementaryFormation;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
+import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.WorkExperienceRepository;
 import com.ispp.heartforchange.service.BeneficiaryService;
@@ -34,19 +35,24 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	private BeneficiaryRepository beneficiaryRepository;
 	private WorkExperienceRepository workExperienceRepository;	
 	private AcademicExperienceRepository academicExperienceRepository;
+  private ComplementaryFormationRepository complementaryFormationRepository;
 	private PasswordEncoder encoder;
+  
 
-	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder,
-			WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository, AcademicExperienceRepository academicExperienceRepository) {
+	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder, 
+  ComplementaryFormationRepository complementaryFormationRepository, WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository, 
+  AcademicExperienceRepository academicExperienceRepository) {
 
 		super();
 		this.ongRepository = ongRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
 		this.workExperienceRepository = workExperienceRepository;
+    this.complementaryFormationRepository = complementaryFormationRepository;
 		this.encoder = encoder;
 		this.academicExperienceRepository = academicExperienceRepository;
 	}
 	
+  
 	/*
 	 * Get all beneficiaries
 	 * @Return List<BeneficiaryDTO>
@@ -335,17 +341,29 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 				beneficiaryDTO.isComputerKnowledge(),
 				beneficiaryDTO.getOwnedDevices(), 
 				beneficiaryDTO.getLanguages());
-		beneficiaryToDelete.setId(id);
+		    beneficiaryToDelete.setId(id);
 		
+
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryUserName(beneficiaryToDelete.getUsername()).get();
-		try {
+		List<ComplementaryFormation> complementaryFormationList = 
+				complementaryFormationRepository.findComplementaryFormationByBeneficiary
+				(beneficiaryToDelete.getUsername()).get();
+        
+    try {
+    
 			for(AcademicExperience a: acadExps) {
 				academicExperienceRepository.delete(a);
       }
 			for(WorkExperience w : workExperiencesList) {
 				workExperienceRepository.delete(w);
 			}
+      
+      for(ComplementaryFormation c : complementaryFormationList) {
+				complementaryFormationRepository.delete(c);
+			}
+
 			beneficiaryRepository.delete(beneficiaryToDelete);	
+      
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
 		}		

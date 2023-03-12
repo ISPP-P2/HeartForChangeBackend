@@ -11,6 +11,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.VolunteerDTO;
+import com.ispp.heartforchange.entity.ComplementaryFormation;
+import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
+
 import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
@@ -36,19 +39,25 @@ public class VolunteerServiceImpl implements VolunteerService{
 	private WorkExperienceRepository workExperienceRepository;
 	private PasswordEncoder encoder;
 	private ONGRepository ongRepository;
-	private AcademicExperienceRepository academicExperienceRepository;
+	private ComplementaryFormationRepository complementaryFormationRepository;
+  private AcademicExperienceRepository academicExperienceRepository;
+
+	
 	/*
 	 * Dependency injection 
 	 */
-	public VolunteerServiceImpl(VolunteerRepository volunteerRepository, PasswordEncoder encoder,	WorkExperienceRepository workExperienceRepository, ONGRepository ongRepository, AcademicExperienceRepository academicExperienceRepository) {
+	public VolunteerServiceImpl(VolunteerRepository volunteerRepository, PasswordEncoder encoder,	WorkExperienceRepository workExperienceRepository, 
+  ComplementaryFormationRepository complementaryFormationRepository, ONGRepository ongRepository, AcademicExperienceRepository academicExperienceRepository) {
 
 		super();
 		this.ongRepository = ongRepository;
 		this.volunteerRepository = volunteerRepository;
 		this.workExperienceRepository = workExperienceRepository;
 		this.encoder = encoder;
+		this.complementaryFormationRepository = complementaryFormationRepository;
 		this.academicExperienceRepository = academicExperienceRepository;
 	}
+  
 	
 	/*
 	 * Get all volunteer
@@ -182,6 +191,8 @@ public class VolunteerServiceImpl implements VolunteerService{
 		List<AcademicExperience> academicExps = academicExperienceRepository.findByVolunteer(volunteerToDelete.getUsername()).get();
     //Get all the work experiences that belong to the volunteer to delete
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByVolunteerUserName(volunteerToDelete.getUsername()).get();
+    List<ComplementaryFormation> complementaryFormations = complementaryFormationRepository.findComplementaryFormationByVolunteer(volunteerToDelete.getUsername()).get();
+
 		try {
 			for(AcademicExperience a: academicExps) {
 				academicExperienceRepository.delete(a);
@@ -190,6 +201,11 @@ public class VolunteerServiceImpl implements VolunteerService{
       for(WorkExperience w : workExperiencesList) {
 				workExperienceRepository.delete(w);
 			}
+      
+      for(ComplementaryFormation c : complementaryFormations) {
+				complementaryFormationRepository.delete(c);
+      }
+      
 			volunteerRepository.delete(volunteerToDelete);
 		
 		} catch (Exception e) {

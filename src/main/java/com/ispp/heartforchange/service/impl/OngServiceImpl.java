@@ -11,11 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.OngDTO;
-
 import com.ispp.heartforchange.dto.VolunteerDTO;
-
 import com.ispp.heartforchange.entity.Beneficiary;
-
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.repository.AccountRepository;
@@ -38,8 +35,8 @@ public class OngServiceImpl implements OngService{
 	/*
 	 * Dependency injection 
 	 */
-	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,BeneficiaryRepository beneficiaryRepository
-			) {
+	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,BeneficiaryRepository beneficiaryRepository,
+			VolunteerServiceImpl volunteerService, AccountRepository accountRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.encoder = encoder;

@@ -93,7 +93,10 @@ private static final long serialVersionUID = 1L;
 	
 	
 	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
+	private List<ComplementaryFormation> listComplementaryFormation;
+
 	private List<WorkExperience> listWorkExperience;
+ 
 
 	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
 	private List<AcademicExperience> listAcademicExperience;
