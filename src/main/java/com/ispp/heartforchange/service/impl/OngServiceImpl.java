@@ -35,6 +35,7 @@ public class OngServiceImpl implements OngService{
 	/*
 	 * Dependency injection 
 	 */
+
 	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,BeneficiaryRepository beneficiaryRepository,
 			VolunteerServiceImpl volunteerService, AccountRepository accountRepository) {
 		super();
