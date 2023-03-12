@@ -40,6 +40,12 @@ public class Volunteer extends Person{
 	
 	
 
+	private List<AcademicExperience> listAcademicExperience;
+
+	@OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
+	private List<WorkExperience> listWorkExperience;
+
+
 	public Volunteer(PersonDTO personDto, @NotNull @NotBlank @Size(max = 50) String hourOfAvailability,
 			@NotNull Boolean sexCrimes) {
 		super(personDto);

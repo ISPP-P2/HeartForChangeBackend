@@ -11,40 +11,48 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
+import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.ComplementaryFormation;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
+import com.ispp.heartforchange.repository.AcademicExperienceRepository;
+import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
+import com.ispp.heartforchange.repository.WorkExperienceRepository;
 import com.ispp.heartforchange.service.BeneficiaryService;
 
 @Service
 public class BeneficiaryServiceImpl implements BeneficiaryService{
 
 	
-
-	
 	private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
 	private ONGRepository ongRepository;
 	private BeneficiaryRepository beneficiaryRepository;
+	private WorkExperienceRepository workExperienceRepository;	
+	private AcademicExperienceRepository academicExperienceRepository;
+  private ComplementaryFormationRepository complementaryFormationRepository;
 	private PasswordEncoder encoder;
-	private ComplementaryFormationRepository complementaryFormationRepository;
-	
-	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder,
-			AccountRepository accountRepository, 
-			ComplementaryFormationRepository complementaryFormationRepository) {
-		
+  
+
+	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder, 
+  ComplementaryFormationRepository complementaryFormationRepository, WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository, 
+  AcademicExperienceRepository academicExperienceRepository) {
+
 		super();
 		this.ongRepository = ongRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
-		this.complementaryFormationRepository = complementaryFormationRepository;
+		this.workExperienceRepository = workExperienceRepository;
+    this.complementaryFormationRepository = complementaryFormationRepository;
 		this.encoder = encoder;
+		this.academicExperienceRepository = academicExperienceRepository;
 	}
 	
+  
 	/*
 	 * Get all beneficiaries
 	 * @Return List<BeneficiaryDTO>
@@ -316,6 +324,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
  	public void deteleBeneficiary(Long id) {
 		logger.info("Deleting Beneficiary with id={}", id);
 		BeneficiaryDTO beneficiaryDTO = getBeneficiaryById(id);
+		List<AcademicExperience> acadExps = academicExperienceRepository.findByBeneficiary(beneficiaryDTO.getUsername()).get();
 		Beneficiary beneficiaryToDelete = new Beneficiary(beneficiaryDTO, 
 				beneficiaryDTO.getNationality(), 
 				beneficiaryDTO.isDoubleNationality(), 
@@ -332,19 +341,29 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 				beneficiaryDTO.isComputerKnowledge(),
 				beneficiaryDTO.getOwnedDevices(), 
 				beneficiaryDTO.getLanguages());
-		beneficiaryToDelete.setId(id);
+		    beneficiaryToDelete.setId(id);
 		
+
+		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryUserName(beneficiaryToDelete.getUsername()).get();
 		List<ComplementaryFormation> complementaryFormationList = 
 				complementaryFormationRepository.findComplementaryFormationByBeneficiary
 				(beneficiaryToDelete.getUsername()).get();
-		
-		try {
-			
-			for(ComplementaryFormation c : complementaryFormationList) {
+        
+    try {
+    
+			for(AcademicExperience a: acadExps) {
+				academicExperienceRepository.delete(a);
+      }
+			for(WorkExperience w : workExperiencesList) {
+				workExperienceRepository.delete(w);
+			}
+      
+      for(ComplementaryFormation c : complementaryFormationList) {
 				complementaryFormationRepository.delete(c);
 			}
-			
+
 			beneficiaryRepository.delete(beneficiaryToDelete);	
+      
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
 		}		
