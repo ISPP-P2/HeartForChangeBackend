@@ -38,6 +38,11 @@ public class TaskServiceImpl implements TaskService{
 		this.jwtUtils = jwtUtils;
 	}
 	
+	/*
+	 * Get all task.
+	 * 
+	 * @Return List<TaskDTO>
+	 */
 	
 	@Override
 	public List<TaskDTO> getAll() {
@@ -59,6 +64,13 @@ public class TaskServiceImpl implements TaskService{
 		}
 		return tasksDTO;
 	}
+	
+	/*
+	 * Get task by id.
+	 * @Param Long id
+	 * @Param String username
+	 * @Return TaskDTO
+	 */
 
 	@Override
 	public TaskDTO getById(Long id, String username) {
@@ -86,6 +98,12 @@ public class TaskServiceImpl implements TaskService{
 			throw new UsernameNotFoundException("Dont have the permisions");
 		}
 	}
+	
+	/*
+	 * Get all task by Ong.
+	 * @Param String ongName
+	 * @Return List<TaskDTO>
+	 */
 
 	@Override
 	public List<TaskDTO> getByOng(String ongName) {
@@ -110,6 +128,12 @@ public class TaskServiceImpl implements TaskService{
 		return tasksDTO;
 	}
 
+	/*
+	 * Save task.
+	 * @Param TaskDTO taskDTO
+	 * @Param String username
+	 * @Return TaskDTO
+	 */
 	@Override
 	public TaskDTO saveTask(TaskDTO taskDTO, String username) {
 		Ong ong = ongRepository.findByUsername(username);
@@ -135,6 +159,13 @@ public class TaskServiceImpl implements TaskService{
 			throw new UsernameNotFoundException(e.getMessage());
 		}
 	}
+	
+	/*
+	 * Update task.
+	 * @Param TaskDTO taskDTO
+	 * @Param String username
+	 * @Return TaskDTO
+	 */
 	
 	@Override
 	public TaskDTO updateTask(Long id, TaskDTO newTaskDTO , String username) {
@@ -163,6 +194,13 @@ public class TaskServiceImpl implements TaskService{
 		throw new UsernameNotFoundException("This Task doesn't exist");
 		
 	}
+	
+	/*
+	 * Delete task.
+	 * @Param Long id
+	 * @Param String token
+	 * @Return TaskDTO
+	 */
 	
 	
 	@Override

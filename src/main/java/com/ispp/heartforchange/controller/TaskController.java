@@ -42,12 +42,28 @@ public class TaskController {
 		this.jwtUtils = jwtUtils;
 	}
 	
+	/*
+	 * Get all task
+	 * 
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	@GetMapping
 	public ResponseEntity<?> getAllTask(){
 		List<TaskDTO> tasks = taskService.getAll();
 		return ResponseEntity.ok(tasks);
 	}
+	
+	
+	/*
+	 * Get task by id
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param Long id
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getTaskById(HttpServletRequest request, @PathVariable("id") Long id) {
@@ -67,6 +83,13 @@ public class TaskController {
 		return ResponseEntity.ok(task);
 	}
 	
+	/*
+	 * Save task
+	 * 
+	 * @Param TaskDTO
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	@PostMapping("/new")
 	public ResponseEntity<?> save(HttpServletRequest request, @Valid @RequestBody TaskDTO task){
@@ -89,11 +112,28 @@ public class TaskController {
 		
 	}
 	
+	/*
+	 * Get all task by ong
+	 * 
+	 * @Param HttpServletRequest
+	 * 
+	 * @Return ResponseEntity
+	 */
+	
 	@GetMapping("ong/{username}")
 	public ResponseEntity<?> getByOng(@PathVariable("username") String username){
 		List<TaskDTO> tasks = taskService.getByOng(username);
 		return ResponseEntity.ok(tasks);
 	}
+	
+	/*
+	 * Update task
+	 * 
+	 * @Param TaskDTO
+	 * @Param Long id
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	
 	@PutMapping("/update/{id}")
@@ -116,6 +156,15 @@ public class TaskController {
 		return ResponseEntity.ok(taskupdate);
 		
 	}
+	
+	
+	/*
+	 * Delete task
+	 * 
+	 * @Param Long id
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	@PostMapping("/delete/{id}")
 	public ResponseEntity<?> deleteGrant(@PathVariable("id") Long id, HttpServletRequest request) {

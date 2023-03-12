@@ -31,12 +31,23 @@ public class AttendanceController {
 	private AttendanceServiceImpl attendanceService;
 	private JwtUtils jwtUtils;
 	
+	
+	
+	/*
+	 * Dependency injection
+	 */
 	public AttendanceController(AttendanceServiceImpl attendanceService, JwtUtils jwtUtils) {
 		super();
 		this.attendanceService = attendanceService;
 		this.jwtUtils = jwtUtils;
 	}
 	
+	/*
+	 * Get all attendance
+	 * 
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	@GetMapping
 	public ResponseEntity<?> getAllAttendances(){
@@ -44,6 +55,15 @@ public class AttendanceController {
 		return ResponseEntity.ok(attendances);
 	}
 	
+	
+	/*
+	 * Get attendance by id
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param Long id
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getAttendanceById(HttpServletRequest request, @PathVariable("id") Long id) {
@@ -60,6 +80,15 @@ public class AttendanceController {
 		AttendanceDTO attendance = attendanceService.getAttendanceById(id, jwt);
 		return ResponseEntity.ok(attendance);
 	}
+	
+	/*
+	 * Create new Petition by a Volunteer.
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param Long idTask
+	 * 
+	 * @Return ResponseEntity
+	 */
 		
 	
 	@PostMapping("/new/{idTask}")
@@ -79,6 +108,15 @@ public class AttendanceController {
 		return ResponseEntity.ok(attendance);
 	}
 	
+	/*
+	 * Delete Petition by a Volunteer.
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param Long idTask
+	 * 
+	 * @Return ResponseEntity
+	 */
+	
 	@PostMapping("/delete/{idTask}")
 	public ResponseEntity<?> deletePetition(HttpServletRequest request, @PathVariable("idTask") Long id) {
 		String jwt = null;
@@ -94,6 +132,16 @@ public class AttendanceController {
 		attendanceService.deletePetition(id, jwt);
 		return ResponseEntity.ok("Attendance Deleted");
 	}
+	
+	
+	/*
+	 * Accept Petition by a ONG.
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param Long id
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	
 	@PutMapping("/accept/{id}")
@@ -112,6 +160,14 @@ public class AttendanceController {
 		return ResponseEntity.ok(attendance);
 	}
 	
+	/*
+	 * Deny Petition by a ONG.
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param Long id
+	 * 
+	 * @Return ResponseEntity
+	 */
 	@PutMapping("/deny/{id}")
 	public ResponseEntity<?> denyPetition(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
@@ -127,6 +183,16 @@ public class AttendanceController {
 		AttendanceDTO attendance = attendanceService.denyPetition(id, jwt);
 		return ResponseEntity.ok(attendance);
 	}
+	
+	/*
+	 * Confirm Attendance by a ONG.
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param Long id
+	 * @Param int type
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	
 	@PutMapping("confirm/{id}/{type}")
@@ -149,7 +215,15 @@ public class AttendanceController {
 	}
 	
 	
-	
+	/*
+	 * Add beneficiary to Attendance by a ONG.
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param Long idTask
+	 * @Param Long idPerson
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	@PostMapping("/add/{idTask}/{idPerson}")
 	public ResponseEntity<?> addBeneficiary(HttpServletRequest request,
@@ -167,6 +241,16 @@ public class AttendanceController {
 		AttendanceDTO attendanceDTO = attendanceService.addBeneficiary(idTask, jwt, idPerson);
 		return ResponseEntity.ok(attendanceDTO);
 	}
+	
+	/*
+	 * Delete beneficiary from Attendance by a ONG.
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param Long idTask
+	 * @Param Long idPerson
+	 * 
+	 * @Return ResponseEntity
+	 */
 	
 	@PostMapping("/quit/{idTask}/{idPerson}")
 	public ResponseEntity<?> deleteBeneficiary(HttpServletRequest request,

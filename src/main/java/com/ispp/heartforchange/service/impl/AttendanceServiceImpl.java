@@ -36,6 +36,11 @@ public class AttendanceServiceImpl implements AttendanceService{
 	private PersonRepository personRepository;
 	private JwtUtils jwtUtils;
 	
+	
+	/*
+	 * Dependency injection
+	 */
+	
 	public AttendanceServiceImpl(AttendanceRepository attendanceRepository, TaskRepository taskRepository, ONGRepository ongRepository,PersonRepository personRepository, JwtUtils jwtUtils) {
 		super();
 		this.attendanceRepository = attendanceRepository;
@@ -44,6 +49,12 @@ public class AttendanceServiceImpl implements AttendanceService{
 		this.ongRepository = ongRepository;
 		this.jwtUtils = jwtUtils;
 	}
+	
+	/*
+	 * Get all attendance.
+	 * 
+	 * @Return List<AttendanceDTO>
+	 */
 	
 	@Override
 	public List<AttendanceDTO> getAll() {
@@ -55,6 +66,13 @@ public class AttendanceServiceImpl implements AttendanceService{
 		}
 		return attendancesDTO;
 	}
+	
+	/*
+	 * Get attendance by id.
+	 * @Param Long id
+	 * @Param String token
+	 * @Return AttendanceDTO
+	 */
 	
 	@Override
 	public AttendanceDTO getAttendanceById(Long id, String token) {
@@ -74,7 +92,12 @@ public class AttendanceServiceImpl implements AttendanceService{
 		}
 	}
 	
-	
+	/*
+	 * Create Petition for attendance by a Volunteer.
+	 * @Param Long id
+	 * @Param String token
+	 * @Return AttendanceDTO
+	 */
 	
 	@Override
 	public AttendanceDTO createPetition(Long id, String token) {
@@ -98,6 +121,12 @@ public class AttendanceServiceImpl implements AttendanceService{
 	}
 	
 	
+	/*
+	 * Delete a Petition for attendance by a Volunteer.
+	 * @Param Long id
+	 * @Param String token
+	 */
+	
 	@Override
 	public void deletePetition(Long id, String token) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
@@ -115,6 +144,13 @@ public class AttendanceServiceImpl implements AttendanceService{
 		}
 	}
 	
+	
+	/*
+	 * Accept a Petition for attendance by a ONG.
+	 * @Param Long id
+	 * @Param String token
+	 * @Return AttendanceDTO
+	 */
 	
 	@Override
 	public AttendanceDTO acceptPetition(Long id, String token) {
@@ -142,6 +178,12 @@ public class AttendanceServiceImpl implements AttendanceService{
 		}
 	}
 	
+	/*
+	 * Deny a Petition for attendance by a ONG.
+	 * @Param Long id
+	 * @Param String token
+	 * @Return AttendanceDTO
+	 */
 	
 	@Override
 	public AttendanceDTO denyPetition(Long id, String token) {
@@ -168,6 +210,14 @@ public class AttendanceServiceImpl implements AttendanceService{
 			throw new UsernameNotFoundException("This attendance not exist!");
 		}
 	}
+	
+	/*
+	 * Confirm attendance by a ONG.
+	 * @Param Long id
+	 * @Param AttendanceType type
+	 * @Param String token
+	 * @Return AttendanceDTO
+	 */
 	
 	
 	@Override
@@ -196,6 +246,13 @@ public class AttendanceServiceImpl implements AttendanceService{
 		}
 	}
 	
+	/*
+	 * Add beneficiary for attendance by a ONG.
+	 * @Param Long idTask
+	 * @Param Long idPerson
+	 * @Param String token
+	 * @Return AttendanceDTO
+	 */
 	
 	
 	@Override
@@ -225,6 +282,13 @@ public class AttendanceServiceImpl implements AttendanceService{
 		throw new UsernameNotFoundException("Attendance or Person doesn't exist!");
 		
 	}
+	
+	/*
+	 * Delete beneficiary for attendance by a ONG.
+	 * @Param Long idTask
+	 * @Param Long idPerson
+	 * @Param String token
+	 */
 	
 	@Override
 	public void deleteBeneficiary(Long idTask, String token, Long idPerson) {
