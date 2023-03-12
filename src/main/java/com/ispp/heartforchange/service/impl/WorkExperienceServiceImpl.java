@@ -3,16 +3,14 @@ package com.ispp.heartforchange.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.ispp.heartforchange.dto.GrantDTO;
 import com.ispp.heartforchange.dto.WorkExperienceDTO;
 import com.ispp.heartforchange.entity.Beneficiary;
-import com.ispp.heartforchange.entity.Grant;
-import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Volunteer;
 import com.ispp.heartforchange.entity.WorkExperience;

@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispp.heartforchange.dto.AcademicExperienceDTO;
-import com.ispp.heartforchange.dto.GrantDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.AcademicExperienceService;
 import com.ispp.heartforchange.service.impl.AcademicExperienceServiceImpl;
@@ -32,8 +31,6 @@ public class AcademicExperienceController {
 
 	private AcademicExperienceService academicExpServImpl;
 	private JwtUtils jwtUtils;
-	private AuthenticationManager authenticationManager;
-	
 
 	/*
 	 * Dependency injection
@@ -43,10 +40,8 @@ public class AcademicExperienceController {
 		super();
 		this.academicExpServImpl = academicExpServImpl;
 		this.jwtUtils = jwtUtils;
-		this.authenticationManager = authenticationManager;
 	}
-	
-	
+
 	/*
 	 * Get all academic experiences
 	 * 
@@ -56,13 +51,12 @@ public class AcademicExperienceController {
 	 */
 	@GetMapping
 	public ResponseEntity<?> getAllAcademicExperiences() {
-		
+
 		List<AcademicExperienceDTO> academicExps = academicExpServImpl.getAllAcademicExp();
-		
+
 		return ResponseEntity.ok(academicExps);
 	}
-	
-	
+
 	/*
 	 * Get all grant by volunteer
 	 * 
@@ -82,11 +76,12 @@ public class AcademicExperienceController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		
-		List<AcademicExperienceDTO> acadExp = academicExpServImpl.getAcademicExperienceByVolunteerUsername(username, jwt);
+
+		List<AcademicExperienceDTO> acadExp = academicExpServImpl.getAcademicExperienceByVolunteerUsername(username,
+				jwt);
 		return ResponseEntity.ok(acadExp);
 	}
-	
+
 	/*
 	 * Get all grant by beneficiary
 	 * 
@@ -106,23 +101,23 @@ public class AcademicExperienceController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		
-		List<AcademicExperienceDTO> acadExp = academicExpServImpl.getAcademicExperienceByBeneficiaryUsername(username, jwt);
+
+		List<AcademicExperienceDTO> acadExp = academicExpServImpl.getAcademicExperienceByBeneficiaryUsername(username,
+				jwt);
 		return ResponseEntity.ok(acadExp);
 	}
-	
-	
+
 	/*
 	 * Get Academic Experience by volunteer
 	 * 
 	 * @Param HttpServletRequest
-	 * @Param id 
+	 * 
+	 * @Param id
 	 * 
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/get/{id}")
-	public ResponseEntity<?> getAcademicExperienceByID(HttpServletRequest request, 
-			@PathVariable("id") Long id) {
+	public ResponseEntity<?> getAcademicExperienceByID(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -132,24 +127,25 @@ public class AcademicExperienceController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		
+
 		AcademicExperienceDTO academicExperienceDTO = academicExpServImpl.getAcademicExpByID(id, jwt);
 		return ResponseEntity.ok(academicExperienceDTO);
 	}
-	
+
 	/*
 	 * Save academic experience
 	 * 
 	 * @Param academicExperienceDTO
-	 * @Param username 
+	 * 
+	 * @Param username
 	 * 
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/save/{username}")
-	public ResponseEntity<?> saveBeneficiary(HttpServletRequest request, 
-			@Valid @RequestBody AcademicExperienceDTO academicExperienceDTO, 
+	public ResponseEntity<?> saveBeneficiary(HttpServletRequest request,
+			@Valid @RequestBody AcademicExperienceDTO academicExperienceDTO,
 			@PathVariable("username") String username) {
-		
+
 		String jwt = null;
 
 		String headerAuth = request.getHeader("Authorization");
@@ -161,21 +157,23 @@ public class AcademicExperienceController {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
 
-		AcademicExperienceDTO academicExperienceSaved = academicExpServImpl.saveAcademicExperience(academicExperienceDTO, username);
+		AcademicExperienceDTO academicExperienceSaved = academicExpServImpl
+				.saveAcademicExperience(academicExperienceDTO, username);
 		logger.info("Experience Academic saved associated with {}", username);
 		return ResponseEntity.ok(academicExperienceSaved);
 	}
-	
+
 	/*
 	 * Update Academic Experience
 	 * 
 	 * @Param AcademicExperienceDTO
+	 * 
 	 * @Param token
 	 * 
 	 * @Return ResponseEntity
 	 */
 	@PutMapping("/update")
-	public ResponseEntity<?> updateAcademicExperience(@Valid @RequestBody AcademicExperienceDTO academicExperienceDTO, 
+	public ResponseEntity<?> updateAcademicExperience(@Valid @RequestBody AcademicExperienceDTO academicExperienceDTO,
 			HttpServletRequest request) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
@@ -186,12 +184,13 @@ public class AcademicExperienceController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		
-		AcademicExperienceDTO academicExperienceSaved = academicExpServImpl.updateAcademicExperience(academicExperienceDTO, jwt);
+
+		AcademicExperienceDTO academicExperienceSaved = academicExpServImpl
+				.updateAcademicExperience(academicExperienceDTO, jwt);
 		logger.info("Academic Experience saved with id={}", academicExperienceSaved.getId());
 		return ResponseEntity.ok(academicExperienceSaved);
 	}
-	
+
 	/*
 	 * Delete academic experience
 	 * 
@@ -210,10 +209,9 @@ public class AcademicExperienceController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		
+
 		academicExpServImpl.deleteAcademicExperience(id, jwt);
 		return ResponseEntity.ok("Grant deleted");
 	}
-	
 
 }

@@ -10,13 +10,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.AcademicExperienceDTO;
-import com.ispp.heartforchange.dto.GrantDTO;
-import com.ispp.heartforchange.dto.OngDTO;
 import com.ispp.heartforchange.entity.AcademicExperience;
-import com.ispp.heartforchange.entity.Account;
 import com.ispp.heartforchange.entity.Beneficiary;
-import com.ispp.heartforchange.entity.Grant;
-import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Volunteer;
 import com.ispp.heartforchange.repository.AcademicExperienceRepository;
@@ -36,7 +31,6 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 	private VolunteerRepository volunteerRepository;
 	private BeneficiaryRepository beneficiaryRepository;
 	private AccountRepository accountRepository;
-	private ONGRepository ongRepository;
 	private JwtUtils jwtUtils;
 	
 	public AcademicExperienceServiceImpl(AcademicExperienceRepository academicExperienceRepository,
@@ -48,7 +42,6 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 		this.beneficiaryRepository = beneficiaryRepository;
 		this.jwtUtils = jwtUtils;
 		this.accountRepository = accountRepository;
-		this.ongRepository = ongRepository;
 	}
 	
 	/*
