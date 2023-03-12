@@ -56,7 +56,7 @@ public class Task implements Serializable {
 	@Length(max = 256)
 	private String observations;
 	
-	@ElementCollection
+	@Length(max = 256)
 	private String incidences;
 	
 	@NotNull

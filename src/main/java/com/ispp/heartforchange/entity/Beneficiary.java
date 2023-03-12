@@ -95,6 +95,7 @@ private static final long serialVersionUID = 1L;
 	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
 	private List<ComplementaryFormation> listComplementaryFormation;
 
+	@OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
 	private List<WorkExperience> listWorkExperience;
  
 
