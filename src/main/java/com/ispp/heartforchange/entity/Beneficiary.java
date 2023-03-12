@@ -90,6 +90,10 @@ private static final long serialVersionUID = 1L;
 	@NotBlank
 	@Size(max=100)
 	private String languages;
+	
+	
+	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
+	private List<WorkExperience> listWorkExperience;
 
 	@OneToMany(mappedBy = "beneficiary", cascade = CascadeType.ALL)
 	private List<AcademicExperience> listAcademicExperience;

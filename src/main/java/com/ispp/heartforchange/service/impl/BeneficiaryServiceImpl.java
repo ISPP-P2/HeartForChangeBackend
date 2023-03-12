@@ -17,29 +17,32 @@ import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.repository.AcademicExperienceRepository;
+import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
+import com.ispp.heartforchange.repository.WorkExperienceRepository;
 import com.ispp.heartforchange.service.BeneficiaryService;
 
 @Service
 public class BeneficiaryServiceImpl implements BeneficiaryService{
 
 	
-
-	
 	private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
 	private ONGRepository ongRepository;
 	private BeneficiaryRepository beneficiaryRepository;
+	private WorkExperienceRepository workExperienceRepository;	
 	private AcademicExperienceRepository academicExperienceRepository;
 	private PasswordEncoder encoder;
-	
+
 	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder,
-			AccountRepository accountRepository, AcademicExperienceRepository academicExperienceRepository) {
+			WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository, AcademicExperienceRepository academicExperienceRepository) {
+
 		super();
 		this.ongRepository = ongRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
+		this.workExperienceRepository = workExperienceRepository;
 		this.encoder = encoder;
 		this.academicExperienceRepository = academicExperienceRepository;
 	}
@@ -333,9 +336,14 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 				beneficiaryDTO.getOwnedDevices(), 
 				beneficiaryDTO.getLanguages());
 		beneficiaryToDelete.setId(id);
+		
+		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryUserName(beneficiaryToDelete.getUsername()).get();
 		try {
 			for(AcademicExperience a: acadExps) {
 				academicExperienceRepository.delete(a);
+      }
+			for(WorkExperience w : workExperiencesList) {
+				workExperienceRepository.delete(w);
 			}
 			beneficiaryRepository.delete(beneficiaryToDelete);	
 		} catch (Exception e) {
