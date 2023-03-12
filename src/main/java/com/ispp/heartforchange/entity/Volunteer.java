@@ -39,7 +39,7 @@ public class Volunteer extends Person{
 	private List<ComplementaryFormation> complementaryFormation;
 	
 	
-
+	@OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
 	private List<AcademicExperience> listAcademicExperience;
 
 	@OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)

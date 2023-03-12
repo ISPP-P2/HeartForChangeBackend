@@ -3,7 +3,6 @@ package com.ispp.heartforchange.entity;
 
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -61,7 +60,6 @@ public class Account implements Serializable {
 	
 	@NotNull
 	private RolAccount rolAccount;
-	
 	
 	
 	public Account( AccountDTO accountDto ) {
