@@ -35,9 +35,9 @@ public class Volunteer extends Person{
 	@NotNull
 	private Boolean sexCrimes;
 	
+
 	@OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
 	private List<ComplementaryFormation> complementaryFormation;
-	
 	
 	@OneToMany(mappedBy = "volunteer", cascade = CascadeType.ALL)
 	private List<AcademicExperience> listAcademicExperience;

@@ -9,8 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
+import com.ispp.heartforchange.entity.Appointment;
 import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.ComplementaryFormation;
@@ -19,6 +19,7 @@ import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.repository.AccountRepository;
+import com.ispp.heartforchange.repository.AppointmentRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
@@ -33,23 +34,24 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 
 	private ONGRepository ongRepository;
 	private BeneficiaryRepository beneficiaryRepository;
+	private AppointmentRepository appointmentRepository;
 	private WorkExperienceRepository workExperienceRepository;	
 	private AcademicExperienceRepository academicExperienceRepository;
-  private ComplementaryFormationRepository complementaryFormationRepository;
+	private ComplementaryFormationRepository complementaryFormationRepository;
 	private PasswordEncoder encoder;
-  
+	
 
 	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder, 
-  ComplementaryFormationRepository complementaryFormationRepository, WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository, 
-  AcademicExperienceRepository academicExperienceRepository) {
-
+		  ComplementaryFormationRepository complementaryFormationRepository, WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository, 
+		  AcademicExperienceRepository academicExperienceRepository,AppointmentRepository appointmentRepository ) {
 		super();
 		this.ongRepository = ongRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
 		this.workExperienceRepository = workExperienceRepository;
-    this.complementaryFormationRepository = complementaryFormationRepository;
+		this.complementaryFormationRepository = complementaryFormationRepository;
 		this.encoder = encoder;
 		this.academicExperienceRepository = academicExperienceRepository;
+		this.appointmentRepository = appointmentRepository;
 	}
 	
   
@@ -323,7 +325,6 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
  	public void deteleBeneficiary(Long id) {
 		logger.info("Deleting Beneficiary with id={}", id);
 		BeneficiaryDTO beneficiaryDTO = getBeneficiaryById(id);
-		List<AcademicExperience> acadExps = academicExperienceRepository.findByBeneficiary(beneficiaryDTO.getUsername()).get();
 		Beneficiary beneficiaryToDelete = new Beneficiary(beneficiaryDTO, 
 				beneficiaryDTO.getNationality(), 
 				beneficiaryDTO.isDoubleNationality(), 
@@ -342,25 +343,25 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 				beneficiaryDTO.getLanguages());
 		    beneficiaryToDelete.setId(id);
 		
-
+		List<AcademicExperience> acadExps = academicExperienceRepository.findByBeneficiary(beneficiaryDTO.getUsername()).get();
+		List<Appointment> appointments = appointmentRepository.findAppointmentsByBeneficiaryUsername(beneficiaryToDelete.getUsername()).get();
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryUserName(beneficiaryToDelete.getUsername()).get();
-		List<ComplementaryFormation> complementaryFormationList = 
-				complementaryFormationRepository.findComplementaryFormationByBeneficiary
-				(beneficiaryToDelete.getUsername()).get();
+		List<ComplementaryFormation> complementaryFormationList = complementaryFormationRepository.findComplementaryFormationByBeneficiary(beneficiaryToDelete.getUsername()).get();
         
     try {
-    
+	    	for(Appointment a : appointments) {
+				appointmentRepository.delete(a);
+	    	}
 			for(AcademicExperience a: acadExps) {
 				academicExperienceRepository.delete(a);
-      }
+			}
 			for(WorkExperience w : workExperiencesList) {
 				workExperienceRepository.delete(w);
 			}
       
-      for(ComplementaryFormation c : complementaryFormationList) {
+			for(ComplementaryFormation c : complementaryFormationList) {
 				complementaryFormationRepository.delete(c);
 			}
-
 			beneficiaryRepository.delete(beneficiaryToDelete);	
       
 		} catch (Exception e) {

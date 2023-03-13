@@ -23,37 +23,37 @@ import lombok.NoArgsConstructor;
 public class WorkExperienceDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id 
 	@GeneratedValue(strategy= GenerationType.AUTO)
 	@JsonProperty("id")
 	private Long id;
-	
+
 	@NotBlank
 	@NotNull
 	@Size(max = 255)
 	@JsonProperty("job")
 	private String job;
-	
+
 	@NotBlank
 	@NotNull
 	@Size(max = 100)
 	@JsonProperty("time")
 	private String time;
-	
+
 	@NotBlank
 	@NotNull
 	@Size(max = 255)
 	@JsonProperty("place")
 	private String place;
-	
+
 	@NotBlank
 	@NotNull
 	@Size(max = 1000)
 	@JsonProperty("reasonToFinish")
 	private String reasonToFinish;
-	
-	
+
+
 	public WorkExperienceDTO(WorkExperience workExperienceSaved) {
 		this.id = workExperienceSaved.getId();
 		this.job = workExperienceSaved.getJob();
