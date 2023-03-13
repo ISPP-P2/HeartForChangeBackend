@@ -108,7 +108,7 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ### Task API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/tasks/   |  | List<TaskDTO>| Get all task        |
+| /api/tasks   |  | List<TaskDTO>| Get all task        |
 | /api/tasks/ong/{username}  | -        | List<TaskDTO>   | Get all task of an ong |
 | /api/tasks/{id} | - | TaskDTO | Get task by id|
 | /api/tasks/new | TaskDTO | TaskDTO | Save new task |
@@ -130,13 +130,23 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ### WorkExperience API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/workExperience/ | - | List<WorkExperience> | Get all work experiences |
+| /api/workExperience | - | List<WorkExperience> | Get all work experiences |
 | /api/workExperience/get/{id} | - | WorkExperienceDTO | Get work experience by id |
-| /api/workExperience/volunteer/{username} | - | List<WorkExperienceDTO> | Get all work experiences of a volunteer by the username|
-| /api/workExperience/beneficiary/{username} | - | List<WorkExperienceDTO> | Get all work experiences of a beneficiary by the username|
+| /api/workExperience/get/volunteer/{username} | - | List<WorkExperienceDTO> | Get all work experiences of a volunteer by the username|
+| /api/workExperience/get/beneficiary/{username} | - | List<WorkExperienceDTO> | Get all work experiences of a beneficiary by the username|
 | /api/workExperience/save/{username} | - | WorkExperienceDTO | Save new work experience |
 | /api/workExperience/update | - | WorkExperienceDTO | Update a work experience |
 | /api/workExperience/delete/{id} | - | String | Delete a work experience |
+
+### Appointment API
+| Url                    | Params        |  Response  | Description                         | 
+| --------------------   | ------------- | ---------  | -----------------------------------
+| /api/appointments | - | List<AppointmentDTO> | Get all appointments |
+| /api/appointments/get/{id} | - | AppointmentDTO | Get an appointment by id |
+| /api/appointments/get/ong/{username} | - | List<AppointmentDTO> | Get all appointments of an ong by the username|
+| /api/appointments/save/{username} | - | AppointmentDTO | Save new appointment |
+| /api/appointments/update | - | AppointmentDTO | Update an appointment |
+| /api/appointments/delete/{id} | - | String | Delete an appointment |
 
 
 ## DTOs
@@ -253,3 +263,11 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | time | String |
 | place | String |
 | reasonToFinish | String |
+
+### AppointmentDTO
+| PROPERTY               | Type        |  
+| --------------------   | ------------- | 
+| id | Long |
+| date | LocalDate (format: "yyyy-MM-dd")|
+| hour | String |
+| notes | String |
