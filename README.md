@@ -89,12 +89,12 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ### Volunteer API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/volunteers | -        | List   | Get all volunteers |
+| /api/volunteers | -        | List<VolunteerDTO>   | Get all volunteers |
 | /api/volunteers/{id}   | - | VolunteerDTO | Get volunteer by id   |
 | /api/volunteers/signup   | VolunteerDTO | VolunteerDTO | Register a volunteer        |
 | /api/volunteers/update/{id}  | VolunteerDTO       | VolunteerDTO | Update volunteer by id |
 | /api/volunteers/delete/{id}  | -        | String   | Delete a volunteer |
-| /api/volunteers/ong/{username}  | -        | List   | Get volunteer by ong |
+| /api/volunteers/ong/{username}  | -        | List<VolunteerDTO>   | Get volunteer by ong |
 
 ### Grant API
 | Url                    | Params        |  Response  | Description                         | 
@@ -108,7 +108,7 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ### Task API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/tasks/   |  | List<DTO>| Get all task        |
+| /api/tasks   |  | List<TaskDTO>| Get all task        |
 | /api/tasks/ong/{username}  | -        | List<TaskDTO>   | Get all task of an ong |
 | /api/tasks/{id} | - | TaskDTO | Get task by id|
 | /api/tasks/new | TaskDTO | TaskDTO | Save new task |
@@ -137,6 +137,27 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | /api/academicExps/save | AcademicExperienceDTO | AcademicExperienceDTO | Save new academic experience |
 | /api/academicExps/update/{id} | AcademicExperienceDTO | AcademicExperienceDTO | Update an academic experience |
 | /api/academicExps/delete/{id} | - | String | Delete an academic experience |
+
+### WorkExperience API
+ | Url                    | Params        |  Response  | Description                         | 
+ | --------------------   | ------------- | ---------  | -----------------------------------
+ | /api/workExperience | - | List<WorkExperience> | Get all work experiences |
+ | /api/workExperience/get/{id} | - | WorkExperienceDTO | Get work experience by id |
+ | /api/workExperience/get/volunteer/{username} | - | List<WorkExperienceDTO> | Get all work experiences of a volunteer by the username|
+ | /api/workExperience/get/beneficiary/{username} | - | List<WorkExperienceDTO> | Get all work experiences of a beneficiary by the username|
+ | /api/workExperience/save/{username} | - | WorkExperienceDTO | Save new work experience |
+ | /api/workExperience/update | - | WorkExperienceDTO | Update a work experience |
+ | /api/workExperience/delete/{id} | - | String | Delete a work experience |
+
+### Appointment API
+ | Url                    | Params        |  Response  | Description                         | 
+ | --------------------   | ------------- | ---------  | -----------------------------------
+ | /api/appointments | - | List<AppointmentDTO> | Get all appointments |
+ | /api/appointments/get/{id} | - | AppointmentDTO | Get an appointment by id |
+ | /api/appointments/get/ong/{username} | - | List<AppointmentDTO> | Get all appointments of an ong by the username|
+ | /api/appointments/save/{username} | - | AppointmentDTO | Save new appointment |
+ | /api/appointments/update | - | AppointmentDTO | Update an appointment |
+ | /api/appointments/delete/{id} | - | String | Delete an appointment |
 	
 ## DTOs
 ### SigninRequestDTO
@@ -237,7 +258,7 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | coordinator | String |
 | place | String |
 
-### AttendanceDao
+### AttendanceDTO
 | PROPERTY               | Type        |  
 | --------------------   | ------------- | 
 | id | Long |
@@ -253,3 +274,19 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | satisfactionDegree | Integer|
 | educationalLevel | String |
 
+### WorkExperienceDTO
+ | PROPERTY               | Type        |  
+ | --------------------   | ------------- | 
+ | id | Long |
+ | job | String |
+ | time | String |
+ | place | String |
+ | reasonToFinish | String |
+
+### AppointmentDTO
+ | PROPERTY               | Type        |  
+ | --------------------   | ------------- | 
+ | id | Long |
+ | date | LocalDate (format: "yyyy-MM-dd")|
+ | hour | String |
+ | notes | String |
