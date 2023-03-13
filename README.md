@@ -131,7 +131,7 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
 | /api/academicExps   |  | List<AcademicExperienceDTO>| Get all academic experiences        |
-| /api/academicExps/get/{id}  | -        | List<AcademicExperienceDTO>   | Get an academic experience by id |
+| /api/academicExps/get/{id}  | -        | AcademicExperienceDTO   | Get an academic experience by id |
 | /api/academicExps/volunteer/{id} | - | List<AcademicExperienceDTO> | Get all academic experience of a volunteer by id|
 | /api/academicExps/beneficiary/{id} | - | List<AcademicExperienceDTO> | Get all academic experience of a beneficiary by id|
 | /api/academicExps/save | AcademicExperienceDTO | AcademicExperienceDTO | Save new academic experience |
