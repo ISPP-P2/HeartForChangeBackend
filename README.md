@@ -89,12 +89,12 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ### Volunteer API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/volunteers | -        | List<VolunteerDTO>   | Get all volunteers |
+| /api/volunteers | -        | List   | Get all volunteers |
 | /api/volunteers/{id}   | - | VolunteerDTO | Get volunteer by id   |
 | /api/volunteers/signup   | VolunteerDTO | VolunteerDTO | Register a volunteer        |
 | /api/volunteers/update/{id}  | VolunteerDTO       | VolunteerDTO | Update volunteer by id |
 | /api/volunteers/delete/{id}  | -        | String   | Delete a volunteer |
-| /api/volunteers/ong/{username}  | -        | List<VolunteerDTO>   | Get volunteer by ong |
+| /api/volunteers/ong/{username}  | -        | List   | Get volunteer by ong |
 
 ### Grant API
 | Url                    | Params        |  Response  | Description                         | 
@@ -108,7 +108,7 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ### Task API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/tasks   |  | List<TaskDTO>| Get all task        |
+| /api/tasks/   |  | List<DTO>| Get all task        |
 | /api/tasks/ong/{username}  | -        | List<TaskDTO>   | Get all task of an ong |
 | /api/tasks/{id} | - | TaskDTO | Get task by id|
 | /api/tasks/new | TaskDTO | TaskDTO | Save new task |
@@ -127,28 +127,17 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | /api/attendances/add/{idTask}/{idPerson} | - | AttendanceDTO | Add beneficiary to a Attendance by ONG |
 | /api/attendances/quit/{idTask}/{idPerson} | - | AttendanceDTO | Delete beneficiary to a Attendance by ONG |
 
-### WorkExperience API
+### Academic Experience API
 | Url                    | Params        |  Response  | Description                         | 
 | --------------------   | ------------- | ---------  | -----------------------------------
-| /api/workExperience | - | List<WorkExperience> | Get all work experiences |
-| /api/workExperience/get/{id} | - | WorkExperienceDTO | Get work experience by id |
-| /api/workExperience/get/volunteer/{username} | - | List<WorkExperienceDTO> | Get all work experiences of a volunteer by the username|
-| /api/workExperience/get/beneficiary/{username} | - | List<WorkExperienceDTO> | Get all work experiences of a beneficiary by the username|
-| /api/workExperience/save/{username} | - | WorkExperienceDTO | Save new work experience |
-| /api/workExperience/update | - | WorkExperienceDTO | Update a work experience |
-| /api/workExperience/delete/{id} | - | String | Delete a work experience |
-
-### Appointment API
-| Url                    | Params        |  Response  | Description                         | 
-| --------------------   | ------------- | ---------  | -----------------------------------
-| /api/appointments | - | List<AppointmentDTO> | Get all appointments |
-| /api/appointments/get/{id} | - | AppointmentDTO | Get an appointment by id |
-| /api/appointments/get/ong/{username} | - | List<AppointmentDTO> | Get all appointments of an ong by the username|
-| /api/appointments/save/{username} | - | AppointmentDTO | Save new appointment |
-| /api/appointments/update | - | AppointmentDTO | Update an appointment |
-| /api/appointments/delete/{id} | - | String | Delete an appointment |
-
-
+| /api/academicExps   |  | List<AcademicExperienceDTO>| Get all academic experiences        |
+| /api/academicExps/get/{id}  | -        | List<AcademicExperienceDTO>   | Get an academic experience by id |
+| /api/academicExps/volunteer/{id} | - | List<AcademicExperienceDTO> | Get all academic experience of a volunteer by id|
+| /api/academicExps/beneficiary/{id} | - | List<AcademicExperienceDTO> | Get all academic experience of a beneficiary by id|
+| /api/academicExps/save | AcademicExperienceDTO | AcademicExperienceDTO | Save new academic experience |
+| /api/academicExps/update/{id} | AcademicExperienceDTO | AcademicExperienceDTO | Update an academic experience |
+| /api/academicExps/delete/{id} | - | String | Delete an academic experience |
+	
 ## DTOs
 ### SigninRequestDTO
 | PROPERTY               | Type        |  
@@ -248,26 +237,19 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | coordinator | String |
 | place | String |
 
-### AttendanceDTO
+### AttendanceDao
 | PROPERTY               | Type        |  
 | --------------------   | ------------- | 
 | id | Long |
 | type | AttendanceType(TOTAL, PARCIAL, NO_ASISTIDA) |
 | state | PetitionState(ESPERA, ACEPTADA, DENEGADA)|
-
-### WorkExperienceDTO
+	
+### AcademicExperienceDTO
 | PROPERTY               | Type        |  
 | --------------------   | ------------- | 
 | id | Long |
-| job | String |
-| time | String |
-| place | String |
-| reasonToFinish | String |
+| speciality | String |
+| endingYear | Integer|
+| satisfactionDegree | Integer|
+| educationalLevel | String |
 
-### AppointmentDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| id | Long |
-| date | LocalDate (format: "yyyy-MM-dd")|
-| hour | String |
-| notes | String |
