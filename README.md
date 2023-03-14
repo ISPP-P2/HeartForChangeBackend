@@ -158,6 +158,18 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
  | /api/appointments/save/{username} | - | AppointmentDTO | Save new appointment |
  | /api/appointments/update | - | AppointmentDTO | Update an appointment |
  | /api/appointments/delete/{id} | - | String | Delete an appointment |
+
+### ComplementaryFormation API
+ | Url                    | Params        |  Response  | Description                         | 
+ | --------------------   | ------------- | ---------  | -----------------------------------
+ | /api/complementaryFormation | - | List<ComplementaryFormation> | Get all complementary formations |
+ | /api/complementaryFormation/get/{id} | - | ComplementaryFormationDTO | Get complementary formation by id |
+ | /api/complementaryFormation/get/volunteer/{username} | - | List<ComplementaryFormationDTO> | Get all complementary formations of a volunteer by the username|
+ | /api/complementaryFormation/get/beneficiary/{username} | - | List<ComplementaryFormationDTO> | Get all complementary formations of a beneficiary by the username|
+ | /api/complementaryFormation/save/{username} | - | ComplementaryFormationDTO | Save new complementary formation |
+ | /api/complementaryFormation/update | - | ComplementaryFormationDTO | Update a complementary formation |
+ | /api/complementaryFormation/delete/{id} | - | String | Delete a complementary formation |
+
 	
 ## DTOs
 ### SigninRequestDTO
@@ -280,8 +292,17 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
  | id | Long |
  | job | String |
  | time | String |
- | place | String |
+ | date | String |
  | reasonToFinish | String |
+	
+### ComplementaryFormationDTO
+ | PROPERTY               | Type        |  
+ | --------------------   | ------------- | 
+ | id | Long |
+ | name | String |
+ | organization | String |
+ | date | LocalDate (format: "yyyy-MM-dd") |
+ | place | String |
 
 ### AppointmentDTO
  | PROPERTY               | Type        |  
