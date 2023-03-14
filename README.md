@@ -292,7 +292,7 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
  | id | Long |
  | job | String |
  | time | String |
- | date | String |
+ | place | String |
  | reasonToFinish | String |
 	
 ### ComplementaryFormationDTO
