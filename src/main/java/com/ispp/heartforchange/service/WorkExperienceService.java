@@ -1,23 +1,23 @@
 package com.ispp.heartforchange.service;
 
-import java.util.List;
+ import java.util.List;
 
-import com.ispp.heartforchange.dto.WorkExperienceDTO;
+ import com.ispp.heartforchange.dto.WorkExperienceDTO;
 
-public interface WorkExperienceService {
-	
-	List<WorkExperienceDTO> getAllWorkExperiences();
+ public interface WorkExperienceService {
 
-	WorkExperienceDTO getWorkExperienceById(Long id, String token);
-	
-	List<WorkExperienceDTO> getWorkExperienceByVolunteerUsername(String volunteerUserName, String token);
-	
-	List<WorkExperienceDTO> getWorkExperienceByBeneficiaryUsername(String beneficiaryUserName, String token);
+ 	List<WorkExperienceDTO> getAllWorkExperiences();
 
-	WorkExperienceDTO saveWorkExperience(WorkExperienceDTO workExperienceDTO, String token);
+ 	WorkExperienceDTO getWorkExperienceById(Long id, String token);
 
-	WorkExperienceDTO updateWorkExperience(String token, WorkExperienceDTO workExperienceDTO);
+ 	List<WorkExperienceDTO> getWorkExperienceByVolunteerUsername(String volunteerUserName, String token);
 
-	void deleteWorkExperience(Long id, String token);
+ 	List<WorkExperienceDTO> getWorkExperienceByBeneficiaryUsername(String beneficiaryUserName, String token);
 
-}
+ 	WorkExperienceDTO saveWorkExperience(WorkExperienceDTO workExperienceDTO, String token);
+
+ 	WorkExperienceDTO updateWorkExperience(String token, WorkExperienceDTO workExperienceDTO);
+
+ 	void deleteWorkExperience(Long id, String token);
+
+ }

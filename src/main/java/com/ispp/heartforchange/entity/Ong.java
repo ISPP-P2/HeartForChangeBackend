@@ -64,10 +64,14 @@ public class Ong extends Account{
 	@OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "ong")
 	private List<Grant> grants;
 	
+	@OneToMany(mappedBy = "ong", cascade = CascadeType.REMOVE)
+	private List<Appointment> listAppointments;
+
 	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "ong")
 	private List<Task> tasks;
 
-	
+
+
 	public Ong( OngDTO ongDto ) {
 		super(ongDto.getUsername(),ongDto.getEmail(), ongDto.getPassword(), ongDto.getRolAccount());
 		this.name = ongDto.getName();

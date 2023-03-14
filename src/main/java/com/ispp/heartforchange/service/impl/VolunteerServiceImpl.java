@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.ComplementaryFormation;
@@ -30,11 +29,12 @@ public class VolunteerServiceImpl implements VolunteerService{
 	private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 
 	private VolunteerRepository volunteerRepository;
-	private WorkExperienceRepository workExperienceRepository;
 	private PasswordEncoder encoder;
 	private ONGRepository ongRepository;
 	private ComplementaryFormationRepository complementaryFormationRepository;
-  private AcademicExperienceRepository academicExperienceRepository;
+	private AcademicExperienceRepository academicExperienceRepository;
+	private WorkExperienceRepository workExperienceRepository;
+	
 
 	
 	/*
@@ -42,12 +42,12 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 */
 	public VolunteerServiceImpl(VolunteerRepository volunteerRepository, PasswordEncoder encoder,	WorkExperienceRepository workExperienceRepository, 
   ComplementaryFormationRepository complementaryFormationRepository, ONGRepository ongRepository, AcademicExperienceRepository academicExperienceRepository) {
-
 		super();
 		this.ongRepository = ongRepository;
 		this.volunteerRepository = volunteerRepository;
-		this.workExperienceRepository = workExperienceRepository;
 		this.encoder = encoder;
+		this.ongRepository = ongRepository;
+		this.workExperienceRepository = workExperienceRepository;
 		this.complementaryFormationRepository = complementaryFormationRepository;
 		this.academicExperienceRepository = academicExperienceRepository;
 	}
@@ -181,25 +181,28 @@ public class VolunteerServiceImpl implements VolunteerService{
 		VolunteerDTO volunteerDTO = getVolunteerById(id);
 		Volunteer volunteerToDelete = new Volunteer(volunteerDTO, volunteerDTO.getHourOfAvailability(), volunteerDTO.getSexCrimes());
 		volunteerToDelete.setId(id);
-    
+
 		List<AcademicExperience> academicExps = academicExperienceRepository.findByVolunteer(volunteerToDelete.getUsername()).get();
-    //Get all the work experiences that belong to the volunteer to delete
+		//Get all the work experiences that belong to the volunteer to delete
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByVolunteerUserName(volunteerToDelete.getUsername()).get();
-    List<ComplementaryFormation> complementaryFormations = complementaryFormationRepository.findComplementaryFormationByVolunteer(volunteerToDelete.getUsername()).get();
+		List<ComplementaryFormation> complementaryFormations = complementaryFormationRepository.findComplementaryFormationByVolunteer(volunteerToDelete.getUsername()).get();
 
 		try {
 			for(AcademicExperience a: academicExps) {
 				academicExperienceRepository.delete(a);
-      }
+			}
       
-      for(WorkExperience w : workExperiencesList) {
+		    for(WorkExperience w : workExperiencesList) {
 				workExperienceRepository.delete(w);
 			}
       
-      for(ComplementaryFormation c : complementaryFormations) {
-				complementaryFormationRepository.delete(c);
-      }
+		    for(AcademicExperience a: academicExps) {
+		    	academicExperienceRepository.delete(a);
+		    }
       
+		    for(ComplementaryFormation c : complementaryFormations) {
+				complementaryFormationRepository.delete(c);
+		    }
 			volunteerRepository.delete(volunteerToDelete);
 		
 		} catch (Exception e) {
