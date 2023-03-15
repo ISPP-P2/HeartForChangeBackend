@@ -13,9 +13,9 @@ public interface OngService {
 
 	OngDTO getOngById(Long id, String token) throws OperationNotAllowedException;
 	
-	OngDTO saveOng(OngDTO ongDTO);
+	OngDTO saveOng(OngDTO ongDTO) throws OperationNotAllowedException;
 	
-	OngDTO updateOng(Long id, OngDTO ongDTO);
+	OngDTO updateOng(Long id, String token, OngDTO ongDTO) throws OperationNotAllowedException;
 	
-	void deleteOng(Long id);
+	void deleteOng(Long id, String token) throws OperationNotAllowedException;
 }

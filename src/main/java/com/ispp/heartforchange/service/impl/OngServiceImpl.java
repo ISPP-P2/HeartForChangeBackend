@@ -89,7 +89,7 @@ public class OngServiceImpl implements OngService{
 		if(ong!=null) {
 			Optional<Ong> optOng = ongRepository.findById(id);
 			if(!optOng.isPresent()) {
-				throw new UsernameNotFoundException("This ONG not exist!");
+				throw new UsernameNotFoundException("Not Found: This ONG not exist!");
 			}
 			ong = optOng.get();
 			OngDTO ongDTO = new OngDTO(ong);
@@ -106,7 +106,7 @@ public class OngServiceImpl implements OngService{
 	 * @Return OngDTO
 	 */
 	@Override
-	public OngDTO saveOng(OngDTO ongDTO) {
+	public OngDTO saveOng(OngDTO ongDTO) throws OperationNotAllowedException {
 		Ong ong = new Ong(ongDTO);
 		ong.setId(Long.valueOf(0));
 		ong.setRolAccount(RolAccount.ONG);
@@ -116,43 +116,48 @@ public class OngServiceImpl implements OngService{
 			Ong ongSaved = ongRepository.save(ong);
 			return new OngDTO(ongSaved);
 		} catch (Exception e) {
-			throw new UsernameNotFoundException(e.getMessage());
+			throw new OperationNotAllowedException("That ONG already exists: "+ e.getMessage());
 		}
 	}
 	
 	/*
 	 * Update ong
 	 * @Params Long id
+	 * @Params String token
 	 * @Params OngDTO
 	 * @Return OngDTO
 	 */
 	@Override
-	public OngDTO updateOng(Long id, OngDTO newOngDTO) {
+	public OngDTO updateOng(Long id, String token, OngDTO newOngDTO) throws OperationNotAllowedException {
 		Optional<Ong> ongToUpdate = ongRepository.findById(id);
-		logger.info("ONG is updating with id={}", id);
-		if( ongToUpdate.isPresent() ) {
-			ongToUpdate.get().setUsername(newOngDTO.getUsername());
-			ongToUpdate.get().setPassword(encoder.encode(newOngDTO.getPassword()));
-			ongToUpdate.get().setName(newOngDTO.getName());
-			ongToUpdate.get().setCif(newOngDTO.getCif());
-			ongToUpdate.get().setEmail(newOngDTO.getEmail());
-			ongToUpdate.get().setDescription(newOngDTO.getDescription());
-			
-		} else {
-			throw new UsernameNotFoundException("This ONG not exist!");
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong loggedOng = ongRepository.findByUsername(username);
+		if(loggedOng != null) {
+			if( ongToUpdate.isPresent() ) {
+				if(loggedOng.equals(ongToUpdate.get())) {
+					logger.info("ONG is updating with id={}", id);
+					ongToUpdate.get().setUsername(newOngDTO.getUsername());
+					ongToUpdate.get().setPassword(encoder.encode(newOngDTO.getPassword()));
+					ongToUpdate.get().setName(newOngDTO.getName());
+					ongToUpdate.get().setCif(newOngDTO.getCif());
+					ongToUpdate.get().setEmail(newOngDTO.getEmail());
+					ongToUpdate.get().setDescription(newOngDTO.getDescription());
+				}else {
+					throw new OperationNotAllowedException("You cannot edit an ONG which does not belong to you.");
+				}
+			} else {
+				throw new UsernameNotFoundException("This ONG not exist!");
+			}
+		}else {
+			throw new OperationNotAllowedException("You must be logged as ONG to use this method.");
 		}
+		
 		try {
 			Ong ongSaved = ongRepository.save(ongToUpdate.get());
 			return new OngDTO(ongSaved);
 		} catch (Exception e) {
-			throw new UsernameNotFoundException(e.getMessage());
+			throw new OperationNotAllowedException("Error saving the ONG, that account already exists: "+e.getMessage());
 		}
-	}
-
-	@Override
-	public void deleteOng(Long id) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 	/*
@@ -161,31 +166,41 @@ public class OngServiceImpl implements OngService{
 	 * @Params OngDTO
 	 * @Return void
 	 */
-	/*@Override
-	public void deleteOng(Long id) {
-		logger.info("Deleting ONG with id={}", id);
-		OngDTO ongDTO = getOngById(id);
-		Ong ongToDelete = new Ong(ongDTO);
-		ongToDelete.setId(id);
-
-		//Get all the volunteers that belong to the Ong to delete
-		List<VolunteerDTO> volunteerList = volunteerService.getVolunteersByOng(ongToDelete.getUsername());
-		List<Beneficiary> beneficiariesONG = beneficiaryRepository.findBeneficiariesByOng(ongToDelete.getUsername());
-		List<Appointment> appointments = appointmentRepository.findAppointmentsByOngUsername(ongToDelete.getUsername()).get();
-		try {
-			for( Beneficiary b : beneficiariesONG) {
-				beneficiaryRepository.delete(b);
+	@Override
+	public void deleteOng(Long id, String token) throws OperationNotAllowedException {
+		
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong loggedOng = ongRepository.findByUsername(username);
+		if(loggedOng!=null) {
+			OngDTO ongDTO = getOngById(id, token);
+			Ong ongToDelete = new Ong(ongDTO);
+			ongToDelete.setId(id);
+			if(loggedOng.equals(ongToDelete)) {
+				//Get all the volunteers that belong to the Ong to delete
+				List<VolunteerDTO> volunteerList = volunteerService.getVolunteersByOng(ongToDelete.getUsername());
+				List<Beneficiary> beneficiariesONG = beneficiaryRepository.findBeneficiariesByOng(ongToDelete.getUsername());
+				List<Appointment> appointments = appointmentRepository.findAppointmentsByOngUsername(ongToDelete.getUsername()).get();
+				try {
+					for( Beneficiary b : beneficiariesONG) {
+						beneficiaryRepository.delete(b);
+					}
+					for(VolunteerDTO volunteer: volunteerList) {
+						accountRepository.deleteById(volunteer.getId());
+		            }
+					for( Appointment a : appointments) {
+						appointmentRepository.delete(a);
+					}
+					logger.info("Deleting ONG with id={}", id);
+					ongRepository.delete(ongToDelete);	
+				} catch (Exception e) {
+					throw new UsernameNotFoundException(e.getMessage());
+				}
+			}else {
+				throw new OperationNotAllowedException("You cannot delete an ONG which does not belong to you.");
 			}
-			for(VolunteerDTO volunteer: volunteerList) {
-				accountRepository.deleteById(volunteer.getId());
-            }
-			for( Appointment a : appointments) {
-				appointmentRepository.delete(a);
-			}
-			ongRepository.delete(ongToDelete);	
-		} catch (Exception e) {
-			throw new UsernameNotFoundException(e.getMessage());
+		}else {
+			throw new OperationNotAllowedException("You must be logged as ONG to use this method.");
 		}
-	}*/
+	}
 	 
 }
