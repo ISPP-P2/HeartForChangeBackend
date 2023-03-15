@@ -4,21 +4,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.naming.OperationNotSupportedException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.MethodNotAllowedException;
+
 import com.ispp.heartforchange.dto.OngDTO;
 import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.entity.Appointment;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.AppointmentRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
+import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.OngService;
 
 @Service
@@ -34,12 +41,15 @@ public class OngServiceImpl implements OngService{
 	private BeneficiaryRepository beneficiaryRepository;
 	private AppointmentRepository appointmentRepository;
 	
+	private JwtUtils jwtUtils;
+	
 	/*
 	 * Dependency injection 
 	 */
 
 	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,BeneficiaryRepository beneficiaryRepository,
-			VolunteerServiceImpl volunteerService, AccountRepository accountRepository, AppointmentRepository appointmentRepository) {
+			VolunteerServiceImpl volunteerService, AccountRepository accountRepository, AppointmentRepository appointmentRepository,
+			JwtUtils jwtUtils) {
 		super();
 		this.ongRepository = ongRepository;
 		this.encoder = encoder;
@@ -47,6 +57,7 @@ public class OngServiceImpl implements OngService{
 		this.appointmentRepository = appointmentRepository;
 		this.accountRepository = accountRepository;
 		this.volunteerService = volunteerService;
+		this.jwtUtils = jwtUtils;
 
 	}
 	
@@ -68,17 +79,25 @@ public class OngServiceImpl implements OngService{
 	/*
 	 * Get ong by id
 	 * @Params Long id
+	 * @Params String token
 	 * @Return OngDTO
 	 */
 	@Override
-	public OngDTO getOngById(Long id) {
-		Optional<Ong> optOng = ongRepository.findById(id);
-		if(!optOng.isPresent()) {
-			throw new UsernameNotFoundException("This ONG not exist!");
+	public OngDTO getOngById(Long id, String token) throws OperationNotAllowedException {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		if(ong!=null) {
+			Optional<Ong> optOng = ongRepository.findById(id);
+			if(!optOng.isPresent()) {
+				throw new UsernameNotFoundException("This ONG not exist!");
+			}
+			ong = optOng.get();
+			OngDTO ongDTO = new OngDTO(ong);
+			return ongDTO;
+		}else {
+			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+			
 		}
-		Ong ong = optOng.get();
-		OngDTO ongDTO = new OngDTO(ong);
-		return ongDTO;
 	}
 	
 	/*
@@ -129,6 +148,12 @@ public class OngServiceImpl implements OngService{
 			throw new UsernameNotFoundException(e.getMessage());
 		}
 	}
+
+	@Override
+	public void deleteOng(Long id) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	/*
 	 * Delete ong
@@ -136,7 +161,7 @@ public class OngServiceImpl implements OngService{
 	 * @Params OngDTO
 	 * @Return void
 	 */
-	@Override
+	/*@Override
 	public void deleteOng(Long id) {
 		logger.info("Deleting ONG with id={}", id);
 		OngDTO ongDTO = getOngById(id);
@@ -161,6 +186,6 @@ public class OngServiceImpl implements OngService{
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
 		}
-	}
+	}*/
 	 
 }

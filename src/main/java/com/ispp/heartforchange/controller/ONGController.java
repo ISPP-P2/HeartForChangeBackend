@@ -2,6 +2,7 @@ package com.ispp.heartforchange.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -13,6 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispp.heartforchange.dto.OngDTO;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.OngServiceImpl;
 
@@ -66,8 +69,17 @@ public class ONGController {
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getOngById(@PathVariable("id") Long id) {
-		OngDTO ong = ongServiceImpl.getOngById(id);
+	public ResponseEntity<?> getOngById(HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException {
+		String jwt = null;
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
+		}
+		OngDTO ong = ongServiceImpl.getOngById(id, jwt);
 		return ResponseEntity.ok(ong);
 	}
 	
