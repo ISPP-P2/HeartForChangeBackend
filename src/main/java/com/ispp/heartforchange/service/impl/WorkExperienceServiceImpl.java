@@ -259,6 +259,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     public WorkExperienceDTO saveWorkExperience(WorkExperienceDTO workExperienceDTO, Long id, String token) throws OperationNotAllowedException{
 
     	String username = jwtUtils.getUserNameFromJwtToken(token);
+		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
 		Volunteer volunteer = volunteerRepository.findVolunteerByUsername(username);
 		Ong ong = ongRepository.findByUsername(username);
     	
@@ -285,10 +286,26 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
         if(ong!=null || volunteer!=null) {
 	        try {
-	        	if(volunteerAux.getId() != null || beneficiaryAux.getId() != null) {
-	        		logger.info("Work Experience saved associated with id={}", id);
-	        		WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience);
-	                return new WorkExperienceDTO(workExperienceSaved);
+	        	if(volunteerAux.getId() != null) {
+	        		if(rol == RolAccount.ONG && volunteerAux.getOng().getId() == ong.getId()) {
+		        		logger.info("Work Experience saved associated with id={}", id);
+		        		WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience);
+		                return new WorkExperienceDTO(workExperienceSaved);
+	        		}else if(rol == RolAccount.VOLUNTEER && volunteerAux.getId() == volunteer.getId()){
+	        			logger.info("Work Experience saved associated with id={}", id);
+		        		WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience);
+		                return new WorkExperienceDTO(workExperienceSaved);
+	        		}else {
+						throw new UsernameNotFoundException("You don't have access!");
+	        		}
+	        	}else if(beneficiaryAux.getId() != null) {
+	        		if(rol == RolAccount.ONG && beneficiaryAux.getOng().getId() == ong.getId()) {
+		        		logger.info("Work Experience saved associated with id={}", id);
+		        		WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience);
+		                return new WorkExperienceDTO(workExperienceSaved);
+	        		}else {
+						throw new UsernameNotFoundException("You don't have access!");
+	        		}
 	        	}else {
 	        		throw new UsernameNotFoundException("Not Found: The volunteer or beneficiary doesn't exist");
 	        	}
