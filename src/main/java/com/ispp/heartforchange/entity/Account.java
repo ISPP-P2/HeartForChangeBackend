@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 
 @Data 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "account")
