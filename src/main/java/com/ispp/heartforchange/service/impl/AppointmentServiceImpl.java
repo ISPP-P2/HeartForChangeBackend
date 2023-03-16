@@ -13,6 +13,7 @@ import com.ispp.heartforchange.dto.AppointmentDTO;
 import com.ispp.heartforchange.entity.Appointment;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.AppointmentRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
@@ -67,129 +68,214 @@ public class AppointmentServiceImpl implements AppointmentService {
 	 * @Return AppointmentDTO
 	 */
 	@Override
-	public AppointmentDTO getAppointmentById(Long id, String token) {
+	public AppointmentDTO getAppointmentById(Long id, String token) throws OperationNotAllowedException {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
 		Optional<Appointment> appointment = appointmentRepository.findById(id);
 
-		if (!appointment.isPresent()) {
-			throw new UsernameNotFoundException("Appointment not found!");
-		} else {
-			if(appointment.get().getBeneficiary().getOng().getUsername().equals(username)) {
-				return new AppointmentDTO(appointment.get());
-			}else {
-				throw new UsernameNotFoundException("You don't have access!");
+		if(ong!=null) {
+			if (!appointment.isPresent()) {
+				throw new UsernameNotFoundException("Not Found: Appointment not exist!");
+			} else {
+				if(appointment.get().getBeneficiary().getOng().getId() == ong.getId()) {
+					return new AppointmentDTO(appointment.get());
+				}else {
+					throw new UsernameNotFoundException("You don't have access!");
+				}
 			}
-		}
+		}else{
+ 			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+		}	
 	}
 
 	/*
 	 * Get appointments by ong
-	 * @Params String ongUsername
+	 * @Params Long ongId
 	 * @Params String token
 	 * @Return AppointmentDTO
 	 */
 	@Override
-	public List<AppointmentDTO> getAppointmentsByONG(String ongUsername, String token) {
+	public List<AppointmentDTO> getAppointmentsByONG(Long ongId, String token) throws OperationNotAllowedException{
 		String username = jwtUtils.getUserNameFromJwtToken(token);
-		Optional<List<Appointment>> appointments = appointmentRepository.findAppointmentsByOngUsername(ongUsername);
+		Ong ong = ongRepository.findByUsername(username);
+		Optional<List<Appointment>> appointments = appointmentRepository.findAppointmentsByOngId(ongId);
 		
 		List<Ong> auxOngs = ongRepository.findAll();
  		boolean exception = true;
  		for(Ong o: auxOngs) {
- 			if (ongUsername.equals(o.getUsername())){
+ 			if (o.getId() == ongId){
  				exception = false;
  			}
  		}
 
  		if(exception==true) {
- 			throw new UsernameNotFoundException("The username of the ONG doesn't exist!");
+ 			throw new UsernameNotFoundException("Not Found: The ONG with this ID doesn't exist!");
 
  		}
 		
-		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
-
-		if (!appointments.isPresent()) {
-			throw new UsernameNotFoundException("Appointments not found!");
-		} else {
-			if(appointments.get().size() == 0) {
-				throw new UsernameNotFoundException("This ONG has not appointments!");
-			}else {
-				if(appointments.get().get(0).getBeneficiary().getOng().getUsername().equals(username)) {
-					for (Appointment appointment : appointments.get()) {
-						AppointmentDTO appointmentDTO = new AppointmentDTO(appointment);
-						appointmentsDTO.add(appointmentDTO);
-					}
+ 		if(ong!=null) {
+			List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+	
+			if (!appointments.isPresent()) {
+				throw new UsernameNotFoundException("Not Found: Appointments not exist for the ONG!");
+			} else {
+				if(appointments.get().size() == 0) {
+					throw new UsernameNotFoundException("This ONG has not appointments!");
 				}else {
-					throw new UsernameNotFoundException("You don't have access!");
+					if(appointments.get().get(0).getBeneficiary().getOng().getId() == ong.getId()) {
+						for (Appointment appointment : appointments.get()) {
+							AppointmentDTO appointmentDTO = new AppointmentDTO(appointment);
+							appointmentsDTO.add(appointmentDTO);
+						}
+						return appointmentsDTO;
+					}else {
+						throw new UsernameNotFoundException("You don't have access!");
+					}
 				}
 			}
+ 		}else{
+ 			throw new OperationNotAllowedException("You must be an ONG to use this method.");
 		}
-		return appointmentsDTO;
+	}
+	
+	/*
+	 * Get appointments by beneficiary
+	 * @Params Long ongId
+	 * @Params String token
+	 * @Return AppointmentDTO
+	 */
+	@Override
+	public List<AppointmentDTO> getAppointmentsByBeneficiary(Long beneficiaryId, String token) throws OperationNotAllowedException{
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		Optional<List<Appointment>> appointments = appointmentRepository.findAppointmentsByBeneficiaryId(beneficiaryId);
+		
+		List<Beneficiary> auxBeneficiaries = beneficiaryRepository.findAll();
+ 		boolean exception = true;
+ 		for(Beneficiary b: auxBeneficiaries) {
+ 			if (b.getId() == beneficiaryId){
+ 				exception = false;
+ 			}
+ 		}
+
+ 		if(exception==true) {
+ 			throw new UsernameNotFoundException("Not Found: The Beneficiary with this ID doesn't exist!");
+
+ 		}
+		
+ 		if(ong!=null) {
+			List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+			if (!appointments.isPresent()) {
+				throw new UsernameNotFoundException("Not Found: Appointments not exist for the beneficiary!");
+			} else {
+				if(appointments.get().size() == 0) {
+					throw new UsernameNotFoundException("This beneficiary has not appointments!");
+				}else {
+					if(appointments.get().get(0).getBeneficiary().getOng().getId() == ong.getId()) {
+						for (Appointment appointment : appointments.get()) {
+							AppointmentDTO appointmentDTO = new AppointmentDTO(appointment);
+							appointmentsDTO.add(appointmentDTO);
+						}
+						return appointmentsDTO;
+					}else {
+						throw new UsernameNotFoundException("You don't have access!");
+					}
+				}
+			}
+ 		}else{
+ 			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+		}
 	}
 
 	/*
      * Save a work experience
      * @Params String token
      * @Params WorkExperienceDTO workExperienceDTO
+     * @Params Long beneficiaryId
      * @Return WorkExperienceDTO
      */
     @Override
-    public AppointmentDTO saveAppointment(AppointmentDTO appointmentDTO, String username) {
+    public AppointmentDTO saveAppointment(String token, AppointmentDTO appointmentDTO, Long beneficiaryId) throws OperationNotAllowedException{
 
+    	String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+    	
     	Appointment appointment = new Appointment(appointmentDTO);
     	appointment.setId(Long.valueOf(0));
         List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
         Beneficiary beneficiaryAux = new Beneficiary();
-        
+        boolean exception = true;
         for (Beneficiary beneficiary: beneficiaries) {
-            if(beneficiary.getUsername().equals(username)) {
+            if(beneficiary.getId() == beneficiaryId) {
             	beneficiaryAux = beneficiary;
             	appointment.setBeneficiary(beneficiary);
+            	exception = false;
             }
         }
+        
+        if(exception==true) {
+ 			throw new UsernameNotFoundException("Not Found: The beneficiary with this ID doesn't exist!");
 
-        logger.info("Appointment saved associated with {}", username);
-        try {
-        	if(beneficiaryAux.getUsername() != null) {
-        		Appointment appointmentSaved = appointmentRepository.save(appointment);
-                return new AppointmentDTO(appointmentSaved);
-        	}else {
-        		throw new UsernameNotFoundException("The username doesn't exist");
-        	}
-        } catch (Exception e) {
-            throw new UsernameNotFoundException(e.getMessage());
-        }
+ 		}
+
+        if(ong!=null) {
+	        try {
+	        	if(beneficiaryAux.getId() != null) {
+	        		if(beneficiaryAux.getOng().getId() == ong.getId()) {
+	        			logger.info("Appointment saved associated with beneficiay id={}", beneficiaryId);
+		        		Appointment appointmentSaved = appointmentRepository.save(appointment);
+		                return new AppointmentDTO(appointmentSaved);
+	        		}else {
+	        			throw new UsernameNotFoundException("You don't have access!");
+	        		}
+	        	}else {
+	        		throw new UsernameNotFoundException("Not Found: The beneficiary with this ID doesn't exist");
+	        	}
+	        } catch (Exception e) {
+	            throw new UsernameNotFoundException(e.getMessage());
+	        }
+        }else{
+ 			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+		}
     }
 
     /*
      * Update an appointment
      * @Params String token
      * @Params AppointmentDTO appointmentDTO
+     * @Params Long appointmentId
      * @Return AppointmentDTO
      */
 	@Override
-	public AppointmentDTO updateAppointment(String token, AppointmentDTO appointmentDTO) {
-		String username = jwtUtils.getUserNameFromJwtToken(token);
-		Optional<Appointment> appointment = appointmentRepository.findById(appointmentDTO.getId());
-		logger.info("Appointment is updating with id={}", appointmentDTO.getId());
+	public AppointmentDTO updateAppointment(String token, AppointmentDTO appointmentDTO, Long appointmentId) throws OperationNotAllowedException {
 		
-		if (appointment.isPresent()) {
-			if(appointment.get().getBeneficiary().getOng().getUsername().equals(username)) {
-				appointment.get().setDateAppointment(appointmentDTO.getDateAppointment());
-				appointment.get().setHourAppointment(appointmentDTO.getHourAppointment());
-				appointment.get().setNotes(appointmentDTO.getNotes());
-				try {
-					Appointment appointmentSaved = appointmentRepository.save(appointment.get());
-					return new AppointmentDTO(appointmentSaved);
-				} catch (Exception e) {
-					throw new UsernameNotFoundException(e.getMessage());
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		Optional<Appointment> appointment = appointmentRepository.findById(appointmentId);
+		
+		if(ong!=null) {
+			if (appointment.isPresent()) {
+				if(appointment.get().getBeneficiary().getOng().getId() == ong.getId()) {
+					appointment.get().setDateAppointment(appointmentDTO.getDateAppointment());
+					appointment.get().setHourAppointment(appointmentDTO.getHourAppointment());
+					appointment.get().setNotes(appointmentDTO.getNotes());
+					try {
+						logger.info("Appointment is updating with id={}", appointmentId);
+						Appointment appointmentSaved = appointmentRepository.save(appointment.get());
+						return new AppointmentDTO(appointmentSaved);
+					} catch (Exception e) {
+						throw new UsernameNotFoundException(e.getMessage());
+					}
+				}else {
+					throw new UsernameNotFoundException("You don't have access!");
 				}
 			}else {
-				throw new UsernameNotFoundException("You don't have access!");
+				throw new UsernameNotFoundException("Not Found: Appointment not exist!");
 			}
-		}else {
-			throw new UsernameNotFoundException("Appointment not exist!");
+		}else{
+ 			throw new OperationNotAllowedException("You must be an ONG to use this method.");
 		}
+		
 	}
 
 	/*
@@ -199,18 +285,23 @@ public class AppointmentServiceImpl implements AppointmentService {
      * @Return void
      */
 	@Override
-	public void deleteAppointment(Long id, String token) {
+	public void deleteAppointment(Long id, String token) throws OperationNotAllowedException {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
 		Optional<Appointment> appointment = appointmentRepository.findById(id);
 		
-		if (appointment.isPresent()) {
-			if(appointment.get().getBeneficiary().getOng().getUsername().equals(username)) {
-				appointmentRepository.delete(appointment.get());
+		if(ong!=null) {
+			if (appointment.isPresent()) {
+				if(appointment.get().getBeneficiary().getOng().getId() == ong.getId()) {
+					appointmentRepository.delete(appointment.get());
+				}else {
+					throw new UsernameNotFoundException("You don't have access!");
+				}
 			}else {
-				throw new UsernameNotFoundException("You don't have access!");
+				throw new UsernameNotFoundException("Not Found: Appointment not exist!");
 			}
-		}else {
-			throw new UsernameNotFoundException("Appointment not exist!");
+		}else{
+ 			throw new OperationNotAllowedException("You must be an ONG to use this method.");
 		}
 	}
 

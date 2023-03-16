@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.ispp.heartforchange.dto.AppointmentDTO;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.AppointmentServiceImpl;
 
@@ -62,7 +63,7 @@ public class AppointmentController {
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/get/{id}")
-	public ResponseEntity<?> getAppointmentById(HttpServletRequest request, @PathVariable("id") Long id) {
+	public ResponseEntity<?> getAppointmentById(HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -73,22 +74,29 @@ public class AppointmentController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		AppointmentDTO appointment = appointmentService.getAppointmentById(id, jwt);
-		return ResponseEntity.ok(appointment);
+		try {
+			AppointmentDTO appointment = appointmentService.getAppointmentById(id, jwt);
+			return ResponseEntity.ok(appointment);
+		}catch(OperationNotAllowedException e) {
+ 			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+ 		}catch(Exception e) {
+ 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+ 		}
+		
 	}
 	
 	
 	/*
-     * Get all appointments by ong username
+     * Get all appointments by ong id
      * 
      * @Param HttpServletRequest
-     * @Param String username
+     * @Param Long id
      * 
      * @Return ResponseEntity
      */
-    @GetMapping("/get/ong/{username}")
-    public ResponseEntity<?> getAppointmentByOngUsername(HttpServletRequest request,
-            @PathVariable("username") String username) {
+    @GetMapping("/get/ong/{id}")
+    public ResponseEntity<?> getAppointmentByOng(HttpServletRequest request,
+            @PathVariable("id") Long id) throws OperationNotAllowedException {
         String jwt = null;
         String headerAuth = request.getHeader("Authorization");
 
@@ -99,8 +107,47 @@ public class AppointmentController {
             return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
         }
 
-        List<AppointmentDTO> appointments = appointmentService.getAppointmentsByONG(username, jwt);
-        return ResponseEntity.ok(appointments);
+        try {
+        	List<AppointmentDTO> appointments = appointmentService.getAppointmentsByONG(id, jwt);
+            return ResponseEntity.ok(appointments);
+        }
+        catch(OperationNotAllowedException e) {
+ 			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+ 		}catch(Exception e) {
+ 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+ 		}
+    }
+    
+    /*
+     * Get all appointments by beneficiary id
+     * 
+     * @Param HttpServletRequest
+     * @Param Long id
+     * 
+     * @Return ResponseEntity
+     */
+    @GetMapping("/get/beneficiary/{id}")
+    public ResponseEntity<?> getAppointmentByBeneficiary(HttpServletRequest request,
+            @PathVariable("id") Long id) throws OperationNotAllowedException {
+        String jwt = null;
+        String headerAuth = request.getHeader("Authorization");
+
+        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+            jwt = headerAuth.substring(7, headerAuth.length());
+        }
+        if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+            return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
+        }
+
+        try {
+        	List<AppointmentDTO> appointments = appointmentService.getAppointmentsByBeneficiary(id, jwt);
+            return ResponseEntity.ok(appointments);
+        }
+        catch(OperationNotAllowedException e) {
+ 			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+ 		}catch(Exception e) {
+ 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+ 		}
     }
 	
 	
@@ -108,28 +155,35 @@ public class AppointmentController {
 	* Save appointment
 	* 
 	* @Param AppointmentDTO appointmentDTO
-	* @Param String username 
+	* @Param Long id 
 	* 
 	* @Return ResponseEntity
 	*/
-	@PostMapping("/save/{username}")
+	@PostMapping("/save/{id}")
 	  public ResponseEntity<?> saveAppointment(HttpServletRequest request, @Valid @RequestBody AppointmentDTO appointmentDTO, 
-	          @PathVariable("username") String username) {
+	          @PathVariable("id") Long id) throws OperationNotAllowedException {
 
-	  String jwt = null;
-
-	  String headerAuth = request.getHeader("Authorization");
-
-	  if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
-	      jwt = headerAuth.substring(7, headerAuth.length());
-	  }
-	  if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
-	      return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
-	  }
-
-	  AppointmentDTO appointmentSaved = appointmentService.saveAppointment(appointmentDTO, username);
-	  logger.info("Appointment saved associated with {}", username);
-	  return ResponseEntity.ok(appointmentSaved);
+		  String jwt = null;
+	
+		  String headerAuth = request.getHeader("Authorization");
+	
+		  if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+		      jwt = headerAuth.substring(7, headerAuth.length());
+		  }
+		  if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+		      return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		  }
+	
+		  try {
+			  AppointmentDTO appointmentSaved = appointmentService.saveAppointment(jwt, appointmentDTO, id);
+			  logger.info("Appointment saved associated with id={}", id);
+			  return ResponseEntity.ok(appointmentSaved);
+		  }
+		  catch(OperationNotAllowedException e) {
+			  return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		  }catch(Exception e) {
+			  return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		  }
 	  }
 	
 		
@@ -137,11 +191,13 @@ public class AppointmentController {
 	 * Update appointment
 	 * 
 	 * @Param AppointmentDTO appointmentDTO
+	 * @Param Long id 
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@PutMapping("/update")
-	public ResponseEntity<?> updateAppointment(@Valid @RequestBody AppointmentDTO appointmentDTO, HttpServletRequest request) {
+	@PutMapping("/update/{id}")
+	public ResponseEntity<?> updateAppointment(@Valid @RequestBody AppointmentDTO appointmentDTO, @PathVariable("id") Long id,
+			HttpServletRequest request) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -152,9 +208,16 @@ public class AppointmentController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		AppointmentDTO appointmentSaved = appointmentService.updateAppointment(jwt, appointmentDTO);
-		logger.info("Appointment saved with id={}", appointmentSaved.getId());
-		return ResponseEntity.ok(appointmentSaved);
+		try {
+			AppointmentDTO appointmentSaved = appointmentService.updateAppointment(jwt, appointmentDTO, id);
+			logger.info("Appointment saved with id={}", id);
+			return ResponseEntity.ok(appointmentSaved);
+		}
+		catch(OperationNotAllowedException e) {
+ 			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+ 		}catch(Exception e) {
+ 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+ 		}
 	}
 	
 	
@@ -166,7 +229,7 @@ public class AppointmentController {
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/delete/{id}")
-	public ResponseEntity<?> deleteAppointment(@PathVariable("id") Long id, HttpServletRequest request) {
+	public ResponseEntity<?> deleteAppointment(@PathVariable("id") Long id, HttpServletRequest request) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -177,8 +240,15 @@ public class AppointmentController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		appointmentService.deleteAppointment(id, jwt);
-		return ResponseEntity.ok("Appointment deleted");
+		try {
+			appointmentService.deleteAppointment(id, jwt);
+			return ResponseEntity.ok("Appointment deleted");
+		}
+		catch(OperationNotAllowedException e) {
+ 			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+ 		}catch(Exception e) {
+ 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+ 		}
 	}
 	
 
