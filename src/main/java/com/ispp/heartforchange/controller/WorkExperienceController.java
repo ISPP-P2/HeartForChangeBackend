@@ -41,17 +41,6 @@ public class WorkExperienceController {
 	}
 	
 	
-	/*
-	 * Get all work experiences
-	 * 
-	 * @Return ResponseEntity
-	 */
-	@GetMapping
-	public ResponseEntity<?> getAllWorkExperiences() {
-		List<WorkExperienceDTO> workExperiences = workExperienceService.getAllWorkExperiences();
-		return ResponseEntity.ok(workExperiences);
-	}
-	
 	
 	/*
 	 * Get work experience by id
@@ -177,7 +166,7 @@ public class WorkExperienceController {
            logger.info("Work Experience saved associated with id={}", id);
            return ResponseEntity.ok(workExperienceSaved);
        }catch(OperationNotAllowedException e) {
-			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
 		}catch(Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
@@ -210,7 +199,7 @@ public class WorkExperienceController {
 			logger.info("Work Experience updated with id={}", workExperienSaved.getId());
 			return ResponseEntity.ok(workExperienSaved);
 		}catch(OperationNotAllowedException e) {
-			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
 		}catch(Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
@@ -240,7 +229,7 @@ public class WorkExperienceController {
 			workExperienceService.deleteWorkExperience(id, jwt);
 			return ResponseEntity.ok("Work Experience deleted");
 		}catch(OperationNotAllowedException e) {
-			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
 		}catch(Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}

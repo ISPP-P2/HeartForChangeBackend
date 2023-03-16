@@ -7,8 +7,6 @@ import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 
  public interface WorkExperienceService {
 
- 	List<WorkExperienceDTO> getAllWorkExperiences();
-
  	WorkExperienceDTO getWorkExperienceById(Long id, String token) throws OperationNotAllowedException;
 
  	List<WorkExperienceDTO> getWorkExperienceByVolunteer(Long volunteerId, String token) throws OperationNotAllowedException;
