@@ -8,8 +8,6 @@ import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 
 public interface AppointmentService {
 
-	List<AppointmentDTO> getAllAppointments();
-
 	AppointmentDTO getAppointmentById(Long id, String token) throws OperationNotAllowedException;
 	
 	List<AppointmentDTO> getAppointmentsByONG(Long ongId, String token) throws OperationNotAllowedException;

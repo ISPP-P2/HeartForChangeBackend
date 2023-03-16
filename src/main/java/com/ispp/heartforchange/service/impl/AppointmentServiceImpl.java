@@ -46,20 +46,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 		this.jwtUtils = jwtUtils;
 	}
 	
-	/*
-	 * Get all appointments
-	 * @Return List<AppointmentDTO>
-	 */
-	@Override
-	public List<AppointmentDTO> getAllAppointments() {
-		List<Appointment> appointments = appointmentRepository.findAll();
-		List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
-		for (Appointment appointment : appointments) {
-			AppointmentDTO appointmentDTO = new AppointmentDTO(appointment);
-			appointmentsDTO.add(appointmentDTO);
-		}
-		return appointmentsDTO;
-	}
 
 	/*
 	 * Get appointment by id

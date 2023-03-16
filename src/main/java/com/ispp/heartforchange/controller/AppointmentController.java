@@ -42,17 +42,6 @@ public class AppointmentController {
 	}
 	
 	
-	/*
-	 * Get all appointments
-	 * 
-	 * @Return ResponseEntity
-	 */
-	@GetMapping
-	public ResponseEntity<?> getAllAppointments() {
-		List<AppointmentDTO> appointments = appointmentService.getAllAppointments();
-		return ResponseEntity.ok(appointments);
-	}	
-	
 	
 	/*
 	 * Get appointment by id
