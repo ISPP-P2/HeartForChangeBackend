@@ -143,6 +143,8 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
 			throw new UsernameNotFoundException("You are not an ONG");
 		}
+		System.out.println(accountRepository.findByUsername(username).getRolAccount());
+		
 		
 		Ong ong = ongRepository.findByUsername(username);
 		
@@ -295,13 +297,22 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 			throw new UsernameNotFoundException("You are not an ONG");
 
 		}
-		List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
-		for(Beneficiary b : beneficiaries) {
-			if(!b.getOng().equals(ongRepository.findByUsername(username))) {
-				beneficiaries.remove(b);
+		List<Beneficiary> allBenficiaries = beneficiaryRepository.findAll();
+		List<Beneficiary> beneficiaries = new ArrayList<>();
+		for(Beneficiary b : allBenficiaries) {
+			if(b.getOng().equals(ongRepository.findByUsername(username))) {
+				beneficiaries.add(b);
 			}
 		}
+		
+		if(beneficiaries.isEmpty()) {
+			throw new UsernameNotFoundException("You don´t have any beneficiaries");
+
+		}
+		
 		List<BeneficiaryDTO> beneficiariesDTOs = new ArrayList<>();
+		
+		
 		for(Beneficiary beneficiary: beneficiaries) {
 			BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
 					beneficiary.getId(), 

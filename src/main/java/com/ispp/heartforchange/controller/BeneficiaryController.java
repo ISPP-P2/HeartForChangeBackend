@@ -120,7 +120,6 @@ public class BeneficiaryController {
 	 */
 	@PostMapping("/signup")
 	public ResponseEntity<?> saveBeneficiary(HttpServletRequest request, @Valid @RequestBody BeneficiaryDTO beneficiary) {
-		
 		String jwt = null;
 
 		String headerAuth = request.getHeader("Authorization");
