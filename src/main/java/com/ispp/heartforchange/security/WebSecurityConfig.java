@@ -63,6 +63,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 				.antMatchers("/ongs/signup/**").permitAll()
 				.antMatchers("/ongs/**").permitAll()
 				.antMatchers("/volunteer/signup/**").hasAnyAuthority("ONG")
+				.antMatchers("/tasks/volunteer/get/{id}/attendances").hasAnyAuthority("ONG", "VOLUNTEER")
 				.antMatchers("/beneficiaries/signup").hasAnyAuthority("ONG")
 				.antMatchers("/tasks/ong/**", "/tasks/get/**").hasAnyAuthority("ONG", "VOLUNTEER")
 				.antMatchers("/tasks/new/", "/tasks/update/**", "/tasks/delete/**").hasAnyAuthority("ONG")
