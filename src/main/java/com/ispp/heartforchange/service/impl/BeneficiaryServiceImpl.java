@@ -143,9 +143,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
 			throw new UsernameNotFoundException("You are not an ONG");
 		}
-		System.out.println(accountRepository.findByUsername(username).getRolAccount());
-		
-		
+
 		Ong ong = ongRepository.findByUsername(username);
 		
 		
