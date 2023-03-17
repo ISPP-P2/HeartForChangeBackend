@@ -9,7 +9,6 @@ import com.ispp.heartforchange.dto.VolunteerDTO;
 @Service
 public interface VolunteerService {
 
-	List<VolunteerDTO> getAllVolunteers();
 	
 	VolunteerDTO getVolunteerById(Long id, String username);
 	

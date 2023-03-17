@@ -58,20 +58,6 @@ public class VolunteerServiceImpl implements VolunteerService{
 	}
   
 	
-	/*
-	 * Get all volunteer
-	 * @Return List<VolunteerDTO>
-	 */
-	@Override
-	public List<VolunteerDTO> getAllVolunteers(){
-		List<Volunteer> volunteers = volunteerRepository.findAll();
-		List<VolunteerDTO> volunteersDTO = new ArrayList<>();
-		for(Volunteer volunteer: volunteers) {
-			VolunteerDTO volunteerDTO = new VolunteerDTO(volunteer, volunteer.getHourOfAvailability(), volunteer.getSexCrimes());
-			volunteersDTO.add(volunteerDTO);
-		}
-		return volunteersDTO;
-	}
 	
 	/*
 	 * Get volunteer by ong
@@ -98,7 +84,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 		return volunteersDTO;
 	} 
 	
-	/*
+	/*   
 	 * Get volunteer by id
 	 * @Params Long id
 	 * @Return VolunteerDTO
@@ -173,12 +159,16 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 * @Params VolunteerDTO
 	 * @Return VolunteerDTO
 	 */
-	@Override
+	@Override 
 	public VolunteerDTO updateVolunteer(Long id, VolunteerDTO newVolunteerDTO, String username) {
+
+		Optional<Volunteer> volunteerToUpdate = volunteerRepository.findById(id);
 		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
 			throw new UsernameNotFoundException("You must be logged as ONG to edit this volunteer");
+		} else if(!accountRepository.findByUsername(username).equals(volunteerToUpdate.get().getOng())) {
+			throw new UsernameNotFoundException("You cant edit this volunteer");
+ 
 		}
-		Optional<Volunteer> volunteerToUpdate = volunteerRepository.findById(id);
 		logger.info("Volunteer is updating with id={}", id);
 		if(volunteerToUpdate.isPresent()) {
 			volunteerToUpdate.get().setPassword(encoder.encode(newVolunteerDTO.getPassword()));

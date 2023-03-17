@@ -50,17 +50,7 @@ public class VolunteerController {
 		this.authenticationManager = authenticationManager;
 	}
 	
-	/*
-	 * Get all volunteer
-	 * 
-	 * @Return ResponseEntity
-	 */
-	@GetMapping
-	public ResponseEntity<?> getAllVolunteer(){
-		List<VolunteerDTO> volunteers = volunteerServiceImpl.getAllVolunteers();
-		return ResponseEntity.ok(volunteers);
-	}
-	
+
 	/*
 	 * Get all volunteer by ONG
 	 * 
