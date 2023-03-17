@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ispp.heartforchange.dto.GrantDTO;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.GrantServiceImpl;
 
@@ -48,7 +49,7 @@ public class GrantController {
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/save")
-	public ResponseEntity<?> saveGrant(@Valid @RequestBody GrantDTO grant, HttpServletRequest request) {
+	public ResponseEntity<?> saveGrant(@Valid @RequestBody GrantDTO grant, HttpServletRequest request) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -59,9 +60,17 @@ public class GrantController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		GrantDTO grantSaved = grantService.saveGrant( grant, jwt );
-		logger.info("Grant saved with id={}", grantSaved.getId());
-		return ResponseEntity.ok(grantSaved);
+		try {
+			GrantDTO grantSaved = grantService.saveGrant( grant, jwt );
+			logger.info("Grant saved with id={}", grantSaved.getId());
+			return ResponseEntity.ok(grantSaved);
+		}catch(OperationNotAllowedException e) {
+  			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+  		}catch(Exception e) {
+  			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+  		}
+
+		
 	}
 	
 	/*
@@ -72,7 +81,7 @@ public class GrantController {
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/get/ong")
-	public ResponseEntity<?> getGrantsByOng(HttpServletRequest request) {
+	public ResponseEntity<?> getGrantsByOng(HttpServletRequest request) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -83,8 +92,15 @@ public class GrantController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		List<GrantDTO> grants = grantService.getGrantsByOng(jwt);
-		return ResponseEntity.ok(grants);
+		try {
+			List<GrantDTO> grants = grantService.getGrantsByOng(jwt);
+			return ResponseEntity.ok(grants);
+		}
+		catch(OperationNotAllowedException e) {
+  			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+  		}catch(Exception e) {
+  			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+  		}
 	}
 	
 	/*
@@ -96,7 +112,7 @@ public class GrantController {
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/get/{id}")
-	public ResponseEntity<?> getGrantsByOng(HttpServletRequest request, @PathVariable("id") Long id) {
+	public ResponseEntity<?> getGrantsByOng(HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -107,19 +123,26 @@ public class GrantController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		GrantDTO grant = grantService.getGrantById(id, jwt);
-		return ResponseEntity.ok(grant);
+		try {
+			GrantDTO grant = grantService.getGrantById(id, jwt);
+			return ResponseEntity.ok(grant);
+		}catch(OperationNotAllowedException e) {
+  			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+  		}catch(Exception e) {
+  			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+  		}
 	}
 	
 	/*
 	 * Update grant
 	 * 
 	 * @Param GrantDTO
+	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@PutMapping("/update")
-	public ResponseEntity<?> updateGrant(@Valid @RequestBody GrantDTO grant, HttpServletRequest request) {
+	@PutMapping("/update/{id}")
+	public ResponseEntity<?> updateGrant(@Valid @RequestBody GrantDTO grant, HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -130,9 +153,15 @@ public class GrantController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		GrantDTO grantSaved = grantService.updateGrant(jwt, grant);
-		logger.info("Grant saved with id={}", grantSaved.getId());
-		return ResponseEntity.ok(grantSaved);
+		try {
+			GrantDTO grantSaved = grantService.updateGrant(jwt, grant, id);
+			logger.info("Grant saved with id={}", grantSaved.getId());
+			return ResponseEntity.ok(grantSaved);
+		}catch(OperationNotAllowedException e) {
+  			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+  		}catch(Exception e) {
+  			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+  		}
 	}
 	
 	/*
@@ -143,7 +172,7 @@ public class GrantController {
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/delete/{id}")
-	public ResponseEntity<?> deleteGrant(@PathVariable("id") Long id, HttpServletRequest request) {
+	public ResponseEntity<?> deleteGrant(@PathVariable("id") Long id, HttpServletRequest request) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -154,8 +183,14 @@ public class GrantController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		grantService.deleteGrant(id, jwt);
-		return ResponseEntity.ok("Grant deleted");
+		try {
+			grantService.deleteGrant(id, jwt);
+			return ResponseEntity.ok("Grant deleted");
+		}catch(OperationNotAllowedException e) {
+  			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+  		}catch(Exception e) {
+  			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+  		}
 	}
 	
 }
