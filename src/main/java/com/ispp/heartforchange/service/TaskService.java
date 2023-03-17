@@ -9,10 +9,6 @@ import com.ispp.heartforchange.dto.TaskDTO;
 @Service
 public interface TaskService {
 	
-	List<TaskDTO> getAll();
-
-	
-	List<TaskDTO> getByOng(String ongName);
 	
 	TaskDTO saveTask(TaskDTO taskDTO, String ongName);
 
@@ -22,5 +18,9 @@ public interface TaskService {
 	TaskDTO updateTask(Long id, TaskDTO newTaskDTO, String username);
 
 	TaskDTO getById(Long id, String token);
+
+	List<TaskDTO> getByOng(String token, Long id);
+
+
 	
 }

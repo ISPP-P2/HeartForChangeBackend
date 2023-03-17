@@ -42,18 +42,6 @@ public class TaskController {
 		this.jwtUtils = jwtUtils;
 	}
 	
-	/*
-	 * Get all task
-	 * 
-	 * 
-	 * @Return ResponseEntity
-	 */
-	
-	@GetMapping
-	public ResponseEntity<?> getAllTask(){
-		List<TaskDTO> tasks = taskService.getAll();
-		return ResponseEntity.ok(tasks);
-	}
 	
 	
 	/*
@@ -65,7 +53,7 @@ public class TaskController {
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("/{id}")
+	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getTaskById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -78,8 +66,8 @@ public class TaskController {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
 
-		String username = jwtUtils.getUserNameFromJwtToken(jwt);
-		TaskDTO task = taskService.getById(id, username);
+
+		TaskDTO task = taskService.getById(id, jwt);
 		return ResponseEntity.ok(task);
 	}
 	
@@ -104,9 +92,9 @@ public class TaskController {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
 
-		String username = jwtUtils.getUserNameFromJwtToken(jwt);
 		
-		TaskDTO taskSave = taskService.saveTask(task, username);
+		
+		TaskDTO taskSave = taskService.saveTask(task, jwt);
 		logger.info("Task saved with name=={}", taskSave.getName());
 		return ResponseEntity.ok(taskSave);
 		
@@ -120,9 +108,19 @@ public class TaskController {
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("ong/{username}")
-	public ResponseEntity<?> getByOng(@PathVariable("username") String username){
-		List<TaskDTO> tasks = taskService.getByOng(username);
+	@GetMapping("/ong/get/{id}")
+	public ResponseEntity<?> getByOng(HttpServletRequest request, @PathVariable("id") Long id){
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+		List<TaskDTO> tasks = taskService.getByOng(jwt , id);
 		return ResponseEntity.ok(tasks);
 	}
 	
