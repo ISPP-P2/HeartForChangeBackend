@@ -68,8 +68,20 @@ public class VolunteerController {
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@GetMapping("ong/{username}")
-	public ResponseEntity<?> getVolunteersByOng(@PathVariable("username") String username){
+	@GetMapping("/ong")
+	public ResponseEntity<?> getVolunteersByOng(HttpServletRequest request){
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		String username = jwtUtils.getUserNameFromJwtToken(jwt);
 		List<VolunteerDTO> volunteers = volunteerServiceImpl.getVolunteersByOng(username);
 		return ResponseEntity.ok(volunteers);
 	}
@@ -82,8 +94,20 @@ public class VolunteerController {
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getVolunteerById(@PathVariable("id") Long id) {
-		VolunteerDTO volunteer = volunteerServiceImpl.getVolunteerById(id);
+	public ResponseEntity<?> getVolunteerById(HttpServletRequest request, @PathVariable("id") Long id) {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		String username = jwtUtils.getUserNameFromJwtToken(jwt);
+		VolunteerDTO volunteer = volunteerServiceImpl.getVolunteerById(id, username);
 		return ResponseEntity.ok(volunteer);
 	}
 	
@@ -125,8 +149,22 @@ public class VolunteerController {
 	 * @Return ResponseEntity
 	 */
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateVolunteer(@PathVariable("id") Long id, @Valid @RequestBody VolunteerDTO volunteer) {
-	    VolunteerDTO volunteerToUpdate = volunteerServiceImpl.updateVolunteer(id, volunteer);
+	public ResponseEntity<?> updateVolunteer(HttpServletRequest request, @PathVariable("id") Long id, @Valid @RequestBody VolunteerDTO volunteer) {
+		
+		String jwt2 = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt2 = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt2 == null || !jwtUtils.validateJwtToken(jwt2)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		String username = jwtUtils.getUserNameFromJwtToken(jwt2);
+		
+	    VolunteerDTO volunteerToUpdate = volunteerServiceImpl.updateVolunteer(id, volunteer, username);
 	    logger.info("Trying to authenticate with username={} and password={}", volunteerToUpdate.getUsername(), volunteerToUpdate.getPassword());
 	    Authentication authentication = authenticationManager.authenticate(
 	            new UsernamePasswordAuthenticationToken(volunteerToUpdate.getUsername(), volunteer.getPassword()));
@@ -149,8 +187,22 @@ public class VolunteerController {
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/delete/{id}")
-	public ResponseEntity<?> deleteVolunteer(@PathVariable("id") Long id) {
-		volunteerServiceImpl.deleteVolunteer(id);
+	public ResponseEntity<?> deleteVolunteer(HttpServletRequest request, @PathVariable("id") Long id) {
+		
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		String username = jwtUtils.getUserNameFromJwtToken(jwt);
+		
+		volunteerServiceImpl.deleteVolunteer(id, username);
 		logger.info("Volunteer with id={} deleted", id);
 		return new ResponseEntity<String>("Volunteer deleted", HttpStatus.OK);
 	}

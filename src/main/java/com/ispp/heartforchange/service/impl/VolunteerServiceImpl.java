@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,12 +12,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.entity.AcademicExperience;
+import com.ispp.heartforchange.entity.Account;
 import com.ispp.heartforchange.entity.ComplementaryFormation;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Volunteer;
 import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.repository.AcademicExperienceRepository;
+import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.VolunteerRepository;
@@ -34,6 +37,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 	private ComplementaryFormationRepository complementaryFormationRepository;
 	private AcademicExperienceRepository academicExperienceRepository;
 	private WorkExperienceRepository workExperienceRepository;
+	private AccountRepository accountRepository;
 	
 
 	
@@ -41,7 +45,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 * Dependency injection 
 	 */
 	public VolunteerServiceImpl(VolunteerRepository volunteerRepository, PasswordEncoder encoder,	WorkExperienceRepository workExperienceRepository, 
-  ComplementaryFormationRepository complementaryFormationRepository, ONGRepository ongRepository, AcademicExperienceRepository academicExperienceRepository) {
+  ComplementaryFormationRepository complementaryFormationRepository, ONGRepository ongRepository, AcademicExperienceRepository academicExperienceRepository, AccountRepository accountRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.volunteerRepository = volunteerRepository;
@@ -50,6 +54,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 		this.workExperienceRepository = workExperienceRepository;
 		this.complementaryFormationRepository = complementaryFormationRepository;
 		this.academicExperienceRepository = academicExperienceRepository;
+		this.accountRepository = accountRepository;
 	}
   
 	
@@ -75,8 +80,14 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 */
 	@Override
 	public List<VolunteerDTO> getVolunteersByOng(String username) {
-		List<Volunteer> volunteers = volunteerRepository.findVolunteersByOng(username);
+		List<Volunteer> volunteers = volunteerRepository.findAll();
 		List<VolunteerDTO> volunteersDTO = new ArrayList<>();
+		for(Volunteer v : volunteers) {
+			if(!v.getOng().equals(ongRepository.findByUsername(username))) {
+				volunteers.remove(v);
+			}
+		}
+		
 		for(Volunteer volunteer: volunteers) {
 			VolunteerDTO volunteerDTO = new VolunteerDTO(volunteer, volunteer.getHourOfAvailability(), volunteer.getSexCrimes());
 			volunteersDTO.add(volunteerDTO);
@@ -90,10 +101,33 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 * @Return VolunteerDTO
 	 */
 	@Override
-	public VolunteerDTO getVolunteerById(Long id) {
+	public VolunteerDTO getVolunteerById(Long id, String username) {
 		Optional<Volunteer> optVolunteer = volunteerRepository.findById(id);
 		if(!optVolunteer.isPresent()) {
 			throw new UsernameNotFoundException("This Volunteer doesn't exit");
+		}
+		Account account = accountRepository.findByUsername(username);
+		Boolean res = null;
+		if(account.getRolAccount().equals(RolAccount.ONG)) {
+			Ong ong = ongRepository.findByUsername(username);
+			if(!optVolunteer.get().getOng().equals(ong)) {
+				res = false;
+			} else {
+				res = true;
+			}
+		} else if(account.getRolAccount().equals(RolAccount.VOLUNTEER)) {
+			if(!optVolunteer.get().equals(volunteerRepository.findByUsername(username))) {
+				res = false;
+			} else {
+				res = true;
+			}
+		} else {
+			res = false;
+		}
+		
+		if(res != true) {
+			throw new UsernameNotFoundException("You dont have permission");
+
 		}
 		Volunteer volunteer = optVolunteer.get();
 		VolunteerDTO volunteerDTO = new VolunteerDTO(volunteer, volunteer.getHourOfAvailability(), volunteer.getSexCrimes());
@@ -110,6 +144,11 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 */
 	@Override
 	public VolunteerDTO saveVolunteer(VolunteerDTO volunteerDTO, String username) {
+		
+		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
+			throw new UsernameNotFoundException("You must be logged as ONG to create this volunteer");
+		}
+		
 		Ong ong2 = ongRepository.findByUsername(username);
 		Volunteer volunteer = new Volunteer(volunteerDTO, volunteerDTO.getHourOfAvailability(), volunteerDTO.getSexCrimes());
 		volunteer.setId(Long.valueOf(0));
@@ -132,7 +171,10 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 * @Return VolunteerDTO
 	 */
 	@Override
-	public VolunteerDTO updateVolunteer(Long id, VolunteerDTO newVolunteerDTO) {
+	public VolunteerDTO updateVolunteer(Long id, VolunteerDTO newVolunteerDTO, String username) {
+		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
+			throw new UsernameNotFoundException("You must be logged as ONG to edit this volunteer");
+		}
 		Optional<Volunteer> volunteerToUpdate = volunteerRepository.findById(id);
 		logger.info("Volunteer is updating with id={}", id);
 		if(volunteerToUpdate.isPresent()) {
@@ -176,9 +218,12 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 * @Return void
 	 */
 	@Override
-	public void deleteVolunteer(Long id) {
+	public void deleteVolunteer(Long id, String username) {
+		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
+			throw new UsernameNotFoundException("You must be logged as ONG to delete this volunteer");
+		}
 		logger.info("Deleting Volunteer with id={}", id);
-		VolunteerDTO volunteerDTO = getVolunteerById(id);
+		VolunteerDTO volunteerDTO = getVolunteerById(id,username);
 		Volunteer volunteerToDelete = new Volunteer(volunteerDTO, volunteerDTO.getHourOfAvailability(), volunteerDTO.getSexCrimes());
 		volunteerToDelete.setId(id);
 
