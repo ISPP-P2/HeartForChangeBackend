@@ -49,18 +49,6 @@ public class BeneficiaryController {
 	}
 	
 	
-	/*
-	 * Get all beneficiaries
-	 * 
-	 * @Params HttpServletRequest
-	 * 
-	 * @Return ResponseEntity<BeneficiaryDTO>
-	 */
-	@GetMapping
-	public ResponseEntity<?> getAllBeneficiaries() {
-		List<BeneficiaryDTO> beneficiaries = beneficiaryServiceImpl.getAllBeneficiares();
-		return ResponseEntity.ok(beneficiaries);
-	}
 	
 	
 	/*
@@ -71,8 +59,25 @@ public class BeneficiaryController {
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getBeneficiaryById(@PathVariable("id") Long id) {
-		BeneficiaryDTO beneficiary = beneficiaryServiceImpl.getBeneficiaryById(id);
+	public ResponseEntity<?> getBeneficiaryById(@PathVariable("id") Long id, HttpServletRequest request) {
+		
+		String jwt = null;
+		String headerAuth = request.getHeader("Authorization");
+		String username = null;
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}catch(Exception e){
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
+		
+		BeneficiaryDTO beneficiary = beneficiaryServiceImpl.getBeneficiaryById(id,username);
 		return ResponseEntity.ok(beneficiary);
 	}
 	
@@ -84,8 +89,23 @@ public class BeneficiaryController {
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@GetMapping("ong/{username}")
-	public ResponseEntity<?> getBeneficiariesByOng(@PathVariable("username") String username) {
+	@GetMapping("/ong")
+	public ResponseEntity<?> getBeneficiariesByOng(HttpServletRequest request) {
+		String jwt = null;
+		String headerAuth = request.getHeader("Authorization");
+		String username = null;
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}catch(Exception e){
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
 		List<BeneficiaryDTO> beneficiaries = beneficiaryServiceImpl.getAllBeneficiaresByOng(username);
 		return ResponseEntity.ok(beneficiaries);
 	}
@@ -130,8 +150,23 @@ public class BeneficiaryController {
 	 * @Return ResponseEntity
 	 */
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateBeneficiary(@PathVariable("id") Long id, @Valid @RequestBody BeneficiaryDTO beneficiary) {
-	    BeneficiaryDTO beneficiaryToUpdate = beneficiaryServiceImpl.updateBeneficiary(id, beneficiary);
+	public ResponseEntity<?> updateBeneficiary(HttpServletRequest request, @PathVariable("id") Long id, @Valid @RequestBody BeneficiaryDTO beneficiary) {
+		String jwt2 = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt2 = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt2 == null || !jwtUtils.validateJwtToken(jwt2)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		String username = jwtUtils.getUserNameFromJwtToken(jwt2);
+		
+		
+		
+	    BeneficiaryDTO beneficiaryToUpdate = beneficiaryServiceImpl.updateBeneficiary(id, beneficiary, username);
 	    logger.info("Trying to authenticate with username={} and password={}", beneficiaryToUpdate.getUsername(), beneficiaryToUpdate.getPassword());
 	    Authentication authentication = authenticationManager.authenticate(
 	            new UsernamePasswordAuthenticationToken(beneficiaryToUpdate.getUsername(), beneficiary.getPassword()));
@@ -153,8 +188,21 @@ public class BeneficiaryController {
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/delete/{id}")
-	public ResponseEntity<?> deleteBeneficiary(@PathVariable("id") Long id) {
-		beneficiaryServiceImpl.deteleBeneficiary(id);
+	public ResponseEntity<?> deleteBeneficiary(HttpServletRequest request, @PathVariable("id") Long id) {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		String username = jwtUtils.getUserNameFromJwtToken(jwt);
+		
+		beneficiaryServiceImpl.deteleBeneficiary(id, username);
 		logger.info("Beneficiary with id={} deleted", id);
 		return new ResponseEntity<String>("Beneficiary deleted", HttpStatus.OK);
 	}
