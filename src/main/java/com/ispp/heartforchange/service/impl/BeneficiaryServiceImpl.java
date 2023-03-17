@@ -295,7 +295,12 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 			throw new UsernameNotFoundException("You are not an ONG");
 
 		}
-		List<Beneficiary> beneficiaries = beneficiaryRepository.findBeneficiariesByOng(username);
+		List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
+		for(Beneficiary b : beneficiaries) {
+			if(!b.getOng().equals(ongRepository.findByUsername(username))) {
+				beneficiaries.remove(b);
+			}
+		}
 		List<BeneficiaryDTO> beneficiariesDTOs = new ArrayList<>();
 		for(Beneficiary beneficiary: beneficiaries) {
 			BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
