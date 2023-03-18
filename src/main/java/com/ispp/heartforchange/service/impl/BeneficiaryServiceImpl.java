@@ -343,7 +343,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 				beneficiaryDTO.getLanguages());
 		    beneficiaryToDelete.setId(id);
 		
-		List<AcademicExperience> acadExps = academicExperienceRepository.findByBeneficiary(beneficiaryDTO.getUsername()).get();
+		List<AcademicExperience> acadExps = academicExperienceRepository.findAcademicExperienceByBeneficiaryId(beneficiaryToDelete.getId()).get();
 		List<Appointment> appointments = appointmentRepository.findAppointmentsByBeneficiaryUsername(beneficiaryToDelete.getUsername()).get();
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryUserName(beneficiaryToDelete.getUsername()).get();
 		List<ComplementaryFormation> complementaryFormationList = complementaryFormationRepository.findComplementaryFormationByBeneficiary(beneficiaryToDelete.getUsername()).get();
