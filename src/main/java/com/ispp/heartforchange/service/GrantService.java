@@ -10,6 +10,8 @@ public interface GrantService {
 	List<GrantDTO> getGrantsByOng(String token) throws OperationNotAllowedException;
 
 	GrantDTO getGrantById(Long id, String token) throws OperationNotAllowedException;
+	
+	Integer getTotalAmountAcceptedGrantsByOng(String token) throws OperationNotAllowedException;
 
 	GrantDTO saveGrant(GrantDTO grantDTO, String token) throws OperationNotAllowedException;
 

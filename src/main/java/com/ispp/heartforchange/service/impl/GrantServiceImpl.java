@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.GrantDTO;
 import com.ispp.heartforchange.entity.Grant;
+import com.ispp.heartforchange.entity.GrantState;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.GrantRepository;
@@ -61,6 +62,35 @@ public class GrantServiceImpl implements GrantService {
   			throw new OperationNotAllowedException("You must be an ONG to use this method.");
  		}	
 	}
+	
+	
+	/*
+	 * Get total amount of accepted grants by ong
+	 * @Params String token
+	 * @Return GrantDTO
+	 */
+	@Override
+	public Integer getTotalAmountAcceptedGrantsByOng(String token) throws OperationNotAllowedException {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		List<Grant> grants = grantRepository.findByOng(ong);
+		
+		Integer amount = 0;
+		
+		if(ong!=null) {
+			for (Grant grant : grants) {
+				if(grant.getOng().getId() == ong.getId()) {
+					if(grant.getState() == GrantState.ACCEPTED) {
+						amount += grant.getAmount();
+					}
+				}
+			}
+			return amount;
+		}else{
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+ 		}	
+	}
+	
 	
 	/*
 	 * Get a grant by id

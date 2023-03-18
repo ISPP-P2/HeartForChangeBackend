@@ -111,6 +111,36 @@ public class GrantController {
 	 * 
 	 * @Return ResponseEntity
 	 */
+	@GetMapping("/get/{id}/amount")
+	public ResponseEntity<?> getTotalAmountAcceptedGrantsByOng(HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException {
+		String jwt = null;
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			Integer amount = grantService.getTotalAmountAcceptedGrantsByOng(jwt);
+			return ResponseEntity.ok(amount);
+		}catch(OperationNotAllowedException e) {
+  			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+  		}catch(Exception e) {
+  			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+  		}
+	}
+	
+	/*
+	 * Get amount of accepted grants by ong
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param Long id
+	 * 
+	 * @Return ResponseEntity
+	 */
 	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getGrantsByOng(HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException {
 		String jwt = null;
