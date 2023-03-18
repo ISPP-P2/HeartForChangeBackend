@@ -335,6 +335,28 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		return beneficiariesDTOs;
 	}
 	
+	@Override
+	public Integer getNumberBeneficiaresByOng(String username){
+		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
+			throw new UsernameNotFoundException("You are not an ONG");
+
+		}
+		List<Beneficiary> allBenficiaries = beneficiaryRepository.findAll();
+		List<Beneficiary> beneficiaries = new ArrayList<>();
+		for(Beneficiary b : allBenficiaries) {
+			if(b.getOng().equals(ongRepository.findByUsername(username))) {
+				beneficiaries.add(b);
+			}
+		}
+		
+		if(beneficiaries.isEmpty()) {
+			throw new UsernameNotFoundException("You don´t have any beneficiaries");
+
+		}
+		
+		return beneficiaries.size();
+	}
+	
 	
 	/*
 	 * delete beneficiary

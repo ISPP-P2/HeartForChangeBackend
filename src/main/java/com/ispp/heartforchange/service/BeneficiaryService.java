@@ -12,7 +12,7 @@ public interface BeneficiaryService {
 	
 	BeneficiaryDTO getBeneficiaryById(Long id, String username);
 	
-	
+	Integer getNumberBeneficiaresByOng(String username);
 	
 	
 	List<BeneficiaryDTO> getAllBeneficiaresByOng(String username);

@@ -89,6 +89,27 @@ public class BeneficiaryController {
 	 * 
 	 * @Return ResponseEntity
 	 */
+	@GetMapping("/total")
+	public ResponseEntity<?> getNumberBneneficiariesByOng(HttpServletRequest request) {
+		String jwt = null;
+		String headerAuth = request.getHeader("Authorization");
+		String username = null;
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			username = jwtUtils.getUserNameFromJwtToken(jwt);
+		}catch(Exception e){
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
+		Integer totalBeneficiaries = beneficiaryServiceImpl.getNumberBeneficiaresByOng(username);
+		return ResponseEntity.ok(totalBeneficiaries);
+	}
+	
 	@GetMapping("/ong")
 	public ResponseEntity<?> getBeneficiariesByOng(HttpServletRequest request) {
 		String jwt = null;
