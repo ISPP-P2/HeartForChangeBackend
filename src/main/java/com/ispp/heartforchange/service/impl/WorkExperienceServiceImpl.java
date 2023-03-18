@@ -73,8 +73,12 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 				throw new UsernameNotFoundException("Not Found: Work Experience not exist!");
 			} else {
 				if(rol == RolAccount.VOLUNTEER) {
-					if(workExperience.get().getVolunteer().getId()==volunteer.getId()) {
-						return new WorkExperienceDTO(workExperience.get());
+					if(workExperience.get().getBeneficiary() == null) {
+						if(workExperience.get().getVolunteer().getId()==volunteer.getId()) {
+							return new WorkExperienceDTO(workExperience.get());
+						}else {
+							throw new UsernameNotFoundException("You don't have access!");
+						}
 					}else {
 						throw new UsernameNotFoundException("You don't have access!");
 					}
