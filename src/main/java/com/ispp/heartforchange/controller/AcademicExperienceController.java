@@ -44,9 +44,10 @@ public class AcademicExperienceController {
 	}
 
 	/*
-	 * Get all grant by volunteer
+	 * Get all academics experiences of a volunteer
 	 * 
-	 * @Param HttpServletRequest
+	 * @Param HttpServletRequest request
+	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
 	 */
@@ -76,10 +77,10 @@ public class AcademicExperienceController {
 	}
 
 	/*
-	 * Get all grant by beneficiary
+	 * Get all academics experiences of a beneficiary
 	 * 
-	 * @Param HttpServletRequest
-	 * @Param id
+	 * @Param HttpServletRequest request
+	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
 	 */
@@ -107,11 +108,10 @@ public class AcademicExperienceController {
 	}
 
 	/*
-	 * Get Academic Experience by volunteer
+	 * Get Academic Experience by id
 	 * 
-	 * @Param HttpServletRequest
-	 * 
-	 * @Param id
+	 * @Param HttpServletRequest request
+	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
 	 */
@@ -142,9 +142,9 @@ public class AcademicExperienceController {
 	/*
 	 * Save academic experience
 	 * 
-	 * @Param academicExperienceDTO
-	 * 
-	 * @Param username
+	 * @Param AcademicExperienceDTO academicExperienceDTO
+	 * @Param HttpServletRequest request
+	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
 	 */
@@ -178,9 +178,9 @@ public class AcademicExperienceController {
 	/*
 	 * Update Academic Experience
 	 * 
-	 * @Param AcademicExperienceDTO
-	 * 
-	 * @Param token
+	 * @Param AcademicExperienceDTO academicExperienceDTO
+	 * @Param HttpServletRequest request
+	 * @Param String token
 	 * 
 	 * @Return ResponseEntity
 	 */
@@ -212,6 +212,7 @@ public class AcademicExperienceController {
 	 * Delete academic experience
 	 * 
 	 * @Param Long id
+	 * @Param HttpServletRequest request
 	 * 
 	 * @Return ResponseEntity
 	 */

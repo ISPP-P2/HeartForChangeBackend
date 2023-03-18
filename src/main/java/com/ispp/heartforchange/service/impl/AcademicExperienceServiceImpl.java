@@ -52,8 +52,9 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 	 * Get academic experience by volunteer
 	 * 
 	 * @Param Long id
+	 * @Param String token
 	 * 
-	 * @Return List<AcademicExperienceDTO>
+	 * @Return AcademicExperienceDTO
 	 */
 	@Override
 	public AcademicExperienceDTO getAcademicExpByID(Long id, String token) throws OperationNotAllowedException{
@@ -102,7 +103,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 	/*
 	 * Get academic experience by volunteer
 	 * 
-	 * @Param String volunteerUserName
+	 * @Param Long volunteerId
 	 * @Param String token
 	 * 
 	 * @Return List<AcademicExperienceDTO>
@@ -175,7 +176,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 	/*
 	 * Get academic experience by beneficiary
 	 * 
-	 * @Param String beneficiaryUserName
+	 * @Param Long beneficiaryId
 	 * @Param String token
 	 * 
 	 * @Return List<AcademicExperienceDTO>
@@ -232,8 +233,12 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 	
 	/*
 	 * Save an academic experience
-	 * @Params String token
-	 * @Params AcademicExperienceDTO
+	 * 
+	 *
+	 * @Param String token
+	 * @Param AcademicExperienceDTO
+	 * @Param Long id
+	 * 
 	 * @Return AcademicExperienceDTO
 	 */
 	@Override
@@ -296,8 +301,11 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 	
 	/*
      * Update a academic experience
-     * @Params String token
-     * @Params AcademicExperienceDTO
+     * 
+     * @Param String token
+     * @Param Long id
+     * @Param AcademicExperienceDTO
+     * 
      * @Return AcademicExperienceDTO
      */
 	@Override
@@ -354,8 +362,10 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 	
 	/*
      * Delete a academic experience
+     * 
      * @Params String token
      * @Params Long id
+     * 
      * @Return void
      */
     @Override
