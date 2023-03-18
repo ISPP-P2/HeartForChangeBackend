@@ -70,7 +70,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 				throw new UsernameNotFoundException("Not Found: Academic Experience not exist!");
 			} else {
 				if(rol == RolAccount.VOLUNTEER) {
-					if(academicExperience.get().getVolunteer().getId()==volunteer.getId()) {
+					if(academicExperience.get().getBeneficiary() == null && academicExperience.get().getVolunteer().getId()==volunteer.getId()) {
 						return new AcademicExperienceDTO(academicExperience.get());
 					}else {
 						throw new UsernameNotFoundException("You don't have access!");
