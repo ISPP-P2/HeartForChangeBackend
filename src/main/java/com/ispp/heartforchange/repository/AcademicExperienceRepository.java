@@ -11,11 +11,11 @@ import com.ispp.heartforchange.entity.AcademicExperience;
 @Repository
 public interface AcademicExperienceRepository extends JpaRepository<AcademicExperience, Long>{
 
-	@Query("select a from AcademicExperience a where a.volunteer.username = :usernameSearched")
-	Optional<List<AcademicExperience>> findByVolunteer(String usernameSearched);
-	
-	@Query("select a from AcademicExperience a where a.beneficiary.username = :usernameSearched")
-	Optional<List<AcademicExperience>> findByBeneficiary(String usernameSearched);
+ 	@Query("Select w from AcademicExperience w where w.volunteer.id = :id")
+ 	Optional<List<AcademicExperience>> findAcademicExperienceByVolunteerId(Long id);
+
+ 	@Query("Select w from AcademicExperience w where w.beneficiary.id = :id")
+ 	Optional<List<AcademicExperience>> findAcademicExperienceByBeneficiaryId(Long id);
 
 
 }
