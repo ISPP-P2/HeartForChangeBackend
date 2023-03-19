@@ -49,7 +49,7 @@ public class Grant implements Serializable {
 	private String justification;
 
 	@Min(0)
-	private Integer amount;
+	private Double amount;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "ong_id")

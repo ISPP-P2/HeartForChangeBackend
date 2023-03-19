@@ -70,12 +70,12 @@ public class GrantServiceImpl implements GrantService {
 	 * @Return GrantDTO
 	 */
 	@Override
-	public Integer getTotalAmountAcceptedGrantsByOng(String token) throws OperationNotAllowedException {
+	public Double getTotalAmountAcceptedGrantsByOng(String token) throws OperationNotAllowedException {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		List<Grant> grants = grantRepository.findByOng(ong);
 		
-		Integer amount = 0;
+		Double amount = 0.0;
 		
 		if(ong!=null) {
 			for (Grant grant : grants) {

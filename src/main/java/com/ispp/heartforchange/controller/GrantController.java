@@ -124,7 +124,7 @@ public class GrantController {
 		}
 		
 		try {
-			Integer amount = grantService.getTotalAmountAcceptedGrantsByOng(jwt);
+			Double amount = grantService.getTotalAmountAcceptedGrantsByOng(jwt);
 			return ResponseEntity.ok(amount);
 		}catch(OperationNotAllowedException e) {
   			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
