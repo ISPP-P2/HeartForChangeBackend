@@ -13,9 +13,9 @@ import com.ispp.heartforchange.entity.ComplementaryFormation;
 public interface ComplementaryFormationRepository extends JpaRepository<ComplementaryFormation, Long> {
 	
 	
-	@Query("Select c from ComplementaryFormation c where c.volunteer.username = :username")
-	Optional<List<ComplementaryFormation>> findComplementaryFormationByVolunteer(String username);
+	@Query("Select c from ComplementaryFormation c where c.volunteer.id = :id")
+	Optional<List<ComplementaryFormation>> findComplementaryFormationByVolunteer(Long id);
 	
-	@Query("Select c from ComplementaryFormation c where c.beneficiary.username = :username")
-	Optional<List<ComplementaryFormation>> findComplementaryFormationByBeneficiary(String username);
+	@Query("Select c from ComplementaryFormation c where c.beneficiary.id = :id")
+	Optional<List<ComplementaryFormation>> findComplementaryFormationByBeneficiary(Long id);
 }

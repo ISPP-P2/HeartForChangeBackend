@@ -247,8 +247,9 @@ public class VolunteerServiceImpl implements VolunteerService{
 
 		List<AcademicExperience> academicExps = academicExperienceRepository.findByVolunteer(volunteerToDelete.getUsername()).get();
 		//Get all the work experiences that belong to the volunteer to delete
-		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByVolunteerUserName(volunteerToDelete.getUsername()).get();
-		List<ComplementaryFormation> complementaryFormations = complementaryFormationRepository.findComplementaryFormationByVolunteer(volunteerToDelete.getUsername()).get();
+
+		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByVolunteerId(volunteerToDelete.getId()).get();
+		List<ComplementaryFormation> complementaryFormations = complementaryFormationRepository.findComplementaryFormationByVolunteer(volunteerToDelete.getId()).get();
 
 		try {
 			for(AcademicExperience a: academicExps) {
