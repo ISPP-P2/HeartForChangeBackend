@@ -42,20 +42,7 @@ public class AttendanceController {
 		this.jwtUtils = jwtUtils;
 	}
 	
-	/*
-	 * Get all attendance
-	 * 
-	 * 
-	 * @Return ResponseEntity
-	 */
-	
-	@GetMapping
-	public ResponseEntity<?> getAllAttendances(){
-		List<AttendanceDTO> attendances = attendanceService.getAll();
-		return ResponseEntity.ok(attendances);
-	}
-	
-	
+		
 	/*
 	 * Get attendance by id
 	 * 
@@ -117,7 +104,7 @@ public class AttendanceController {
 	 * @Return ResponseEntity
 	 */
 	
-	@PostMapping("/delete/{idTask}")
+	@PostMapping("/cancel/{idTask}")
 	public ResponseEntity<?> deletePetition(HttpServletRequest request, @PathVariable("idTask") Long id) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
@@ -129,7 +116,7 @@ public class AttendanceController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		attendanceService.deletePetition(id, jwt);
+		attendanceService.cancelPetition(id, jwt);
 		return ResponseEntity.ok("Attendance Deleted");
 	}
 	

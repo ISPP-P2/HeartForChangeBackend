@@ -68,7 +68,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 				.antMatchers("/tasks/ong/**", "/tasks/get/**").hasAnyAuthority("ONG", "VOLUNTEER")
 				.antMatchers("/tasks/new/", "/tasks/update/**", "/tasks/delete/**").hasAnyAuthority("ONG")
 				.antMatchers("/attendances/ong/**", "/attendances/{id}", "/attendances/accept/**", "/attendances/deny/**", "/attendances/confirm/**", "/attendances/add/**", "/attendances/quit/**").hasAnyAuthority("ONG")
-				.antMatchers("/attendances/volunteer/**", "/attendances/{id}", "/attendances/new/**", "/attendances/delete/**").hasAnyAuthority("VOLUNTEER")
+				.antMatchers("/attendances/volunteer/**", "/attendances/{id}", "/attendances/new/**", "/attendances/cancel/**").hasAnyAuthority("VOLUNTEER")
 				.antMatchers("/grants/**").hasAnyAuthority("ONG")
 				.anyRequest().authenticated();
 

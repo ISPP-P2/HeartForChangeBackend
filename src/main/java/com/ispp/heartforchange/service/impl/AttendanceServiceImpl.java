@@ -1,5 +1,8 @@
 package com.ispp.heartforchange.service.impl;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -23,6 +26,8 @@ import com.ispp.heartforchange.repository.PersonRepository;
 import com.ispp.heartforchange.repository.TaskRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.AttendanceService;
+
+import net.bytebuddy.asm.Advice.Local;
 
 
 @Service
@@ -50,22 +55,6 @@ public class AttendanceServiceImpl implements AttendanceService{
 		this.jwtUtils = jwtUtils;
 	}
 	
-	/*
-	 * Get all attendance.
-	 * 
-	 * @Return List<AttendanceDTO>
-	 */
-	
-	@Override
-	public List<AttendanceDTO> getAll() {
-		List<Attendance> attendances = attendanceRepository.findAll();
-		List<AttendanceDTO> attendancesDTO = new ArrayList<AttendanceDTO>();
-		for(Attendance attendance : attendances) {
-			AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
-					attendancesDTO.add(attendanceDTO);
-		}
-		return attendancesDTO;
-	}
 	
 	/*
 	 * Get attendance by id.
@@ -105,38 +94,56 @@ public class AttendanceServiceImpl implements AttendanceService{
 		Person person = personRepository.findByUsername(username);
 		Optional<Task> task = taskRepository.findById(id);
 		if (task.isPresent()) {
-			Attendance attendance = new Attendance(person, task.get());
-			attendance.setId(Long.valueOf(0));
-			try {
-				Attendance attendanceSaved = attendanceRepository.save(attendance);
-				logger.info("Create Petition on Task with name={} by User with username={}", task.get().getName(), person.getName());
-				AttendanceDTO attendanceDTO = new AttendanceDTO(attendanceSaved);
-				return attendanceDTO;
-			} catch (Exception e) {
-				throw new UsernameNotFoundException(e.getMessage());
-			}
+			// Checks if the task is an Activity
+			if(task.get().getType() == TaskType.ACTIVIDAD) {
+				//Checks if the task belongs to the right ONG
+				if(task.get().getOng().equals(person.getOng())) {
+					//Checks if the petition is not being created after the tasks date
+					if(task.get().getDate().isBefore(LocalDateTime.now())) {
+						
+						Attendance attendance = new Attendance(person, task.get());
+						attendance.setId(Long.valueOf(0));
+						try {
+							Attendance attendanceSaved = attendanceRepository.save(attendance);
+							logger.info("Create Petition on Task with name={} by User with username={}", task.get().getName(), person.getName());
+							AttendanceDTO attendanceDTO = new AttendanceDTO(attendanceSaved);
+							return attendanceDTO;
+						} catch (Exception e) {
+							throw new UsernameNotFoundException(e.getMessage());
+						}
+					}else throw new UsernameNotFoundException("You cant create a petition on a task thats is before today!");
+					
+				}else throw new UsernameNotFoundException("You cant create a petition on this task because it doesn belong to your ONG!");
+				
+			}else throw new UsernameNotFoundException("You cant create a petition on this task because its not an Activity!");
 		}
-		throw new UsernameNotFoundException("Attendance doesn't exist!");
+		throw new UsernameNotFoundException("Task doesn't exist!");
 		
 	}
 	
 	
 	/*
-	 * Delete a Petition for attendance by a Volunteer.
+	 * Cancel a Petition for attendance by a Volunteer.
 	 * @Param Long id
 	 * @Param String token
 	 */
 	
 	@Override
-	public void deletePetition(Long id, String token) {
+	public AttendanceDTO cancelPetition(Long id, String token) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Person person = personRepository.findByUsername(username);
 		Optional<Attendance> attendance = attendanceRepository.findById(id);
 		if (attendance.isPresent()) {
 			if (attendance.get().getPerson().getId() == person.getId()) {
-				attendanceRepository.delete(attendance.get());
+				try {					
+					attendance.get().setState(PetitionState.CANCELADA);
+					AttendanceDTO attendanceDTO = new AttendanceDTO(attendance.get());
+					return attendanceDTO;
+				} catch (Exception e) {
+					throw new UsernameNotFoundException(e.getMessage());
+				}
 			} else {
-				throw new UsernameNotFoundException("Error deleting attendance");
+				throw new UsernameNotFoundException("You dont have the permisions on this attendance!");
 			}
 
 		} else {
@@ -159,18 +166,21 @@ public class AttendanceServiceImpl implements AttendanceService{
 		Optional<Attendance> attendance = attendanceRepository.findById(id);
 		if (attendance.isPresent()) {
 			if (attendance.get().getTask().getOng().getId() == ong.getId()) {
-				logger.info("Attendance with id={} is being accepting ", attendance.get().getId());
-				attendance.get().setState(PetitionState.ACEPTADA);
-				Attendance attendanceUpdate = attendance.get();
-				System.out.println(attendanceUpdate);
-				try {
-					attendanceRepository.save(attendanceUpdate);
-					return new AttendanceDTO(attendanceUpdate);
-				} catch (Exception e) {
-					throw new UsernameNotFoundException(e.getMessage());
-				}
+				//Checks if the petition is not being accepted after the tasks date
+				if(attendance.get().getTask().getDate().isBefore(LocalDateTime.now())) {					
+					logger.info("Attendance with id={} is being accepting ", attendance.get().getId());
+					attendance.get().setState(PetitionState.ACEPTADA);
+					Attendance attendanceUpdate = attendance.get();
+					System.out.println(attendanceUpdate);
+					try {
+						attendanceRepository.save(attendanceUpdate);
+						return new AttendanceDTO(attendanceUpdate);
+					} catch (Exception e) {
+						throw new UsernameNotFoundException(e.getMessage());
+					}
+				}else throw new UsernameNotFoundException("You cant accept an attendace wich tasks date is before now!");
 			} else {
-				throw new UsernameNotFoundException("Error accepting this attendance");
+				throw new UsernameNotFoundException("You dont have permision on an attendance that doesnt belong to your ONG!");
 			}
 
 		} else {
@@ -192,16 +202,19 @@ public class AttendanceServiceImpl implements AttendanceService{
 		Optional<Attendance> attendance = attendanceRepository.findById(id);
 		if (attendance.isPresent()) {
 			if (attendance.get().getTask().getOng().getId() == ong.getId()) {
-				logger.info("Attendance with id={} is being denying ", attendance.get().getId());
-				attendance.get().setState(PetitionState.DENEGADA);
-				Attendance attendanceUpdate = attendance.get();
-				System.out.println(attendanceUpdate);
-				try {
-					attendanceRepository.save(attendanceUpdate);
-					return new AttendanceDTO(attendanceUpdate);
-				} catch (Exception e) {
-					throw new UsernameNotFoundException(e.getMessage());
-				}
+				//Checks if the petition is not being accepted after the tasks date
+				if(attendance.get().getTask().getDate().isBefore(LocalDateTime.now())) {					
+					logger.info("Attendance with id={} is being denying ", attendance.get().getId());
+					attendance.get().setState(PetitionState.DENEGADA);
+					Attendance attendanceUpdate = attendance.get();
+					System.out.println(attendanceUpdate);
+					try {
+						attendanceRepository.save(attendanceUpdate);
+						return new AttendanceDTO(attendanceUpdate);
+					} catch (Exception e) {
+						throw new UsernameNotFoundException(e.getMessage());
+					}
+				}throw new UsernameNotFoundException("You cant deny an attendace wich tasks date is before now!");
 			} else {
 				throw new UsernameNotFoundException("Error denying this attendance");
 			}
@@ -277,7 +290,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 				}
 				throw new UsernameNotFoundException("You dont have the permissions!");
 			}
-			throw new UsernameNotFoundException("This task isnt a CURSO or a Taller!");
+			throw new UsernameNotFoundException("This task isnt a CURSO or a TALLER!");
 		}
 		throw new UsernameNotFoundException("Attendance or Person doesn't exist!");
 		

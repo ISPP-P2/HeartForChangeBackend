@@ -231,14 +231,14 @@ public class TaskServiceImpl implements TaskService{
 	public List<AttendanceDTO> getAllAttendancesByTask(String token, Long id) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
+		System.out.println(ong != null);
 		List<AttendanceDTO> attendances = new ArrayList<>();
 		//Logged as ONG
 		if(ong != null) {
-			TaskDTO taskDTO = getById(token, id);
-			Task task = new Task(taskDTO, ong);
+			Optional<Task> optionalTask = taskRepository.findById(id);
 			// If the task you are searching for is part of your ONG
-			if(ong.getTasks().contains(task)) {
-				for(Attendance attendance: task.getAttendance()) {
+			if(optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
+				for(Attendance attendance: optionalTask.get().getAttendance()) {
 					AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
 					attendances.add(attendanceDTO);
 				}
