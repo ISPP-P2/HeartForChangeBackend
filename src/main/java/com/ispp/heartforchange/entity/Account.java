@@ -58,7 +58,6 @@ public class Account implements Serializable {
 	@Size(max = 120)
 	private String password;
 	
-	@NotNull
 	private RolAccount rolAccount;
 	
 	
