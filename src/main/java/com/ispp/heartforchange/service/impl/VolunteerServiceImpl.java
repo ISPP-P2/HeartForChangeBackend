@@ -84,6 +84,31 @@ public class VolunteerServiceImpl implements VolunteerService{
 		return volunteersDTO;
 	} 
 	
+	/*
+	 * Get volunteer by ong
+	 * @Params String username
+	 * @Return VolunteerDTO
+	 */
+	@Override
+	public Integer getNumberOfVolunteersByOng(String username) {
+		List<Volunteer> allVolunteers = volunteerRepository.findAll();
+		List<VolunteerDTO> volunteersDTO = new ArrayList<>();
+		List<Volunteer> volunteers = new ArrayList<>();
+		for(Volunteer v : allVolunteers) {
+			if(v.getOng().equals(ongRepository.findByUsername(username))) {
+				volunteers.add(v);
+			}
+		}
+		if(volunteers.isEmpty()) {
+			throw new UsernameNotFoundException("You dont have any volunteers");
+		}
+		for(Volunteer volunteer: volunteers) {
+			VolunteerDTO volunteerDTO = new VolunteerDTO(volunteer, volunteer.getHourOfAvailability(), volunteer.getSexCrimes());
+			volunteersDTO.add(volunteerDTO);
+		}
+		return volunteersDTO.size();
+	} 
+	
 	/*   
 	 * Get volunteer by id
 	 * @Params Long id

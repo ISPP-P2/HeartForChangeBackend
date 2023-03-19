@@ -14,6 +14,8 @@ public interface VolunteerService {
 	
 	List<VolunteerDTO> getVolunteersByOng(String username);
 	
+	Integer getNumberOfVolunteersByOng(String username);
+
 	VolunteerDTO saveVolunteer(VolunteerDTO volunteerDTO, String username);
 	
 	VolunteerDTO updateVolunteer(Long id, VolunteerDTO volunteerDTO, String username);

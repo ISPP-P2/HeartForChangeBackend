@@ -77,6 +77,31 @@ public class VolunteerController {
 	}
 	
 	/*
+	 * Get all volunteer by ONG
+	 * 
+	 * @Params username
+	 * 
+	 * @Return ResponseEntity
+	 */
+	@GetMapping("/total")
+	public ResponseEntity<?> getNumberOfVolunteersByOng(HttpServletRequest request){
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		String username = jwtUtils.getUserNameFromJwtToken(jwt);
+		Integer volunteers = volunteerServiceImpl.getNumberOfVolunteersByOng(username);
+		return ResponseEntity.ok(volunteers);
+	}
+	
+	/*
 	 * Get volunteer by id
 	 * 
 	 * @Param id
