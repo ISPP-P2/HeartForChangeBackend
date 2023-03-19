@@ -10,7 +10,6 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ispp.heartforchange.entity.Account;
-import com.ispp.heartforchange.entity.RolAccount;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,27 +50,21 @@ public class AccountDTO implements Serializable {
 	@NotBlank
 	@Size(max = 120)
 	@JsonProperty("password")
-	private String password;
-	
-	@JsonProperty("rolAccount")
-	@NotNull
-	private RolAccount rolAccount;		
+	private String password;	
 	
 	public AccountDTO( Account account ) {
 		super();
 		this.id = account.getId();
 		this.username = account.getUsername();
 		this.password = account.getPassword();
-		this.rolAccount = account.getRolAccount();
 	}
 
 	public AccountDTO(@NotNull @NotBlank @Size(max = 20) String username,
 			@NotNull @NotBlank @Size(max = 20) String email,
-			@NotNull @NotBlank @Size(max = 120) String password, @NotNull RolAccount rolAccount) {
+			@NotNull @NotBlank @Size(max = 120) String password) {
 		super();
 		this.username = username;
 		this.password = password;
-		this.rolAccount = rolAccount;
 		this.email = email;
 	}
 
