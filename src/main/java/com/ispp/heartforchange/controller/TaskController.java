@@ -250,4 +250,25 @@ public class TaskController {
 		}
 	}
 	
+	@GetMapping("/count")
+	public ResponseEntity<?> getNumberOfTasks(HttpServletRequest request) {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			Integer count = taskService.getNumberOfTasks(jwt);
+			return ResponseEntity.ok(count);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
 }

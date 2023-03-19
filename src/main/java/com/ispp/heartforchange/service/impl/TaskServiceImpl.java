@@ -76,7 +76,7 @@ public class TaskServiceImpl implements TaskService{
 				Task task = optionalTask.get();
 				TaskDTO tasktDTO = new TaskDTO(task);
 				return tasktDTO;
-			}else throw new UsernameNotFoundException("You must be logged as ONG or volunteer to use this method.");
+			}else throw new UsernameNotFoundException("You must be logged as ONG or volunteer to make this operation.");
 		}
 	}
 	
@@ -126,7 +126,7 @@ public class TaskServiceImpl implements TaskService{
         			throw new UsernameNotFoundException("You cannot get information about an ONG which you do not belong to.");
         		}
         	}else {
-        		throw new UsernameNotFoundException("You must be logged to use this method.");
+        		throw new UsernameNotFoundException("You must be logged to make this operation.");
         	}
         	
         	logger.info("Trying to get the tasks from ONG with name={}", ong.get().getName());
@@ -246,7 +246,7 @@ public class TaskServiceImpl implements TaskService{
 				throw new UsernameNotFoundException("You cannot get information about an ONG which you do not belong to.");
 			}
 		}else {
-			throw new UsernameNotFoundException("You must be logged as an ONG to use this method.");
+			throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
 		}
 		return attendances;
 	}
@@ -295,6 +295,25 @@ public class TaskServiceImpl implements TaskService{
 		}
 		
 		return attendances;
+	}
+
+	/*
+	 * Get number of tasks of your own ONG.
+	 * @Param String token
+	 * @Return Integer
+	 */
+	
+	@Override
+	public Integer getNumberOfTasks(String token) {
+		Integer count;
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong loggedOng = ongRepository.findByUsername(username);
+		if(loggedOng != null) {
+			count = loggedOng.getTasks().size();
+		}else {
+			throw new UsernameNotFoundException("You must be logged as ONG to make this operation.");
+		}
+		return count;
 	}
 
 }

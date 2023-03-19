@@ -24,6 +24,8 @@ public interface TaskService {
 	List<AttendanceDTO> getAllAttendancesByTask(String token, Long id);
 
 	List<AttendanceDTO> getAllAttendancesByVolunteer(String token, Long id);
+	
+	Integer getNumberOfTasks(String token);
 
 
 	

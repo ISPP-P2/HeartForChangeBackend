@@ -1,10 +1,6 @@
 package com.ispp.heartforchange.service.impl;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.chrono.ChronoLocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -26,8 +22,6 @@ import com.ispp.heartforchange.repository.PersonRepository;
 import com.ispp.heartforchange.repository.TaskRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.AttendanceService;
-
-import net.bytebuddy.asm.Advice.Local;
 
 
 @Service

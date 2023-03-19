@@ -1,7 +1,5 @@
 package com.ispp.heartforchange.service;
 
-import java.util.List;
-
 import com.ispp.heartforchange.dto.AttendanceDTO;
 import com.ispp.heartforchange.entity.AttendanceType;
 
