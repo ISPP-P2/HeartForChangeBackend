@@ -11,7 +11,9 @@ import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.GrantDTO;
 import com.ispp.heartforchange.entity.Grant;
+import com.ispp.heartforchange.entity.GrantState;
 import com.ispp.heartforchange.entity.Ong;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.GrantRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
@@ -42,17 +44,53 @@ public class GrantServiceImpl implements GrantService {
 	 * @Return List<GrantDTO>
 	 */
 	@Override
-	public List<GrantDTO> getGrantsByOng(String token) {
+	public List<GrantDTO> getGrantsByOng(String token) throws OperationNotAllowedException {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		List<Grant> grants = grantRepository.findByOng(ong);
 		List<GrantDTO> grantsDTO = new ArrayList<>();
-		for (Grant grant : grants) {
-			GrantDTO grantDTO = new GrantDTO(grant);
-			grantsDTO.add(grantDTO);
-		}
-		return grantsDTO;
+		
+		if(ong!=null) {
+			for (Grant grant : grants) {
+				if(grant.getOng().getId() == ong.getId()) {
+					GrantDTO grantDTO = new GrantDTO(grant);
+					grantsDTO.add(grantDTO);
+				}
+			}
+			return grantsDTO;
+		}else{
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+ 		}	
 	}
+	
+	
+	/*
+	 * Get total amount of accepted grants by ong
+	 * @Params String token
+	 * @Return GrantDTO
+	 */
+	@Override
+	public Double getTotalAmountAcceptedGrantsByOng(String token) throws OperationNotAllowedException {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		List<Grant> grants = grantRepository.findByOng(ong);
+		
+		Double amount = 0.0;
+		
+		if(ong!=null) {
+			for (Grant grant : grants) {
+				if(grant.getOng().getId() == ong.getId()) {
+					if(grant.getState() == GrantState.ACCEPTED) {
+						amount += grant.getAmount();
+					}
+				}
+			}
+			return amount;
+		}else{
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+ 		}	
+	}
+	
 	
 	/*
 	 * Get a grant by id
@@ -61,77 +99,89 @@ public class GrantServiceImpl implements GrantService {
 	 * @Return GrantDTO
 	 */
 	@Override
-	public GrantDTO getGrantById(Long id, String token) {
+	public GrantDTO getGrantById(Long id, String token) throws OperationNotAllowedException {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Grant> grant = grantRepository.findById(id);
 
-		if (!grant.isPresent()) {
-			throw new UsernameNotFoundException("Grant not found!");
-		} else {
-			if (grant.get().getOng().getId() == ong.getId()) {
-				return new GrantDTO(grant.get());
+		if(ong!=null) {
+			if (!grant.isPresent()) {
+				throw new UsernameNotFoundException("Not Found: Grant not exist!");
 			} else {
-				throw new UsernameNotFoundException("You don't have access!");
+				if (grant.get().getOng().getId() == ong.getId()) {
+					return new GrantDTO(grant.get());
+				} else {
+					throw new UsernameNotFoundException("You don't have access!");
+				}
 			}
-		}
+		}else{
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+ 		}
 	}
 	
 	/*
 	 * Save a grant
 	 * @Params String token
-	 * @Params GrantDTO
+	 * @Params GrantDTO grantDTO
 	 * @Return GrantDTO
 	 */
 	@Override
-	public GrantDTO saveGrant(GrantDTO grantDTO, String token) {
+	public GrantDTO saveGrant(GrantDTO grantDTO, String token) throws OperationNotAllowedException {
+		
 		Grant grant = new Grant(grantDTO);
 		grant.setId(Long.valueOf(0));
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 
-		grant.setOng(ong);
-		logger.info("Saving Grant with ong={} and justification={}", grant.getOng(), grant.getJustification());
-		try {
-			Grant grantSaved = grantRepository.save(grant);
-			return new GrantDTO(grantSaved);
-		} catch (Exception e) {
-			throw new UsernameNotFoundException(e.getMessage());
-		}
+		if(ong!=null) {
+			grant.setOng(ong);
+			try {
+				Grant grantSaved = grantRepository.save(grant);
+				return new GrantDTO(grantSaved);
+			} catch (Exception e) {
+				throw new UsernameNotFoundException(e.getMessage());
+			}
+		}else{
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+ 		}
 	}
 	
 	/*
 	 * Save a grant
 	 * @Params String token
-	 * @Params GrantDTO
+	 * @Params GrantDTO grantDTO
 	 * @Return GrantDTO
 	 */
 	@Override
-	public GrantDTO updateGrant(String token, GrantDTO grantDTO) {
+	public GrantDTO updateGrant(String token, GrantDTO grantDTO, Long id) throws OperationNotAllowedException {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
-		Optional<Grant> grant = grantRepository.findById(grantDTO.getId());
-		logger.info("Grant is updating with id={}", grantDTO.getId());
+		Optional<Grant> grant = grantRepository.findById(id);
+		logger.info("Grant is updating with id={}", id);
 
-		if (grant.isPresent()) {
-			if (grant.get().getOng().getId() == ong.getId()) {
-				grant.get().setAmount(grantDTO.getAmount());
-				grant.get().setGubernamental(grantDTO.getGubernamental());
-				grant.get().setJustification(grantDTO.getJustification());
-				grant.get().setPrivateGrant(grantDTO.getPrivateGrant());
-				grant.get().setState(grantDTO.getState());
-				try {
-					Grant grantSaved = grantRepository.save(grant.get());
-					return new GrantDTO(grantSaved);
-				} catch (Exception e) {
-					throw new UsernameNotFoundException(e.getMessage());
+		if(ong!=null) {
+			if (grant.isPresent()) {
+				if (grant.get().getOng().getId() == ong.getId()) {
+					grant.get().setAmount(grantDTO.getAmount());
+					grant.get().setGubernamental(grantDTO.getGubernamental());
+					grant.get().setJustification(grantDTO.getJustification());
+					grant.get().setPrivateGrant(grantDTO.getPrivateGrant());
+					grant.get().setState(grantDTO.getState());
+					try {
+						Grant grantSaved = grantRepository.save(grant.get());
+						return new GrantDTO(grantSaved);
+					} catch (Exception e) {
+						throw new UsernameNotFoundException(e.getMessage());
+					}
+				} else {
+					throw new UsernameNotFoundException("You don't have access!");
 				}
 			} else {
-				throw new UsernameNotFoundException("Update dennied!");
+				throw new UsernameNotFoundException("Not Found: Grant not exist!");
 			}
-		} else {
-			throw new UsernameNotFoundException("This grant not exist!");
-		}
+		}else{
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+ 		}
 	}
 	
 	/*
@@ -141,21 +191,25 @@ public class GrantServiceImpl implements GrantService {
 	 * @Return void
 	 */
 	@Override
-	public void deleteGrant(Long id, String token) {
+	public void deleteGrant(Long id, String token) throws OperationNotAllowedException {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Grant> grant = grantRepository.findById(id);
-		if (grant.isPresent()) {
-			if (grant.get().getOng().getId() == ong.getId()) {
-				System.out.println(grant);
-				grantRepository.delete(grant.get());
+		
+		if(ong!=null) {
+			if (grant.isPresent()) {
+				if (grant.get().getOng().getId() == ong.getId()) {
+					grantRepository.delete(grant.get());
+				} else {
+					throw new UsernameNotFoundException("You don't have access!");
+				}
+	
 			} else {
-				throw new UsernameNotFoundException("Error deleting grant");
+				throw new UsernameNotFoundException("Not Found: Grant not exist!");
 			}
-
-		} else {
-			throw new UsernameNotFoundException("This grant not exist!");
-		}
+		}else{
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+ 		}
 	}
 
 }
