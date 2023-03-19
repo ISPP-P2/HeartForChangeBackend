@@ -15,5 +15,5 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long>{
 	List<Volunteer> findVolunteersByOng(String username);
 	
 	@Query("Select v from Volunteer v where v.username = :username")
-  	Volunteer findVolunteerByUsername(String username);
+ 	Volunteer findVolunteerByUsername(String username);
 }

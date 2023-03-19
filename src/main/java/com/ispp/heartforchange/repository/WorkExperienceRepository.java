@@ -11,9 +11,9 @@ package com.ispp.heartforchange.repository;
  @Repository
  public interface WorkExperienceRepository extends JpaRepository<WorkExperience, Long>{
 
- 	@Query("Select w from WorkExperience w where w.volunteer.username = :usernameSearched")
- 	Optional<List<WorkExperience>> findWorkExperienceByVolunteerUserName(String usernameSearched);
+ 	@Query("Select w from WorkExperience w where w.volunteer.id = :id")
+ 	Optional<List<WorkExperience>> findWorkExperienceByVolunteerId(Long id);
 
- 	@Query("Select w from WorkExperience w where w.beneficiary.username = :usernameSearched")
- 	Optional<List<WorkExperience>> findWorkExperienceByBeneficiaryUserName(String usernameSearched);
+ 	@Query("Select w from WorkExperience w where w.beneficiary.id = :id")
+ 	Optional<List<WorkExperience>> findWorkExperienceByBeneficiaryId(Long id);
  }
