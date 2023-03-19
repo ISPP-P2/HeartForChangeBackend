@@ -146,7 +146,7 @@ public class OngServiceImpl implements OngService{
 		//Get all the volunteers that belong to the Ong to delete
 		List<VolunteerDTO> volunteerList = volunteerService.getVolunteersByOng(ongToDelete.getUsername());
 		List<Beneficiary> beneficiariesONG = beneficiaryRepository.findBeneficiariesByOng(ongToDelete.getUsername());
-		List<Appointment> appointments = appointmentRepository.findAppointmentsByOngUsername(ongToDelete.getUsername()).get();
+		List<Appointment> appointments = appointmentRepository.findAppointmentsByOngId(ongToDelete.getId()).get();
 		try {
 			for( Beneficiary b : beneficiariesONG) {
 				beneficiaryRepository.delete(b);

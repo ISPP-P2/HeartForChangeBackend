@@ -55,7 +55,7 @@ public class GrantDTO implements Serializable {
 	
 	@Min(0)
 	@JsonProperty("amount")
-	private Integer amount;
+	private Double amount;
 	
 	public GrantDTO(Grant grantSaved) {
 		this.amount = grantSaved.getAmount();
