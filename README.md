@@ -120,10 +120,10 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | --------------------   | ------------- | ---------  | -----------------------------------
 | /api/attendances/{id} | - | AttendanceDTO | Get attendance by id |
 | /api/attendances/new/{idTask} | - | AttendanceDTO | Create a petition by Volunteer |
-| /api/attendances/delete/{idTask} | - | String | Delete a petition by Volunteer |
+| /api/attendances/cancel/{id} | - | String | cancel a petition by Volunteer |
 | /api/attendances/accept/{id} | - | AttendanceDTO | Accept a petition by ONG |
 | /api/attendances/deny/{id} | - | AttendanceDTO | Deny a petition by ONG |
-| /api/attendances/confirm/{id}/{type} | - | AttendanceDTO | Confirm attendance by ONG. Type = [1 = "TOTAL", 2 = "PARCIAL", 3 = "NO_ASISTIDA"] |
+| /api/attendances/confirm/{id}/{type} | - | AttendanceDTO | Confirm attendance by ONG. Type = [0 = "TOTAL", 1 = "PARCIAL", 2 = "NO_ASISTIDA"] |
 | /api/attendances/add/{idTask}/{idPerson} | - | AttendanceDTO | Add beneficiary to a Attendance by ONG |
 | /api/attendances/quit/{idTask}/{idPerson} | - | AttendanceDTO | Delete beneficiary to a Attendance by ONG |
 
@@ -266,7 +266,7 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | teacher | String |
 | certificate | Boolean |
 | observations | String |
-| incidences | List<String> |
+| incidences | String |
 | coordinator | String |
 | place | String |
 
@@ -275,7 +275,7 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 | --------------------   | ------------- | 
 | id | Long |
 | type | AttendanceType(TOTAL, PARCIAL, NO_ASISTIDA) |
-| state | PetitionState(ESPERA, ACEPTADA, DENEGADA)|
+| state | PetitionState(ESPERA, ACEPTADA, DENEGADA, CANCELADA)|
 	
 ### AcademicExperienceDTO
 | PROPERTY               | Type        |  
