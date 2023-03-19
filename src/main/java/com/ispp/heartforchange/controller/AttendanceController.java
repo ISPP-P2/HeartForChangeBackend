@@ -99,13 +99,13 @@ public class AttendanceController {
 	 * Delete Petition by a Volunteer.
 	 * 
 	 * @Param HttpServletRequest
-	 * @Param Long idTask
+	 * @Param Long idAttendance
 	 * 
 	 * @Return ResponseEntity
 	 */
-	
-	@PostMapping("/cancel/{idTask}")
-	public ResponseEntity<?> deletePetition(HttpServletRequest request, @PathVariable("idTask") Long id) {
+	 
+	@PostMapping("/cancel/{id}")
+	public ResponseEntity<?> deletePetition(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -116,11 +116,11 @@ public class AttendanceController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		attendanceService.cancelPetition(id, jwt);
-		return ResponseEntity.ok("Attendance Deleted");
+		AttendanceDTO atendanceDTO = attendanceService.cancelPetition(id, jwt);
+		return ResponseEntity.ok(atendanceDTO);
 	}
-	
-	
+	 
+	 
 	/*
 	 * Accept Petition by a ONG.
 	 * 

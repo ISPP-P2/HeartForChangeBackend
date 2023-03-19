@@ -87,13 +87,13 @@ public class AttendanceServiceImpl implements AttendanceService{
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Person person = personRepository.findByUsername(username);
 		Optional<Task> task = taskRepository.findById(id);
-		if (task.isPresent()) {
-			// Checks if the task is an Activity
+		if (task.isPresent()) { 
+			// Checks if the task is an Activity 
 			if(task.get().getType() == TaskType.ACTIVIDAD) {
 				//Checks if the task belongs to the right ONG
 				if(task.get().getOng().equals(person.getOng())) {
 					//Checks if the petition is not being created after the tasks date
-					if(task.get().getDate().isBefore(LocalDateTime.now())) {
+					if(!task.get().getDate().isBefore(LocalDateTime.now())) {
 						
 						Attendance attendance = new Attendance(person, task.get());
 						attendance.setId(Long.valueOf(0));
@@ -113,7 +113,8 @@ public class AttendanceServiceImpl implements AttendanceService{
 		}
 		throw new UsernameNotFoundException("Task doesn't exist!");
 		
-	}
+	} 
+	
 	
 	
 	/*
@@ -161,7 +162,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 		if (attendance.isPresent()) {
 			if (attendance.get().getTask().getOng().getId() == ong.getId()) {
 				//Checks if the petition is not being accepted after the tasks date
-				if(attendance.get().getTask().getDate().isBefore(LocalDateTime.now())) {					
+				if(!attendance.get().getTask().getDate().isBefore(LocalDateTime.now())) {					
 					logger.info("Attendance with id={} is being accepting ", attendance.get().getId());
 					attendance.get().setState(PetitionState.ACEPTADA);
 					Attendance attendanceUpdate = attendance.get();
@@ -197,7 +198,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 		if (attendance.isPresent()) {
 			if (attendance.get().getTask().getOng().getId() == ong.getId()) {
 				//Checks if the petition is not being accepted after the tasks date
-				if(attendance.get().getTask().getDate().isBefore(LocalDateTime.now())) {					
+				if(!attendance.get().getTask().getDate().isBefore(LocalDateTime.now())) {					
 					logger.info("Attendance with id={} is being denying ", attendance.get().getId());
 					attendance.get().setState(PetitionState.DENEGADA);
 					Attendance attendanceUpdate = attendance.get();
