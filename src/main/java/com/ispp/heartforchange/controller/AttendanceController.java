@@ -193,7 +193,7 @@ public class AttendanceController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		if(!List.of(1,2,3).contains(type)) {
+		if(!List.of(0,1,2).contains(type)) {
 			return new ResponseEntity<String>("Type not valid", HttpStatus.BAD_REQUEST);
 		}
 		
