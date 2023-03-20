@@ -9,16 +9,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.OngDTO;
-import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.entity.Appointment;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
+
+import com.ispp.heartforchange.entity.Volunteer;
 import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.AppointmentRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
+import com.ispp.heartforchange.repository.VolunteerRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.OngService;
 
@@ -31,7 +33,7 @@ public class OngServiceImpl implements OngService{
 	private PasswordEncoder encoder;
 
 	private AccountRepository accountRepository;
-	private VolunteerServiceImpl volunteerService;
+	private VolunteerRepository volunteerRepository;
 	private BeneficiaryRepository beneficiaryRepository;
 	private AppointmentRepository appointmentRepository;
 	
@@ -42,15 +44,14 @@ public class OngServiceImpl implements OngService{
 	 */
 
 	public OngServiceImpl(ONGRepository ongRepository, PasswordEncoder encoder,BeneficiaryRepository beneficiaryRepository,
-			VolunteerServiceImpl volunteerService, AccountRepository accountRepository, AppointmentRepository appointmentRepository,
-			JwtUtils jwtUtils) {
+			VolunteerRepository volunteerRepository, AccountRepository accountRepository, AppointmentRepository appointmentRepository, JwtUtils jwtUtils) {
 		super();
 		this.ongRepository = ongRepository;
 		this.encoder = encoder;
 		this.beneficiaryRepository = beneficiaryRepository;
 		this.appointmentRepository = appointmentRepository;
 		this.accountRepository = accountRepository;
-		this.volunteerService = volunteerService;
+		this.volunteerRepository = volunteerRepository;
 		this.jwtUtils = jwtUtils;
 
 	}
@@ -138,14 +139,14 @@ public class OngServiceImpl implements OngService{
 		Ong loggedOng = ongRepository.findByUsername(username);
 		if(loggedOng != null) {
 			//Get all the volunteers that belong to the Ong to delete
-			List<VolunteerDTO> volunteerList = volunteerService.getVolunteersByOng(loggedOng.getUsername());
+		  List<Volunteer> volunteerList = volunteerRepository.findVolunteersByOng(ongToDelete.getUsername());
 			List<Beneficiary> beneficiariesONG = beneficiaryRepository.findBeneficiariesByOng(loggedOng.getUsername());
 			List<Appointment> appointments = appointmentRepository.findAppointmentsByOngId(loggedOng.getId()).get();
 			try {
 				for( Beneficiary b : beneficiariesONG) {
 					beneficiaryRepository.delete(b);
 				}
-				for(VolunteerDTO volunteer: volunteerList) {
+				for(Volunteer volunteer: volunteerList) {
 					accountRepository.deleteById(volunteer.getId());
 	            }
 				for( Appointment a : appointments) {
@@ -155,6 +156,7 @@ public class OngServiceImpl implements OngService{
 				ongRepository.delete(loggedOng);	
 			} catch (Exception e) {
 				throw new UsernameNotFoundException(e.getMessage());
+
 			}
 		} else {
 			throw new OperationNotAllowedException("You must be logged as ONG to use this method.");

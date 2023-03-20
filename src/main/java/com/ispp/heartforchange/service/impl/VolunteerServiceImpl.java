@@ -82,7 +82,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 			volunteersDTO.add(volunteerDTO);
 		}
 		return volunteersDTO;
-	} 
+	}
 	
 	/*
 	 * Get volunteer by ong
