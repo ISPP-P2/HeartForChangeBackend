@@ -45,11 +45,10 @@ public class OngDTO extends AccountDTO {
 	private String description;
 	
 	public OngDTO( Ong ong ) {
-		super(ong.getUsername(), ong.getEmail(), ong.getPassword());
+		super(ong.getUsername(), ong.getEmail(), ong.getPassword(),ong.getRolAccount());
 		this.id = ong.getId();
 		this.name = ong.getName();
 		this.cif = ong.getCif();
 		this.description = ong.getDescription();
 	}
-	
 }

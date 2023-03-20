@@ -73,7 +73,7 @@ public class Account implements Serializable {
 	public Account(@NotNull @NotBlank @Size(max = 20) String username,
 			@NotNull @NotBlank @Size(max = 200) String email,
 			@NotNull @NotBlank @Size(max = 120) String password, RolAccount rolAccount) {
-) {
+
 
 		super();
 		this.username = username;
