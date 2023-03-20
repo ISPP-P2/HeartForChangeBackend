@@ -18,11 +18,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import com.ispp.heartforchange.dto.WorkExperienceDTO;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.WorkExperienceServiceImpl;
 
 @Controller
-@RequestMapping("/workExperience")
+@RequestMapping("/workExperiences")
 public class WorkExperienceController {
 
 	private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
@@ -40,17 +41,6 @@ public class WorkExperienceController {
 	}
 	
 	
-	/*
-	 * Get all work experiences
-	 * 
-	 * @Return ResponseEntity
-	 */
-	@GetMapping
-	public ResponseEntity<?> getAllWorkExperiences() {
-		List<WorkExperienceDTO> workExperiences = workExperienceService.getAllWorkExperiences();
-		return ResponseEntity.ok(workExperiences);
-	}
-	
 	
 	/*
 	 * Get work experience by id
@@ -61,7 +51,7 @@ public class WorkExperienceController {
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/get/{id}")
-	public ResponseEntity<?> getWorkExperienceById(HttpServletRequest request, @PathVariable("id") Long id) {
+	public ResponseEntity<?> getWorkExperienceById(HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -72,22 +62,28 @@ public class WorkExperienceController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		WorkExperienceDTO workExperience = workExperienceService.getWorkExperienceById(id, jwt);
-		return ResponseEntity.ok(workExperience);
+		try {
+			WorkExperienceDTO workExperience = workExperienceService.getWorkExperienceById(id, jwt);
+			return ResponseEntity.ok(workExperience);
+		}catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	
 	/*
-     * Get all work experiences by volunteer username
+     * Get all work experiences by volunteer id
      * 
      * @Param HttpServletRequest
-     * @Param String username
+     * @Param Long id
      * 
      * @Return ResponseEntity
      */
-    @GetMapping("/get/volunteer/{username}")
+    @GetMapping("/get/volunteer/{id}")
     public ResponseEntity<?> getWorkExperienceByVolunteerUsername(HttpServletRequest request,
-            @PathVariable("username") String username) {
+            @PathVariable("id") Long id) throws OperationNotAllowedException {
         String jwt = null;
         String headerAuth = request.getHeader("Authorization");
 
@@ -97,23 +93,30 @@ public class WorkExperienceController {
         if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
             return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
         }
-
-        List<WorkExperienceDTO> workExperiences = workExperienceService.getWorkExperienceByVolunteerUsername(username, jwt);
-        return ResponseEntity.ok(workExperiences);
+        
+        try {
+        	List<WorkExperienceDTO> workExperiences = workExperienceService.getWorkExperienceByVolunteer(id, jwt);
+            return ResponseEntity.ok(workExperiences);
+        }catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
+        
     }
     
     
     /*
-     * Get all work experiences by beneficiary username
+     * Get all work experiences by beneficiary id
      * 
      * @Param HttpServletRequest
-     * @Param String username
+     * @Param Long id
      * 
      * @Return ResponseEntity
      */
-    @GetMapping("/get/beneficiary/{username}")
+    @GetMapping("/get/beneficiary/{id}")
     public ResponseEntity<?> getWorkExperienceByBeneficiaryUsername(HttpServletRequest request,
-            @PathVariable("username") String username) {
+            @PathVariable("id") Long id) throws OperationNotAllowedException {
         String jwt = null;
         String headerAuth = request.getHeader("Authorization");
 
@@ -124,8 +127,14 @@ public class WorkExperienceController {
             return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
         }
 
-        List<WorkExperienceDTO> workExperiences = workExperienceService.getWorkExperienceByBeneficiaryUsername(username, jwt);
-        return ResponseEntity.ok(workExperiences);
+        try {
+        	List<WorkExperienceDTO> workExperiences = workExperienceService.getWorkExperienceByBeneficiary(id, jwt);
+            return ResponseEntity.ok(workExperiences);
+        }catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
     }
     
     
@@ -133,13 +142,13 @@ public class WorkExperienceController {
     * Save work experience
     * 
     * @Param WorkExperienceDTO workExperienceDTO
-    * @Param String username 
+    * @Param Long id
     * 
     * @Return ResponseEntity
     */
-   @PostMapping("/save/{username}")
+   @PostMapping("/save/{id}")
    public ResponseEntity<?> saveWorkExperience(HttpServletRequest request, @Valid @RequestBody WorkExperienceDTO workExperienceDTO, 
-           @PathVariable("username") String username) {
+           @PathVariable("id") Long id) throws OperationNotAllowedException {
 
        String jwt = null;
 
@@ -152,9 +161,15 @@ public class WorkExperienceController {
            return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
        }
 
-       WorkExperienceDTO workExperienceSaved = workExperienceService.saveWorkExperience(workExperienceDTO, username);
-       logger.info("Work Experience saved associated with {}", username);
-       return ResponseEntity.ok(workExperienceSaved);
+       try {
+    	   WorkExperienceDTO workExperienceSaved = workExperienceService.saveWorkExperience(workExperienceDTO, id, jwt);
+           logger.info("Work Experience saved associated with id={}", id);
+           return ResponseEntity.ok(workExperienceSaved);
+       }catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
    }
    
    
@@ -162,11 +177,13 @@ public class WorkExperienceController {
 	 * Update work experience
 	 * 
 	 * @Param WorkExperienceDTO workExperienceDTO
+	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@PutMapping("/update")
-	public ResponseEntity<?> updateWorkExperience(@Valid @RequestBody WorkExperienceDTO workExperienceDTO, HttpServletRequest request) {
+	@PutMapping("/update/{id}")
+	public ResponseEntity<?> updateWorkExperience(@Valid @RequestBody WorkExperienceDTO workExperienceDTO, HttpServletRequest request,
+			@PathVariable("id") Long id) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -177,9 +194,15 @@ public class WorkExperienceController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		WorkExperienceDTO workExperienSaved = workExperienceService.updateWorkExperience(jwt, workExperienceDTO);
-		logger.info("Work Experience saved with id={}", workExperienSaved.getId());
-		return ResponseEntity.ok(workExperienSaved);
+		try {
+			WorkExperienceDTO workExperienSaved = workExperienceService.updateWorkExperience(jwt, workExperienceDTO, id);
+			logger.info("Work Experience updated with id={}", workExperienSaved.getId());
+			return ResponseEntity.ok(workExperienSaved);
+		}catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	
@@ -191,7 +214,7 @@ public class WorkExperienceController {
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/delete/{id}")
-	public ResponseEntity<?> deleteWorkExperience(@PathVariable("id") Long id, HttpServletRequest request) {
+	public ResponseEntity<?> deleteWorkExperience(@PathVariable("id") Long id, HttpServletRequest request) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -202,8 +225,14 @@ public class WorkExperienceController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		workExperienceService.deleteWorkExperience(id, jwt);
-		return ResponseEntity.ok("Work Experience deleted");
+		try {
+			workExperienceService.deleteWorkExperience(id, jwt);
+			return ResponseEntity.ok("Work Experience deleted");
+		}catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 }

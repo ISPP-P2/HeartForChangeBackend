@@ -13,6 +13,10 @@ public interface VolunteerRepository extends JpaRepository<Volunteer, Long>{
 
 	@Query("Select Distinct v from Volunteer v, Person p where p.ong.username = :username")
 	List<Volunteer> findVolunteersByOng(String username);
-	
+
 	Volunteer findByUsername(String username);
+
+	@Query("Select v from Volunteer v where v.username = :username")
+ 	Volunteer findVolunteerByUsername(String username);
+
 }

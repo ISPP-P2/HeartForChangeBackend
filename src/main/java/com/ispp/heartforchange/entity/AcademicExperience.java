@@ -40,7 +40,6 @@ public class AcademicExperience implements Serializable {
 	private String speciality;
 
 	@NotNull
-	@Min(2023)
 	private Integer endingYear;
 
 	@NotNull
