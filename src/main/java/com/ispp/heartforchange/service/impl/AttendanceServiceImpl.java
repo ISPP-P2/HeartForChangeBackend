@@ -211,7 +211,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 					}
 				}throw new UsernameNotFoundException("You cant deny an attendace wich tasks date is before now!");
 			} else {
-				throw new UsernameNotFoundException("Error denying this attendance");
+				throw new UsernameNotFoundException("You dont have the permisions");
 			}
 
 		} else {
@@ -246,7 +246,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 					throw new UsernameNotFoundException(e.getMessage());
 				}
 			} else {
-				throw new UsernameNotFoundException("Error confirming this attendance");
+				throw new UsernameNotFoundException("You dont have the permisions!");
 			}
 
 		} else {
@@ -271,7 +271,7 @@ public class AttendanceServiceImpl implements AttendanceService{
 		Optional<Task> task = taskRepository.findById(idTask);
 		if (task.isPresent() && person.isPresent()) {
 			if(task.get().getType() == TaskType.CURSO || task.get().getType() == TaskType.TALLER) {
-				if(task.get().getOng().getId() == ong.getId()) {
+				if(task.get().getOng().getId() == ong.getId() && person.get().getOng().equals(ong)) {
 					
 					Attendance attendance = new Attendance(person.get(), task.get(), PetitionState.ACEPTADA);
 					attendance.setId(Long.valueOf(0));

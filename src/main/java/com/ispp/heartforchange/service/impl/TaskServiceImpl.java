@@ -76,7 +76,7 @@ public class TaskServiceImpl implements TaskService{
 				Task task = optionalTask.get();
 				TaskDTO tasktDTO = new TaskDTO(task);
 				return tasktDTO;
-			}else throw new UsernameNotFoundException("You must be logged as ONG or volunteer to make this operation.");
+			}else throw new UsernameNotFoundException("You dont have the permisions");
 		}
 	}
 	
