@@ -134,12 +134,12 @@ public class OngServiceImpl implements OngService{
 	 */
 	@Override
 	public void deleteOng(String token) throws OperationNotAllowedException {
-		
+
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong loggedOng = ongRepository.findByUsername(username);
 		if(loggedOng != null) {
 			//Get all the volunteers that belong to the Ong to delete
-		  List<Volunteer> volunteerList = volunteerRepository.findVolunteersByOng(ongToDelete.getUsername());
+			List<Volunteer> volunteerList = volunteerRepository.findVolunteersByOng(loggedOng.getUsername());
 			List<Beneficiary> beneficiariesONG = beneficiaryRepository.findBeneficiariesByOng(loggedOng.getUsername());
 			List<Appointment> appointments = appointmentRepository.findAppointmentsByOngId(loggedOng.getId()).get();
 			try {
@@ -150,14 +150,14 @@ public class OngServiceImpl implements OngService{
 					accountRepository.deleteById(volunteer.getId());
 	            }
 				for( Appointment a : appointments) {
-					appointmentRepository.delete(a);
+					appointmentRepository.delete(a); 
 				}
 				logger.info("Deleting ONG with id={}", loggedOng.getId());
 				ongRepository.delete(loggedOng);	
 			} catch (Exception e) {
 				throw new UsernameNotFoundException(e.getMessage());
 
-			}
+			} 
 		} else {
 			throw new OperationNotAllowedException("You must be logged as ONG to use this method.");
 		}

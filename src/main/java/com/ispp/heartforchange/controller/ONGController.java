@@ -73,7 +73,7 @@ public class ONGController {
 			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
 		}catch(Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
-		}
+		} 
 		
 	}
 	
