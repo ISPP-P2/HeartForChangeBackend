@@ -20,7 +20,7 @@ public class HeartforchangeApplication {
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://localhost:5173/", "https://ispp-380414.oa.r.appspot.com/");
+				registry.addMapping("/**").allowedOrigins("http://localhost:5173/", "http://34.70.27.83/");
 			}
 		};
 	}
