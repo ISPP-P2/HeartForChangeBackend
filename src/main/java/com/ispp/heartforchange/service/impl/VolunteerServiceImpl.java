@@ -75,7 +75,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 			}
 		}
 		if(volunteers.isEmpty()) {
-			throw new UsernameNotFoundException("You dont have any volunteers123");
+			throw new UsernameNotFoundException("You dont have any volunteers");
 		}
 		for(Volunteer volunteer: volunteers) {
 			VolunteerDTO volunteerDTO = new VolunteerDTO(volunteer, volunteer.getHourOfAvailability(), volunteer.getSexCrimes());
@@ -100,7 +100,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 			}
 		}
 		if(volunteers.isEmpty()) {
-			throw new UsernameNotFoundException("You dont have any volunteers890");
+			throw new UsernameNotFoundException("You dont have any volunteers");
 		}
 		for(Volunteer volunteer: volunteers) {
 			VolunteerDTO volunteerDTO = new VolunteerDTO(volunteer, volunteer.getHourOfAvailability(), volunteer.getSexCrimes());
