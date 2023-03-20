@@ -173,141 +173,198 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 	
 ## DTOs
 ### SigninRequestDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| username               |  String |
-| password               | String |
+| PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------ | -------- |
+| username               |  String | Length Max = 20 | Yes |
+| password               | String | Length Max = 20 | Yes |
 
 ### SigninResponseDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| token               |  String |
-| refresh               | String |
+| PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ----------- |----------|
+| token               |  String | --- | No |
+| refresh               | String | --- | No |
 
 ### OngDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| id               |  Long |
-| name               | String |
-| cif               | String |
-| description      | String |
-| username               | String |
-| email               | String |
-| password               | String |
-| rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY) |
+| PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------|-----------| 
+| id               |  Long |----|No (you can specify it, but if you don't write it is assigned by default)|
+| name               | String |Length Max = 50|Yes|
+| cif               | String |----|Yes|
+| description      | String |Length Max = 250|Yes|
+| username               | String |Length Max = 20|Yes|
+| email               | String |Length Max = 200 |Yes|
+| password               | String |Length Max = 120|Yes|
+| rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY)|------|No (is assigned by default)|
 
 	
 ### BeneficiaryDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| id               |  Long |
-| nationality               | String |
-| doublenationality               | Boolean |
-| arrived_date      | LocalDate |
-| european_citizen_authorization               | Boolean |
-| tourist_visa               | Boolean |
-| date_tourist_visa               | LocalDate |
-| health_card               | Boolean |	
-| employment_sector               | String |	
-| perception_aid               | String |	
-| savings_possesion               | Boolean |	
-| sae_inscription               | Boolean |	
-| working               | Boolean |	
-| computer_knowledge               | Boolean |	
-| owned_devices               | String |	
-| languages               | String |	
+| PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------|-----------| 
+| id               |  Long |----|No (you can specify it, but if you don't write it is assigned by default)|
+| nationality               | String | Length Max = 50 | Yes |
+| doublenationality               | Boolean |------|Yes|
+| arrivedDate      | LocalDate |-------|No|
+| europeanCitizenAuthorization               | Boolean |------|No|
+| touristVisa               | Boolean |--------|No|
+| date_touristVisa               | LocalDate |--------|No|
+| healthCard               | Boolean |	---------|No|
+| employmentSector               | String | Length Max = 150 | Yes|
+| perceptionAid               | String | Length Max = 100|Yes|
+| savings_possesion               | Boolean |------|No|
+| saeInscription               | Boolean |-------|No|
+| working               | Boolean |-------|No|
+| computerKnowledge               | Boolean |-------|No|	
+| ownedDevices               | String |Length Max = 200|Yes|
+| languages               | String |Length Max = 100|Yes|
+| entryDate               | LocalDate |---------|Yes|
+| firstSurname               | String |Length Max = 20|Yes|
+| secondSurname               | String |Length Max = 20|Yes|
+| name               | String |Length Max = 20|Yes|
+| documentType               | DocumentType(DNI, NIE, PASSPORT) |------|Yes|
+| documentNumber               | String |Length Max = 9 && Length Min = 9|Yes|
+| gender               | Gender(MALE, FEMALE)|---------|Yes|
+| birthday               | LocalDate |-------|Yes|
+| civilStatus               | CivilStatus(SINGLE, MARRIED, WIDOWED, DIVORCED) |------|Yes|
+| numberOfChildren               | int |Min(0)|Yes|
+| address               | String |Length Max = 50|Yes|
+| postalCode               | String |Length Max = 100|Yes|
+| registrationAddress               | String |Length Max = 50|No|
+| town               | String |Length Max = 20|Yes|
+| telephone          | String |Length max = 15|Yes|
+| leavingDate          | LocalDate |------|No|
+| driveLicenses          | String |Length max = 100|Yes|
+| otherSkills          | String |Length max = 350|Yes|
+| username               | String |Length Max = 20|Yes|
+| email               | String |Length Max = 200 |Yes|
+| password               | String |Length Max = 120|Yes|
+| rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY)|------|No (is assigned by default)|
 
 ### VolunteerDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| id               |  Long |
-| username               | String |
-| email               | String |
-| password               | String |
-| rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY) |
-| entryDate               | LocalDate |
-| firstSurname               | String |
-| secondSurname      | String |
-| name               | String |
-| documentType               | DocumentType(DNI, NIE, PASSPORT) |
-| documentNumber               | String |
-| gender               | Gender |	
-| birthday               | LocalDate |	
-| civilStatus               | CivilStatus(SINGLE, MARRIED, WIDOWED, DIVORCED) |	
-| numberOfChildren               | int |	
-| address               | String |	
-| postalCode               | String |	
-| registrationAddres               | String |	
-| town               | String |	
-| leavingDate               | LocalDate |
-| otherSkills               | String |	
-| driveLicenses               | String |
-| hourOfAvailability       |  String |
-| sexCrimes               | Boolean |
-| telephone               | String |
-	
+| PROPERTY               | Type          |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------|-----------| 
+| id               |  Long |-----|No (you can specify it, but if you don't write it is assigned by default)|
+| hourOfAvailability       |  String |Length max = 50|Yes|
+| sexCrimes               | Boolean |-----|Yes|
+| entryDate               | LocalDate |---------|Yes|
+| firstSurname               | String |Length Max = 20|Yes|
+| secondSurname               | String |Length Max = 20|Yes|
+| name               | String |Length Max = 20|Yes|
+| documentType               | DocumentType(DNI, NIE, PASSPORT) |------|Yes|
+| documentNumber               | String |Length Max = 9 && Length Min = 9|Yes|
+| gender               | Gender(MALE, FEMALE)|---------|Yes|
+| birthday               | LocalDate |-------|Yes|
+| civilStatus               | CivilStatus(SINGLE, MARRIED, WIDOWED, DIVORCED) |------|Yes|
+| numberOfChildren               | int |Min(0)|Yes|
+| address               | String |Length Max = 50|Yes|
+| postalCode               | String |Length Max = 100|Yes|
+| registrationAddress               | String |Length Max = 50|No|
+| town               | String |Length Max = 20|Yes|
+| telephone          | String |Length max = 15|Yes|
+| leavingDate          | LocalDate |------|No|
+| driveLicenses          | String |Length max = 100|Yes|
+| otherSkills          | String |Length max = 350|Yes|
+| username               | String |Length Max = 20|Yes|
+| email               | String |Length Max = 200 |Yes|
+| password               | String |Length Max = 120|Yes|
+| rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY)|------|No (is assigned by default)|
+
 ### GrantDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| id               |  Long |
-| privateGrant               | Boolean |
-| gubernamental               | Boolean |
-| state               | GrantState(REQUESTED, ACCEPTED, DENIED, REFORMULATION) |
-| justification               | String |
-| amount               | Integer |
+| PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------|-----------| 
+| id               |  Long |-----|No (you can specify it, but if you don't write it is assigned by default)|
+| privateGrant               | Boolean |-------|Yes|
+| gubernamental               | Boolean |-------|Yes|
+| state               | GrantState(REQUESTED, ACCEPTED, DENIED, REFORMULATION) |------|Yes|
+| justification               | String |Length max = 1000|Yes|
+| amount               | Double |Min(0)|Yes|
 	
 ### TaskDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| id | Long |
-| name | String |
-| type | TaskType(CURSO, ACTIVIDAD, TALLER )|
-| date | LocalDateTime (format: "yyyy-MM-dd HH:mm:ss")|
-| teacher | String |
-| certificate | Boolean |
-| observations | String |
-| incidences | String |
-| coordinator | String |
-| place | String |
+| PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------|-----------| 
+| id | Long |-----|No (you can specify it, but if you don't write it is assigned by default)|
+| name | String |Length max = 32|Yes|
+| type | TaskType(CURSO, ACTIVIDAD, TALLER )|-----|Yes|
+| date | LocalDateTime (format: "yyyy-MM-dd HH:mm:ss")|-----|Yes
+| teacher | String |-----|Yes|
+| certificate | Boolean |-----|Yes|
+| observations | String |Length Max = 256|No|
+| incidences | String |----|No|
+| coordinator | String |----|Yes|
+| numParticipants|Integer|-----|No|
+| place | String |------|Yes|
 
 ### AttendanceDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| id | Long |
-| type | AttendanceType(TOTAL, PARCIAL, NO_ASISTIDA) |
-| state | PetitionState(ESPERA, ACEPTADA, DENEGADA, CANCELADA)|
+| PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------|-----------| 
+| id | Long |-----|No (you can specify it, but if you don't write it is assigned by default)|
+| type | AttendanceType(TOTAL, PARCIAL, NO_ASISTIDA) |----|No|
+| state | PetitionState(ESPERA, ACEPTADA, DENEGADA, CANCELADA)|----|Yes|
 	
 ### AcademicExperienceDTO
-| PROPERTY               | Type        |  
-| --------------------   | ------------- | 
-| id | Long |
-| speciality | String |
-| endingYear | Integer|
-| satisfactionDegree | Integer|
-| educationalLevel | String |
+| PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------|-----------|
+| id | Long |-----|No (you can specify it, but if you don't write it is assigned by default)|
+| speciality | String |Length Max = 50|Yes|
+| endingYear | Integer|Min(2023)|Yes|
+| satisfactionDegree | Integer|Min(1) && Max(5)|Yes|
+| educationalLevel | String |Length Max = 1000|Yes|
 
 ### WorkExperienceDTO
- | PROPERTY               | Type        |  
- | --------------------   | ------------- | 
- | id | Long |
- | job | String |
- | time | String |
- | place | String |
- | reasonToFinish | String |
+ | PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------|-----------|
+ | id | Long |-----|No (you can specify it, but if you don't write it is assigned by default)|
+ | job | String |Length Max = 255 |Yes|
+ | time | String |Length Max = 100|Yes|
+ | place | String |Length Max = 255|Yes|
+ | reasonToFinish | String |Length Max = 1000|Yes|
 	
 ### ComplementaryFormationDTO
- | PROPERTY               | Type        |  
- | --------------------   | ------------- | 
- | id | Long |
- | name | String |
- | organization | String |
- | date | LocalDate (format: "yyyy-MM-dd") |
- | place | String |
+ | PROPERTY               | Type        |  Restrictions | Mandatory |
+ | --------------------   | ------------- | ------------|-----------|
+ | id | Long |-----|No (you can specify it, but if you don't write it is assigned by default)|
+ | name | String |----|Yes|
+ | organization | String |----|Yes|
+ | date | LocalDate|----|No|
+ | place | String |----|Yes|
 
 ### AppointmentDTO
- | PROPERTY               | Type        |  
- | --------------------   | ------------- | 
- | id | Long |
- | date | LocalDate (format: "yyyy-MM-dd")|
- | hour | String |
- | notes | String |
+ | PROPERTY               | Type        |  Restrictions | Mandatory |
+ | --------------------   | ------------- | ------------|-----------|
+ | id | Long |-----|No (you can specify it, but if you don't write it is assigned by default)|
+ | date| LocalDate|----|Yes|
+ | hour | String |Length Max = 25|Yes|
+ | notes | String |Length Max = 255|Yes|
+ 
+### AccountDTO
+| PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------|-----------|
+| username               | String |Length Max = 20|Yes|
+| email               | String |Length Max = 200 |Yes|
+| password               | String |Length Max = 120|Yes|
+| rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY)|------|No (is assigned by default)|
+
+### PersonDTO
+| PROPERTY               | Type        |  Restrictions | Mandatory |
+| --------------------   | ------------- | ------------|-----------|
+| entryDate               | LocalDate |---------|Yes|
+| firstSurname               | String |Length Max = 20|Yes|
+| secondSurname               | String |Length Max = 20|Yes|
+| name               | String |Length Max = 20|Yes|
+| documentType               | DocumentType(DNI, NIE, PASSPORT) |------|Yes|
+| documentNumber               | String |Length Max = 9 && Length Min = 9|Yes|
+| gender               | Gender(MALE, FEMALE)|---------|Yes|
+| birthday               | LocalDate |-------|Yes|
+| civilStatus               | CivilStatus(SINGLE, MARRIED, WIDOWED, DIVORCED) |------|Yes|
+| numberOfChildren               | int |Min(0)|Yes|
+| address               | String |Length Max = 50|Yes|
+| postalCode               | String |Length Max = 100|Yes|
+| registrationAddress               | String |Length Max = 50|No|
+| town               | String |Length Max = 20|Yes|
+| telephone          | String |Length max = 15|Yes|
+| leavingDate          | LocalDate |------|No|
+| driveLicenses          | String |Length max = 100|Yes|
+| otherSkills          | String |Length max = 350|Yes|
+| username               | String |Length Max = 20|Yes|
+| email               | String |Length Max = 200 |Yes|
+| password               | String |Length Max = 120|Yes|
+| rolAccount               | RolAccount(ONG, VOLUNTEER, BENEFICIARY)|------|No (is assigned by default)|
