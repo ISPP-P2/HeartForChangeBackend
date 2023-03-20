@@ -62,113 +62,112 @@ Overall, HeartForChange is a robust and secure backend project that provides a s
 ```
 ## APIS
 ### Account API
-| Url                    | Params        |  Response  | Description                         | 
-| --------------------   | ------------- | ---------  | -----------------------------------
-| /api/accounts/signin   | SigninRequestDTO | SigninResponseDTO | Login an account           |
-| /api/accounts/refresh  | -        | SigninResponseDTO   | Refresh tokens of an account |
+| Url                    | Params        |  Response  | Description                         | Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+| /api/accounts/signin   | SigninRequestDTO | SigninResponseDTO | Login an account           |POST|
+| /api/accounts/refresh  | -        | SigninResponseDTO   | Refresh tokens of an account | GET|
 
 ### Ong API
-| Url                    | Params        |  Response  | Description                         | 
-| --------------------   | ------------- | ---------  | -----------------------------------
-| /api/ongs | -        | List<OngDTO>   | Get all ongs |
-| /api/ongs/{id}   | - | OngDTO | Get ong by id   |
-| /api/ongs/signup   | OngDTO | OngDTO | Register an ong        |
-| /api/ongs/update/{id}  | OngDTO       | OngDTO | Get grant by id |
-| /api/ongs/delete/{id}  | -        | String   | Delete an ong |
+| Url                    | Params        |  Response  | Description                         |  Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+| /api/ongs/get | - | OngDTO | Get ong logged | GET|
+| /api/ongs/signup   | OngDTO | OngDTO | Register an ong        |POST|
+| /api/ongs/update  | OngDTO       | OngDTO |Update an ong |PUT|
+| /api/ongs/delete  | -        | String   | Delete an ong |POST|
 
 ### Beneficiary API
-| Url                    | Params        |  Response  | Description                         | 
-| --------------------   | ------------- | ---------  | -----------------------------------
-| /api/beneficiaries | -        | List<BeneficiaryDTO>   | Get all beneficiaries |
-| /api/beneficiaries/{id}   | - | BeneficiaryDTO | Get beneficiary by id   |
-| /api/beneficiaries/signup   | BeneficiaryDTO | BeneficiaryDTO | Register a beneficiary        |
-| /api/beneficiaries/update/{id}  | BeneficiaryDTO       | BeneficiaryDTO | Update beneficiary by id |
-| /api/beneficiaries/delete/{id}  | -        | String   | Delete a beneficiary |
-| /api/beneficiaries/ong/{username}  | -        | List<BeneficiaryDTO>   | Get beneficiaries by ong |
+| Url                    | Params        |  Response  | Description                         |  Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+| /api/beneficiaries/{id}   | Long id | BeneficiaryDTO | Get beneficiary by id   |GET|
+| /api/beneficiaries/total  | - | Integer |Return the total number of beneficiaries|GET|
+| /api/beneficiaries/ong   | - | List<BeneficiaryDTO> | Get beneficiaries by ong logged in  |GET|
+| /api/beneficiaries/signup  | BeneficiaryDTO       | BeneficiaryDTO | Register beneficiary by id |POST|
+| /api/beneficiaries/update/{id}  | Long id, BeneficiaryDTO| BeneficiaryDTO | Update beneficiary by id |PUT|
+| /api/beneficiaries/delete/{id}  | Long id        | String   | Delete a beneficiary |POST|
 
 ### Volunteer API
-| Url                    | Params        |  Response  | Description                         | 
-| --------------------   | ------------- | ---------  | -----------------------------------
-| /api/volunteers | -        | List<VolunteerDTO>   | Get all volunteers |
-| /api/volunteers/{id}   | - | VolunteerDTO | Get volunteer by id   |
-| /api/volunteers/signup   | VolunteerDTO | VolunteerDTO | Register a volunteer        |
-| /api/volunteers/update/{id}  | VolunteerDTO       | VolunteerDTO | Update volunteer by id |
-| /api/volunteers/delete/{id}  | -        | String   | Delete a volunteer |
-| /api/volunteers/ong/{username}  | -        | List<VolunteerDTO>   | Get volunteer by ong |
+| Url                    | Params        |  Response  | Description                         |  Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+| /api/volunteers/{id}   | Long id | VolunteerDTO | Get volunteer by id   |GET|
+| /api/volunteers/ong  | - | List<VolunteerDTO>   | Get volunteer by ong logged in| GET|
+| /api/volunteers/total  | - | Integer  | Return the total number of volunteers|GET|
+| /api/volunteers/signup   | VolunteerDTO | VolunteerDTO | Register a volunteer        |POST|
+| /api/volunteers/update/{id}  | Long id, VolunteerDTO | VolunteerDTO | Update volunteer by id |PUT|
+| /api/volunteers/delete/{id}  | Long id      | String   | Delete a volunteer | POST|
 
 ### Grant API
-| Url                    | Params        |  Response  | Description                         | 
-| --------------------   | ------------- | ---------  | -----------------------------------
-| /api/grants/save   | GrantDTO | GrantDTO | save a grant        |
-| /api/grants/get/ong  | -        | List<GrantDTO>   | Get all grants of an ong |
-| /api/grants/get/{id}  | -        | List<GrantDTO>   | Get grant by id |
-| /api/grants/update  | GrantDTO        | GrantDTO   | Update a grant |
-| /api/grants/delete/{id}  | -        | String   | Delete a grant |
+| Url                    | Params        |  Response  | Description                         |  Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+| /api/grants/save   | GrantDTO | GrantDTO | Save a grant        |POST|
+| /api/grants/get/ong  | -        | List<GrantDTO>   | Get all grants of an ong logged in|GET|
+| /api/grants/get/{id}/amount  | Long id| List<Double>   | Get total amount accepted grants by ong logged in|GET|
+| /api/grants/get/{id}  | Long id| GrantDTO| Get a grant of ong logged in by id|GET|
+| /api/grants/update/{id}  | Long id, GrantDTO        | GrantDTO   | Update a grant by id |PUT|
+| /api/grants/delete/{id}  | Long id        | String   | Delete a grant by id|POST|
 
 ### Task API
-| Url                    | Params        |  Response  | Description                         | 
-| --------------------   | ------------- | ---------  | -----------------------------------
-| /api/tasks   |  | List<TaskDTO>| Get all task        |
-| /api/tasks/ong/{username}  | -        | List<TaskDTO>   | Get all task of an ong |
-| /api/tasks/{id} | - | TaskDTO | Get task by id|
-| /api/tasks/new | TaskDTO | TaskDTO | Save new task |
-| /api/tasks/update/{id} | TaskDTO | TaskDTO | Update task |
-| /api/tasks/delete/{id} | - | String | Delete task |
+| Url                    | Params        |  Response  | Description                         |  Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+| /api/tasks/ong/get/{id}  | Long id        | List<TaskDTO>   | Get all task of an ong by id |GET|
+| /api/tasks/get/{id} | Long id | TaskDTO | Get task by id|GET|
+| /api/tasks/new | TaskDTO | TaskDTO | Save new task |POST|
+| /api/tasks/update/{id} | Long id, TaskDTO | TaskDTO | Update task |PUT|
+| /api/tasks/delete/{id} | Long id | String | Delete task |POST|
+| /api/tasks/get/{id}/attendances | Long id | List<AttendancesDTO> | Return a list of attendances by task id |GET|
+| /api/tasks/volunteers/get/{id}/attendances | Long id | List<AttendancesDTO> | Get all attendances of a volunteer by volunteer id |GET|
+| /api/tasks/count | - | Integer | Get total number of tasks of ong logged in |GET|
 
 ### Attendance API
-| Url                    | Params        |  Response  | Description                         | 
-| --------------------   | ------------- | ---------  | -----------------------------------
-| /api/attendances/{id} | - | AttendanceDTO | Get attendance by id |
-| /api/attendances/new/{idTask} | - | AttendanceDTO | Create a petition by Volunteer |
-| /api/attendances/cancel/{id} | - | String | cancel a petition by Volunteer |
-| /api/attendances/accept/{id} | - | AttendanceDTO | Accept a petition by ONG |
-| /api/attendances/deny/{id} | - | AttendanceDTO | Deny a petition by ONG |
-| /api/attendances/confirm/{id}/{type} | - | AttendanceDTO | Confirm attendance by ONG. Type = [0 = "TOTAL", 1 = "PARCIAL", 2 = "NO_ASISTIDA"] |
-| /api/attendances/add/{idTask}/{idPerson} | - | AttendanceDTO | Add beneficiary to a Attendance by ONG |
-| /api/attendances/quit/{idTask}/{idPerson} | - | AttendanceDTO | Delete beneficiary to a Attendance by ONG |
+| Url                    | Params        |  Response  | Description                         |  Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+| /api/attendances/{id} | Long id | AttendanceDTO | Get attendance by id |GET|
+| /api/attendances/new/{idTask} | Long idTask | AttendanceDTO | Create a petition by Volunteer |POST|
+| /api/attendances/cancel/{id} | Long id | AttendanceDTO | Cancel a petition by Volunteer |POST|
+| /api/attendances/accept/{id} | Long id | AttendanceDTO | Accept a petition by ONG |PUT|
+| /api/attendances/deny/{id} | Long id | AttendanceDTO | Deny a petition by ONG |PUT|
+| /api/attendances/confirm/{id}/{type} | Long id, int type | AttendanceDTO | Confirm attendance by ONG. Type = [0 = "TOTAL", 1 = "PARCIAL", 2 = "NO_ASISTIDA"] |PUT|
+| /api/attendances/add/{idTask}/{idPerson} | Long idTask, Long idPerson | AttendanceDTO | Add beneficiary from a Attendance by ONG |POST|
+| /api/attendances/quit/{idTask}/{idPerson} | Long idTask, Long idPerson | String | Delete beneficiary from a Attendance by ONG |POST|
 
 ### Academic Experience API
-| Url                    | Params        |  Response  | Description                         | 
-| --------------------   | ------------- | ---------  | -----------------------------------
-| /api/academicExps   |  | List<AcademicExperienceDTO>| Get all academic experiences        |
-| /api/academicExps/get/{id}  | -        | AcademicExperienceDTO   | Get an academic experience by id |
-| /api/academicExps/volunteer/{id} | - | List<AcademicExperienceDTO> | Get all academic experience of a volunteer by id|
-| /api/academicExps/beneficiary/{id} | - | List<AcademicExperienceDTO> | Get all academic experience of a beneficiary by id|
-| /api/academicExps/save | AcademicExperienceDTO | AcademicExperienceDTO | Save new academic experience |
-| /api/academicExps/update/{id} | AcademicExperienceDTO | AcademicExperienceDTO | Update an academic experience |
-| /api/academicExps/delete/{id} | - | String | Delete an academic experience |
+| Url                    | Params        |  Response  | Description                         |  Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+| /api/academicExperiences/get/{id}  | Long id        | AcademicExperienceDTO   | Get an academic experience by id |GET|
+| /api/academicExperiences/get/volunteer/{id} | Long id | List<AcademicExperienceDTO> | Get all academic experience of a volunteer by id|GET|
+| /api/academicExperiences/get/beneficiary/{id} | Long id | List<AcademicExperienceDTO> | Get all academic experience of a beneficiary by id|GET|
+| /api/academicExperiences/save/{id} | Long id, AcademicExperienceDTO | AcademicExperienceDTO | Save new academic experience associated to a id person|POST|
+| /api/academicExperiences/update/{id} | Long, AcademicExperienceDTO | AcademicExperienceDTO | Update an academic experience by id|PUT|
+| /api/academicExperiences/delete/{id} | Long id | String | Delete an academic experience by id |POST|
 
 ### WorkExperience API
- | Url                    | Params        |  Response  | Description                         | 
- | --------------------   | ------------- | ---------  | -----------------------------------
- | /api/workExperience | - | List<WorkExperience> | Get all work experiences |
- | /api/workExperience/get/{id} | - | WorkExperienceDTO | Get work experience by id |
- | /api/workExperience/get/volunteer/{username} | - | List<WorkExperienceDTO> | Get all work experiences of a volunteer by the username|
- | /api/workExperience/get/beneficiary/{username} | - | List<WorkExperienceDTO> | Get all work experiences of a beneficiary by the username|
- | /api/workExperience/save/{username} | - | WorkExperienceDTO | Save new work experience |
- | /api/workExperience/update | - | WorkExperienceDTO | Update a work experience |
- | /api/workExperience/delete/{id} | - | String | Delete a work experience |
+ | Url                    | Params        |  Response  | Description                         |  Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+ | /api/workExperiences/get/{id} | Long id | WorkExperienceDTO | Get work experience by id |GET|
+ | /api/workExperiences/get/volunteer/{id} | Long id | List<WorkExperienceDTO> | Get all work experiences of a volunteer by volunteer id|GET|
+ | /api/workExperiences/get/beneficiary/{id} | Long id | List<WorkExperienceDTO> | Get all work experiences of a beneficiary by beneficary id|GET|
+ | /api/workExperiences/save/{id} | Long id, WorkExperienceDTO | WorkExperienceDTO | Save new work experience associated to a id person |POST|
+ | /api/workExperiences/update/{id} | Long id, WorkExperienceDTO | WorkExperienceDTO | Update a work experience by id |PUT|
+ | /api/workExperiences/delete/{id} | Long id | String | Delete a work experience by id |POST|
 
 ### Appointment API
- | Url                    | Params        |  Response  | Description                         | 
- | --------------------   | ------------- | ---------  | -----------------------------------
- | /api/appointments | - | List<AppointmentDTO> | Get all appointments |
- | /api/appointments/get/{id} | - | AppointmentDTO | Get an appointment by id |
- | /api/appointments/get/ong/{username} | - | List<AppointmentDTO> | Get all appointments of an ong by the username|
- | /api/appointments/save/{username} | - | AppointmentDTO | Save new appointment |
- | /api/appointments/update | - | AppointmentDTO | Update an appointment |
- | /api/appointments/delete/{id} | - | String | Delete an appointment |
+ | Url                    | Params        |  Response  | Description                         |  Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+ | /api/appointments/get/{id} | Long id | AppointmentDTO | Get an appointment by id |GET|
+ | /api/appointments/get/ong/{id} | Long id | List<AppointmentDTO> | Get all appointments by ong id |GET|
+ | /api/appointments/get/beneficary/{id} | Long id | List<AppointmentDTO> | Get all appointments by beneficary id |GET|
+ | /api/appointments/save/{id} | Long id, AppointmentDTO| AppointmentDTO | Save new appointment associated to a beneficiary id |POST|
+ | /api/appointments/update/{id} | Long id, AppointmentDTO | AppointmentDTO | Update an appointment by id |PUT|
+ | /api/appointments/delete/{id} | Long id | String | Delete an appointment by id|POST|
 
 ### ComplementaryFormation API
- | Url                    | Params        |  Response  | Description                         | 
- | --------------------   | ------------- | ---------  | -----------------------------------
- | /api/complementaryFormation | - | List<ComplementaryFormation> | Get all complementary formations |
- | /api/complementaryFormation/get/{id} | - | ComplementaryFormationDTO | Get complementary formation by id |
- | /api/complementaryFormation/get/volunteer/{username} | - | List<ComplementaryFormationDTO> | Get all complementary formations of a volunteer by the username|
- | /api/complementaryFormation/get/beneficiary/{username} | - | List<ComplementaryFormationDTO> | Get all complementary formations of a beneficiary by the username|
- | /api/complementaryFormation/save/{username} | - | ComplementaryFormationDTO | Save new complementary formation |
- | /api/complementaryFormation/update | - | ComplementaryFormationDTO | Update a complementary formation |
- | /api/complementaryFormation/delete/{id} | - | String | Delete a complementary formation |
+ | Url                    | Params        |  Response  | Description                         |  Operation |
+| --------------------   | ------------- | ---------  | ----------------------------------- |---------- |
+ | /api/complementaryFunctions/get/{id} | Long id | ComplementaryFormationDTO | Get complementary formation by id |GET|
+ | /api/complementaryFunctions/get/volunteer/{id} | Long id | List<ComplementaryFormationDTO> | Get all complementary formations of a volunteer by the id|GET|
+ | /api/complementaryFunctions/get/beneficiary/{id} | Long id | List<ComplementaryFormationDTO> | Get all complementary formations of a beneficiary by the id|GET|
+ | /api/complementaryFunctions/save/{id} | Long id, ComplementaryFormationDTO | ComplementaryFormationDTO | Save new complementary formation associated to a person id|POST|
+ | /api/complementaryFunctions/update/{id}| Long id, ComplementaryFormationDTO | ComplementaryFormationDTO | Update a complementary formation by id |PUT|
+ | /api/complementaryFunctions/delete/{id} | Long id | String | Delete a complementary formation by id|POST|
 
 	
 ## DTOs
