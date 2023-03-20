@@ -155,8 +155,6 @@ public class OngServiceImpl implements OngService{
 				ongRepository.delete(loggedOng);	
 			} catch (Exception e) {
 				throw new UsernameNotFoundException(e.getMessage());
-			}
-
 		}else {
 			throw new OperationNotAllowedException("You must be logged as ONG to use this method.");
 		}

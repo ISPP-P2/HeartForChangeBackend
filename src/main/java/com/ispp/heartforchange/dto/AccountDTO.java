@@ -51,6 +51,7 @@ public class AccountDTO implements Serializable {
 	@Size(max = 120)
 	@JsonProperty("password")
 	private String password;	
+
 	
 	public AccountDTO( Account account ) {
 		super();
