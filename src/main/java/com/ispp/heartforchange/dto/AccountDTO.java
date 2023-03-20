@@ -50,7 +50,10 @@ public class AccountDTO implements Serializable {
 	@NotBlank
 	@Size(max = 120)
 	@JsonProperty("password")
-	private String password;	
+	private String password;
+	
+	@JsonProperty("rolAccount")
+	private RolAccount rolAccount;		
 
 	
 	public AccountDTO( Account account ) {
@@ -62,7 +65,9 @@ public class AccountDTO implements Serializable {
 
 	public AccountDTO(@NotNull @NotBlank @Size(max = 20) String username,
 			@NotNull @NotBlank @Size(max = 20) String email,
-			@NotNull @NotBlank @Size(max = 120) String password) {
+			@NotNull @NotBlank @Size(max = 120) String password,  RolAccount rolAccount) {
+) {
+
 		super();
 		this.username = username;
 		this.password = password;
