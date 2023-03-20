@@ -1,11 +1,10 @@
 package com.ispp.heartforchange.entity;
 
-import java.time.LocalDate;
+import java.time.LocalDate; 
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;

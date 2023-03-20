@@ -5,31 +5,31 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.ComplementaryFormationDTO;
+import com.ispp.heartforchange.expections.OperationNotAllowedException;
 
 
 @Service
 public interface ComplementaryFormationService {
-	List<ComplementaryFormationDTO> getAllComplementaryFormations();
 	
-	ComplementaryFormationDTO getComplementaryFormationById(Long id, String token);
-	
-	
-	List<ComplementaryFormationDTO> getComplementaryFormationByVolunteer(String username, String token);
+	ComplementaryFormationDTO getComplementaryFormationById(Long id, String token) throws OperationNotAllowedException;
 	
 	
-	List<ComplementaryFormationDTO> getComplementaryFormationByBeneficiary(String username, 
-			String token);
+	List<ComplementaryFormationDTO> getComplementaryFormationByVolunteer(Long volunteerId, String token) throws OperationNotAllowedException;
+	
+	
+	List<ComplementaryFormationDTO> getComplementaryFormationByBeneficiary(Long beneficiaryId, 
+			String token) throws OperationNotAllowedException;
 	
 
 	ComplementaryFormationDTO saveComplementaryFormation(ComplementaryFormationDTO 
-			complementaryFormationDTO, String token);
+			complementaryFormationDTO, Long id, String token) throws OperationNotAllowedException;
 
 	
-	void deleteComplementaryFormation(Long id, String token);
+	void deleteComplementaryFormation(Long id, String token) throws OperationNotAllowedException;
 	
 
 	ComplementaryFormationDTO updateComplementaryFormation(String token, 
-			ComplementaryFormationDTO complementaryFormationDTO);
+			ComplementaryFormationDTO complementaryFormationDTO, Long id) throws OperationNotAllowedException;
 	
 	
 	

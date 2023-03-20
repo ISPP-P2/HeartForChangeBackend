@@ -126,7 +126,7 @@ public class PersonDTO extends AccountDTO{
 	
 
 	public PersonDTO( Person person ) {
-		super(person.getUsername(),person.getEmail(), person.getPassword(), person.getRolAccount());
+		super(person.getUsername(),person.getEmail(), person.getPassword());
 		this.id = person.getId(); 
 		this.name = person.getName();
 		this.address = person.getAddress();

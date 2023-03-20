@@ -19,11 +19,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ispp.heartforchange.dto.ComplementaryFormationDTO;
+import com.ispp.heartforchange.expections.OperationNotAllowedException;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.ComplementaryFormationServiceImpl;
 
 @Controller
-@RequestMapping("/complementaryFunction")
+@RequestMapping("/complementaryFunctions")
 public class ComplementaryFormationController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
@@ -44,17 +45,6 @@ public class ComplementaryFormationController {
 	}
 	
 	
-	/*
-	 * Get all complementary formation
-	 * 
-	 * @Return ResponseEntity
-	 */
-	@GetMapping
-	public ResponseEntity<?> getAllComplementaryFormation() {
-		List<ComplementaryFormationDTO> complementaryFormations = complementaryFormationServiceImpl.getAllComplementaryFormations();
-		return ResponseEntity.ok(complementaryFormations);
-	}
-	
 	
 	/*
 	 * Get complementary formation by id
@@ -66,7 +56,7 @@ public class ComplementaryFormationController {
 	 */
 	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getComplementaryFormationById(HttpServletRequest request,
-			@PathVariable("id") Long id) {
+			@PathVariable("id") Long id) throws OperationNotAllowedException{
 		
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
@@ -78,8 +68,17 @@ public class ComplementaryFormationController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		ComplementaryFormationDTO complementaryFormation = complementaryFormationServiceImpl.getComplementaryFormationById(id, jwt);
-		return ResponseEntity.ok(complementaryFormation);
+		try {
+			ComplementaryFormationDTO complementaryFormation = complementaryFormationServiceImpl.getComplementaryFormationById(id, jwt);
+			return ResponseEntity.ok(complementaryFormation);
+			
+		}catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
+			
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 	
 	
@@ -87,13 +86,13 @@ public class ComplementaryFormationController {
      * Get all complementary formation by volunteer
      * 
      * @Param HttpServletRequest
-     * @Param String username
+     * @Param Long id
      * 
      * @Return ResponseEntity
      */
-    @GetMapping("/get/volunteer/{username}")
+    @GetMapping("/get/volunteer/{id}")
     public ResponseEntity<?> getComplementaryFormationByVolunteer(HttpServletRequest request,
-    		@PathVariable("username") String username) {
+    		@PathVariable("id") Long id) throws OperationNotAllowedException{
         
     	String jwt = null;
         String headerAuth = request.getHeader("Authorization");
@@ -105,8 +104,19 @@ public class ComplementaryFormationController {
             return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
         }
 
-        List<ComplementaryFormationDTO> acadExp = complementaryFormationServiceImpl.getComplementaryFormationByVolunteer(username, jwt);
-        return ResponseEntity.ok(acadExp);
+        
+        try {
+        	
+            List<ComplementaryFormationDTO> complementaryFormation = complementaryFormationServiceImpl.getComplementaryFormationByVolunteer(id, jwt);
+            return ResponseEntity.ok(complementaryFormation);
+            
+        }catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
+		
+        }catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
+        
     }
     
     
@@ -115,13 +125,13 @@ public class ComplementaryFormationController {
      * Get all complementary formationby beneficiary
      * 
      * @Param HttpServletRequest
-     * @Param String username
+     * @Param Long id
      * 
      * @Return ResponseEntity
      */
-    @GetMapping("/get/beneficiary/{username}")
+    @GetMapping("/get/beneficiary/{id}")
     public ResponseEntity<?> getComplementaryFormationByBeneficiary(HttpServletRequest request,
-            @PathVariable("username") String username) {
+            @PathVariable("id") Long id) throws OperationNotAllowedException {
     	
         String jwt = null;
         String headerAuth = request.getHeader("Authorization");
@@ -132,9 +142,20 @@ public class ComplementaryFormationController {
         if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
             return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
         }
+        
+        
+        try {
+        	
+            List<ComplementaryFormationDTO> complementaryFormation = complementaryFormationServiceImpl.getComplementaryFormationByBeneficiary(id, jwt);
+            return ResponseEntity.ok(complementaryFormation);
+            
+        }catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
+		
+        }catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
 
-        List<ComplementaryFormationDTO> acadExp = complementaryFormationServiceImpl.getComplementaryFormationByBeneficiary(username, jwt);
-        return ResponseEntity.ok(acadExp);
     }
     
     
@@ -142,14 +163,14 @@ public class ComplementaryFormationController {
     * Save complementary formation
     * 
     * @Param ComplementaryFormationDTO complementaryFormationDTO
-    * @Param String username 
+    * @Param Long id 
     * 
     * @Return ResponseEntity
     */
-   @PostMapping("/save/{username}")
+   @PostMapping("/save/{id}")
    public ResponseEntity<?> saveComplementaryFormation(HttpServletRequest request, 
 		   @Valid @RequestBody ComplementaryFormationDTO complementaryFormationDTO, 
-		   @PathVariable("username") String username) {
+		   @PathVariable("id") Long id) throws OperationNotAllowedException {
 
        String jwt = null;
 
@@ -161,10 +182,21 @@ public class ComplementaryFormationController {
        if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
            return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
        }
+       
+       
+       try {
+           ComplementaryFormationDTO complementaryFormationSaved = complementaryFormationServiceImpl.saveComplementaryFormation(complementaryFormationDTO, id, jwt);
+           logger.info("Complementary Formation saved associated with id={}", id);
+           return ResponseEntity.ok(complementaryFormationSaved);
+      
+       }catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		
+       }catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+       }
 
-       ComplementaryFormationDTO complementaryFormationSaved = complementaryFormationServiceImpl.saveComplementaryFormation(complementaryFormationDTO, username);
-       logger.info("Complementary Formation saved associated with {}", username);
-       return ResponseEntity.ok(complementaryFormationSaved);
+
    }
    
    
@@ -172,12 +204,14 @@ public class ComplementaryFormationController {
 	 * Update complementary formation
 	 * 
 	 * @Param ComplementaryFormationDTO complementaryFormationDTO
+	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@PutMapping("/update")
+	@PutMapping("/update/{id}")
 	public ResponseEntity<?> updateComplementaryFormation(@Valid @RequestBody 
-			ComplementaryFormationDTO complementaryFormationDTO, HttpServletRequest request) {
+			ComplementaryFormationDTO complementaryFormationDTO, HttpServletRequest request, 
+			@PathVariable("id") Long id) throws OperationNotAllowedException {
 		
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
@@ -189,9 +223,20 @@ public class ComplementaryFormationController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		ComplementaryFormationDTO complementaryFormationSaved = complementaryFormationServiceImpl.updateComplementaryFormation(jwt, complementaryFormationDTO);
-		logger.info("Complementary formation saved with id={}", complementaryFormationSaved.getId());
-		return ResponseEntity.ok(complementaryFormationSaved);
+		
+		try {
+			ComplementaryFormationDTO complementaryFormationSaved = complementaryFormationServiceImpl.updateComplementaryFormation(jwt, complementaryFormationDTO, id);
+			logger.info("Complementary formation saved with id={}", complementaryFormationSaved.getId());
+			return ResponseEntity.ok(complementaryFormationSaved);
+		
+		}catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
+		
+
 	}
 	
 	
@@ -204,7 +249,7 @@ public class ComplementaryFormationController {
 	 */
 	@PostMapping("/delete/{id}")
 	public ResponseEntity<?> deleteComplementaryFormation(@PathVariable("id") Long id, 
-			HttpServletRequest request) {
+			HttpServletRequest request) throws OperationNotAllowedException {
 		
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
@@ -216,7 +261,18 @@ public class ComplementaryFormationController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		complementaryFormationServiceImpl.deleteComplementaryFormation(id, jwt);
-		return ResponseEntity.ok("Complementary formation deleted");
+		
+		try {
+			complementaryFormationServiceImpl.deleteComplementaryFormation(id, jwt);
+			return ResponseEntity.ok("Complementary formation deleted");
+			
+		}catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
+		
+
 	}
 }

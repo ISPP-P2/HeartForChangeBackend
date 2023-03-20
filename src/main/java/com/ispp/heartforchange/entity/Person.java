@@ -129,7 +129,7 @@ public class Person extends Account{
 
 	
 	public Person( PersonDTO personDTO ) {
-		super(personDTO.getUsername(),personDTO.getEmail(), personDTO.getPassword(), personDTO.getRolAccount());
+		super(personDTO.getUsername(),personDTO.getEmail(), personDTO.getPassword());
 		this.id = personDTO.getId(); 
 		this.name = personDTO.getName();
 		this.address = personDTO.getAddress();

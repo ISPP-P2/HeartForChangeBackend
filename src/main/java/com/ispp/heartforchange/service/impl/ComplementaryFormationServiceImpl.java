@@ -12,11 +12,14 @@ import org.springframework.stereotype.Service;
 import com.ispp.heartforchange.dto.ComplementaryFormationDTO;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.ComplementaryFormation;
+import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Volunteer;
+import com.ispp.heartforchange.expections.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
+import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.VolunteerRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.ComplementaryFormationService;
@@ -30,6 +33,7 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 	private VolunteerRepository volunteerRepository;
 	private BeneficiaryRepository beneficiaryRepository;
 	private AccountRepository accountRepository;
+	private ONGRepository ongRepository;
 	private JwtUtils jwtUtils;
 
 	/*
@@ -37,36 +41,18 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 	 */
 	public ComplementaryFormationServiceImpl(ComplementaryFormationRepository 
 			complementaryFormationRepository, AccountRepository accountRepository, 
-			VolunteerRepository volunteerRepository, BeneficiaryRepository beneficiaryRepository, 
-			JwtUtils jwtUtils) {
+			VolunteerRepository volunteerRepository, BeneficiaryRepository beneficiaryRepository,
+			ONGRepository ongRepository, JwtUtils jwtUtils) {
 		
 		super();
 		this.complementaryFormationRepository = complementaryFormationRepository;
 		this.volunteerRepository = volunteerRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
 		this.accountRepository = accountRepository;
+		this.ongRepository = ongRepository;
 		this.jwtUtils = jwtUtils;
 	}
 	
-	
-	/*
-	 * Get all complementary formations
-	 * @Return List<ComplementaryFormationDTO>
-	 */
-	@Override
-	public List<ComplementaryFormationDTO> getAllComplementaryFormations() {
-		
-		List<ComplementaryFormation> complementaryFormations = complementaryFormationRepository.findAll();
-		List<ComplementaryFormationDTO> complementaryFormationsDTO = new ArrayList<>();
-		
-		for (ComplementaryFormation complementaryFormation : complementaryFormations) {
-			
-			ComplementaryFormationDTO complementaryFormationDTO = new ComplementaryFormationDTO(complementaryFormation);
-			complementaryFormationsDTO.add(complementaryFormationDTO);
-		}
-		
-		return complementaryFormationsDTO;
-	}
 	
 	
 	
@@ -74,133 +60,155 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 	 * Get complementary formation by id
 	 * @Params Long id
 	 * @Params String token
-	 * @Return List<ComplementaryFormationDTO>
+	 * @Return ComplementaryFormationDTO
 	 */
 	@Override
-	public ComplementaryFormationDTO getComplementaryFormationById(Long id, String token) {
+	public ComplementaryFormationDTO getComplementaryFormationById(Long id, String token) throws OperationNotAllowedException{
 		
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
-		Optional<ComplementaryFormation> complementaryFormation = complementaryFormationRepository.findById(id);
+		Volunteer volunteer = volunteerRepository.findVolunteerByUsername(username);
+		Ong ong = ongRepository.findByUsername(username);
+		
+		if(ong!=null || volunteer!=null) {
+			
+			Optional<ComplementaryFormation> complementaryFormation = complementaryFormationRepository.findById(id);
+			if (!complementaryFormation.isPresent()) {
+				throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+				
+			} else {
+				if(rol == RolAccount.VOLUNTEER) {
 
-		if (!complementaryFormation.isPresent()) {
-			
-			throw new UsernameNotFoundException("Complementary formation not found!");
-			
-		} else {
-			
-			if(rol == RolAccount.VOLUNTEER) {
-				if(complementaryFormation.get().getVolunteer().getUsername().equals(username)) {
 					
-					return new ComplementaryFormationDTO(complementaryFormation.get());
-					
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-			}
-			else{
-				if(complementaryFormation.get().getBeneficiary() != null) {
-					if(complementaryFormation.get().getBeneficiary().getOng().getUsername().equals(username)) {
-						
+					if(complementaryFormation.get().getBeneficiary() == null && complementaryFormation.get().getVolunteer().getId()==volunteer.getId()) {
 						return new ComplementaryFormationDTO(complementaryFormation.get());
 						
 					}else {
 						throw new UsernameNotFoundException("You don't have access!");
 					}
+				
 				}
-				else if(complementaryFormation.get().getVolunteer() != null) {
-					
-					if(complementaryFormation.get().getVolunteer().getOng().getUsername().equals(username)) {
+				else{
+					if(complementaryFormation.get().getBeneficiary() != null) {
 						
-						return new ComplementaryFormationDTO(complementaryFormation.get());
-						
-					}else {
-						throw new UsernameNotFoundException("You don't have access!");
+						if(complementaryFormation.get().getBeneficiary().getOng().getId()==ong.getId()) {
+							return new ComplementaryFormationDTO(complementaryFormation.get());
+						}else {
+							throw new UsernameNotFoundException("You don't have access!");
+						}
 					}
 					
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
+					else if(complementaryFormation.get().getVolunteer() != null) {
+						
+						if(complementaryFormation.get().getVolunteer().getOng().getId()==ong.getId()) {
+							return new ComplementaryFormationDTO(complementaryFormation.get());
+							
+						}else {
+							throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+						}
+						
+					}else {
+						throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+					}
 				}
 			}
+			
+		}else{
+			throw new OperationNotAllowedException("You must be a volunteer or an ONG to use this method.");
 		}
+		
+		
 	}
 	
 	
 	
 	/*
 	 * Get all complementary formations of an volunteer
-	 * @Params String volunteerUsername
+	 * @Params Long volunteerId
 	 * @Params String token
 	 * @Return List<ComplementaryFormationDTO>
 	 */
 	@Override
-	public List<ComplementaryFormationDTO> getComplementaryFormationByVolunteer(String 
-			volunteerUsername, String token) {
+	public List<ComplementaryFormationDTO> getComplementaryFormationByVolunteer(Long 
+			volunteerId, String token) throws OperationNotAllowedException {
 		
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
-		
+		Optional<List<ComplementaryFormation>> complementaryFormations = complementaryFormationRepository.findComplementaryFormationByVolunteer(volunteerId);
+		Volunteer volunteer = volunteerRepository.findVolunteerByUsername(username);
+		Ong ong = ongRepository.findByUsername(username);
+
 		List<Volunteer> aux = volunteerRepository.findAll();
 		int a = 0;
 		for(Volunteer v: aux) {
-			if (volunteerUsername.equals(v.getUsername())){
+			if (volunteerId.equals(v.getId())){
 				a = 1;
 			}
 		}
 		
 		if(a==0) {
-			throw new UsernameNotFoundException("The username doesn't exist!");
+			throw new UsernameNotFoundException("Not Found: The volunteer with this ID doesn't exist!");
 
 		}
 		
-		Optional<List<ComplementaryFormation>> complementaryFormations = complementaryFormationRepository.findComplementaryFormationByVolunteer(volunteerUsername);
 		
-		List<ComplementaryFormationDTO> complementaryFormationsDTO = new ArrayList<>();
-		
-		
-		
-		
-		if (!complementaryFormations.isPresent()) {
-			throw new UsernameNotFoundException("Complementary Formation not found!");
+		if(ong!=null || volunteer!=null) {
+			List<ComplementaryFormationDTO> complementaryFormationsDTO = new ArrayList<>();
 			
-		} else {
-			
-			if(rol == RolAccount.ONG) {
-				if(complementaryFormations.get().size() == 0) {
-					throw new UsernameNotFoundException("This volunteer has no complementary formation!");
-
-				}
-				else if(complementaryFormations.get().get(0).getVolunteer().getOng().getUsername().equals(username)) {
-					for (ComplementaryFormation complementaryFormation : complementaryFormations.get()) {
-						
-						ComplementaryFormationDTO complementaryFormationDTO = new ComplementaryFormationDTO(complementaryFormation);
-						complementaryFormationsDTO.add(complementaryFormationDTO);
-					}
+			if (!complementaryFormations.isPresent()) {
+				throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+				
+			} else {
+				
+				if(rol == RolAccount.ONG) {
 					
-				}else {
+					if(complementaryFormations.get().size() == 0) {
+		 				throw new UsernameNotFoundException("Not Found: This volunteer has not complementary formations!");
+		 			
+					}else {
+						
+						
+		 				if(complementaryFormations.get().get(0).getVolunteer().getOng().getId() == ong.getId() ) {
+		 					
+							for (ComplementaryFormation complementaryFormation : complementaryFormations.get()) {
+								ComplementaryFormationDTO complementaryFormationDTO = new ComplementaryFormationDTO(complementaryFormation);
+								complementaryFormationsDTO.add(complementaryFormationDTO);
+							}
+							return complementaryFormationsDTO;
+							
+						}else {
+							throw new UsernameNotFoundException("You don't have access!");
+						}
+		 			}
+					
+				}else if(rol == RolAccount.VOLUNTEER) {
+					
+					if(complementaryFormations.get().size() == 0) {
+		 				throw new UsernameNotFoundException("Not Found: This volunteer has not complementary formations!");
+		 			
+					}else {
+						
+						if (complementaryFormations.get().get(0).getVolunteer().getId() == volunteer.getId()) {
+							
+							for (ComplementaryFormation complementaryFormation : complementaryFormations.get()) {
+								ComplementaryFormationDTO complementaryFormationDTO = new ComplementaryFormationDTO(complementaryFormation);
+								complementaryFormationsDTO.add(complementaryFormationDTO);
+							}
+							return complementaryFormationsDTO;
+							
+						}else {
+							throw new UsernameNotFoundException("You don't have access!");
+						}
+		 			}
+					
+		 		}else {
 					throw new UsernameNotFoundException("You don't have access!");
 				}
-				
-			}else if(rol == RolAccount.VOLUNTEER) {
-				
-				if (username.equals(volunteerUsername)) {
-					for (ComplementaryFormation complementaryFormation: complementaryFormations.get()) {
-						
-						ComplementaryFormationDTO complementaryFormationDTO = new ComplementaryFormationDTO(complementaryFormation);
-						complementaryFormationsDTO.add(complementaryFormationDTO);
-					}
-					
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-				
-			}else {
-				throw new UsernameNotFoundException("You don't have access!");
 			}
 			
-		}
-		
-		return complementaryFormationsDTO;
+  		}else {
+  			throw new OperationNotAllowedException("You must be a volunteer or an ONG to use this method.");
+  		}
 	}
 		
 	
@@ -208,62 +216,75 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 	
 	/*
 	 * Get all complementary formations of an beneficiary
-	 * @Params String beneficiaryUsername
+	 * @Params String beneficiaryId
 	 * @Params String token
 	 * @Return ComplementaryFormationDTO
 	 */
 	@Override
-	public List<ComplementaryFormationDTO> getComplementaryFormationByBeneficiary(String 
-			beneficiaryUsername, String token) {
+	public List<ComplementaryFormationDTO> getComplementaryFormationByBeneficiary(Long 
+			beneficiaryId, String token) throws OperationNotAllowedException {
 		
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
-		Optional<List<ComplementaryFormation>> complementaryFormations = complementaryFormationRepository.findComplementaryFormationByBeneficiary(beneficiaryUsername);
+		Optional<List<ComplementaryFormation>> complementaryFormations = complementaryFormationRepository.findComplementaryFormationByBeneficiary(beneficiaryId);
+		Volunteer volunteer = volunteerRepository.findVolunteerByUsername(username);
+		Ong ong = ongRepository.findByUsername(username);
 		
-		List<ComplementaryFormationDTO> complementaryFormationsDTO = new ArrayList<>();
 		
 		List<Beneficiary> aux = beneficiaryRepository.findAll();
 		Integer a = 0;
 		
 		for(Beneficiary b: aux) {
-			if (beneficiaryUsername.equals(b.getUsername())){
+			if (beneficiaryId.equals(b.getId())){
 				a = 1;
 			}
 		
 		}
 		
 		if(a==0) {
-			throw new UsernameNotFoundException("The username doesn't exist!");
+			throw new UsernameNotFoundException("Not Found: The beneficiary with this ID doesn't exist!");
 
 		}
 		
-		if (!complementaryFormations.isPresent()) {
-			throw new UsernameNotFoundException("Complementary Formation not found!");
+		
+		if(ong!=null || volunteer!=null) {
+			List<ComplementaryFormationDTO> complementaryFormationsDTO = new ArrayList<>();
 			
-		} else {
-			if(rol == RolAccount.ONG) {
-				if(complementaryFormations.get().size() == 0) {
-					throw new UsernameNotFoundException("This beneficiary has no complementary formation!");
-
-				}
+			if (!complementaryFormations.isPresent()) {
+				throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+			
+			} else {
 				
-				if(complementaryFormations.get().get(0).getBeneficiary().getOng().getUsername().equals(username)) {
-					for (ComplementaryFormation complementaryFormation: complementaryFormations.get()) {
+				if(rol == RolAccount.ONG) {
+					
+					if(complementaryFormations.get().size() == 0) {
+		 				throw new UsernameNotFoundException("Not Found: This beneficiary has not complementary formations!");
+		 			
+					}else {
 						
-						ComplementaryFormationDTO complementaryFormationDTO = new ComplementaryFormationDTO(complementaryFormation);
-						complementaryFormationsDTO.add(complementaryFormationDTO);
-					}
+		 				if(complementaryFormations.get().get(0).getBeneficiary().getId() == beneficiaryId) {
+							for (ComplementaryFormation complementaryFormation : complementaryFormations.get()) {
+								ComplementaryFormationDTO complementaryFormationDTO = new ComplementaryFormationDTO(complementaryFormation);
+								complementaryFormationsDTO.add(complementaryFormationDTO);
+							}
+							
+							return complementaryFormationsDTO;
+							
+						}else {
+							throw new UsernameNotFoundException("You don't have access!");
+						}
+		 			}
 					
 				}else {
 					throw new UsernameNotFoundException("You don't have access!");
 				}
 				
-			}else {
-				throw new UsernameNotFoundException("You don't have access!");
 			}
-		}
-		return complementaryFormationsDTO;
-		
+			
+  		}else {
+  			
+  			throw new OperationNotAllowedException("You must be a volunteer or an ONG to use this method.");
+  		}
 	}
 	
 	
@@ -271,12 +292,17 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 	/*
      * Save a complementary formation
      * @Params String token
+     * @Params Long id
      * @Params ComplementaryFormationDTO complementaryFormationDTO
      * @Return ComplementaryFormationDTO
      */
     @Override
     public ComplementaryFormationDTO saveComplementaryFormation(ComplementaryFormationDTO 
-    		complementaryFormationDTO, String username) {
+    		complementaryFormationDTO, Long id, String token) throws OperationNotAllowedException {
+    	
+    	String username = jwtUtils.getUserNameFromJwtToken(token);
+		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
+		Ong ong = ongRepository.findByUsername(username);
 
     	ComplementaryFormation complementaryFormation = new ComplementaryFormation(complementaryFormationDTO);
     	complementaryFormation.setId(Long.valueOf(0));
@@ -287,35 +313,60 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 
 
         for (Beneficiary beneficiary: beneficiaries) {
-            if(beneficiary.getUsername().equals(username)) {
+            if(beneficiary.getId().equals(id)) {
             	bAux = beneficiary;
             	complementaryFormation.setBeneficiary(beneficiary);
             }
         }
 
         for (Volunteer volunteer: volunteers) {
-            if(volunteer.getUsername().equals(username)) {
+            if(volunteer.getId().equals(id)) {
             	vAux = volunteer;
             	complementaryFormation.setVolunteer(volunteer);
             }
         }
 
-        logger.info("Complementary formation saved associated with {}", username);
-        
-        try {
+        if(ong!=null) {
         	
-        	if(vAux.getUsername() != null || bAux.getUsername() != null) {
-        		
-        		ComplementaryFormation complementaryFormationSaved = complementaryFormationRepository.save(complementaryFormation);
-                return new ComplementaryFormationDTO(complementaryFormationSaved);
-                
-        	}else {
-        		throw new UsernameNotFoundException("The username doesn't exist");
-        	}
+	        try {
+	        	
+	        	if(vAux.getId() != null) {
+	        		
+	        		if(rol == RolAccount.ONG && vAux.getOng().getId() == ong.getId()) {
+		        		logger.info("Complementary Formation saved associated with id={}", id);
+		        		ComplementaryFormation complementaryFormationSaved = complementaryFormationRepository.save(complementaryFormation);
+		                return new ComplementaryFormationDTO(complementaryFormationSaved);
+	        		
+	        		}else {
+						throw new UsernameNotFoundException("You don't have access!");
+	        		}
+	        		
+	        	}else if(bAux.getId() != null) {
+	        		
+	        		if(rol == RolAccount.ONG && bAux.getOng().getId() == ong.getId()) {
+	        			
+		        		logger.info("Complementary Formation saved associated with id={}", id);
+		        		ComplementaryFormation complementaryFormationSaved = complementaryFormationRepository.save(complementaryFormation);
+		                return new ComplementaryFormationDTO(complementaryFormationSaved);
+		                
+	        		}else {
+	        			
+						throw new UsernameNotFoundException("You don't have access!");
+	        		}
+	        		
+	        	}else {
+	        		
+	        		throw new UsernameNotFoundException("Not Found: The volunteer or beneficiary doesn't exist");
+	        	}
+	        	
+	        } catch (Exception e) {
+	            throw new UsernameNotFoundException(e.getMessage());
+	        }
+	        
+        }else {
         	
-        } catch (Exception e) {
-            throw new UsernameNotFoundException(e.getMessage());
-        }
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+  		}
     }
 
     
@@ -327,71 +378,69 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
      */
 	@Override
 	public ComplementaryFormationDTO updateComplementaryFormation(String token, 
-			ComplementaryFormationDTO complementaryFormationDTO) {
+			ComplementaryFormationDTO complementaryFormationDTO, Long id) throws OperationNotAllowedException {
 		
 		String username = jwtUtils.getUserNameFromJwtToken(token);
-		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
-		Optional<ComplementaryFormation> complementaryFormation = complementaryFormationRepository.findById(complementaryFormationDTO.getId());
+		Ong ong = ongRepository.findByUsername(username);
+		Optional<ComplementaryFormation> complementaryFormation = complementaryFormationRepository.findById(id);
 		logger.info("Complementary formation is updating with id={}", complementaryFormationDTO.getId());
 		
 		
-		if (complementaryFormation.isPresent()) {
-			if(rol == RolAccount.VOLUNTEER) {
-				if(complementaryFormation.get().getVolunteer().getUsername().equals(username)) {
-					complementaryFormation.get().setName(complementaryFormationDTO.getName());
-					complementaryFormation.get().setOrganization(complementaryFormationDTO.getOrganization());
-					complementaryFormation.get().setDate(complementaryFormationDTO.getDate());
-					complementaryFormation.get().setPlace(complementaryFormationDTO.getPlace());
-					try {
-						ComplementaryFormation complementaryFormationSaved = complementaryFormationRepository.save(complementaryFormation.get());
-						return new ComplementaryFormationDTO(complementaryFormationSaved);
-					} catch (Exception e) {
-						throw new UsernameNotFoundException(e.getMessage());
-					}
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-			}
-			else{
+		if (ong!=null) {
+			if(complementaryFormation.isPresent()) {
 				if(complementaryFormation.get().getBeneficiary() != null) {
-					if(complementaryFormation.get().getBeneficiary().getOng().getUsername().equals(username)) {
+					if(complementaryFormation.get().getBeneficiary().getOng().getId() == ong.getId()) {
+						
 						complementaryFormation.get().setName(complementaryFormationDTO.getName());
 						complementaryFormation.get().setOrganization(complementaryFormationDTO.getOrganization());
 						complementaryFormation.get().setDate(complementaryFormationDTO.getDate());
 						complementaryFormation.get().setPlace(complementaryFormationDTO.getPlace());
+						
 						try {
 							ComplementaryFormation complementaryFormationSaved = complementaryFormationRepository.save(complementaryFormation.get());
 							return new ComplementaryFormationDTO(complementaryFormationSaved);
+						
 						} catch (Exception e) {
 							throw new UsernameNotFoundException(e.getMessage());
 						}
+						
 					}else {
 						throw new UsernameNotFoundException("You don't have access!");
 					}
 				}
+
 				else if(complementaryFormation.get().getVolunteer() != null) {
-					if(complementaryFormation.get().getVolunteer().getOng().getUsername().equals(username)) {
+					if(complementaryFormation.get().getVolunteer().getOng().getId() == ong.getId()) {
+						
 						complementaryFormation.get().setName(complementaryFormationDTO.getName());
 						complementaryFormation.get().setOrganization(complementaryFormationDTO.getOrganization());
 						complementaryFormation.get().setDate(complementaryFormationDTO.getDate());
 						complementaryFormation.get().setPlace(complementaryFormationDTO.getPlace());
+						
 						try {
 							ComplementaryFormation complementaryFormationSaved = complementaryFormationRepository.save(complementaryFormation.get());
 							return new ComplementaryFormationDTO(complementaryFormationSaved);
+							
 						} catch (Exception e) {
 							throw new UsernameNotFoundException(e.getMessage());
 						}
+						
 					}else {
 						throw new UsernameNotFoundException("You don't have access!");
 					}
+					
 				}else {
 					throw new UsernameNotFoundException("You don't have access!");
 				}
+				
+			} else {
+				throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
 			}
-
-		} else {
-			throw new UsernameNotFoundException("Complementary formation not exist!");
-		}
+			
+		}else {
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+  		}
+		
 	}
 
 	
@@ -402,37 +451,28 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
      * @Return void
      */
 	@Override
-	public void deleteComplementaryFormation(Long id, String token) {
+	public void deleteComplementaryFormation(Long id, String token) throws OperationNotAllowedException {
 		
 		String username = jwtUtils.getUserNameFromJwtToken(token);
-		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
+		Ong ong = ongRepository.findByUsername(username);
 		Optional<ComplementaryFormation> complementaryFormation = complementaryFormationRepository.findById(id);
 		
-		if (complementaryFormation.isPresent()) {
+		if (ong!=null) {
 			
-			if(rol == RolAccount.VOLUNTEER) {
-				if(complementaryFormation.get().getVolunteer().getUsername().equals(username)) {
-					
-					complementaryFormationRepository.delete(complementaryFormation.get());
-					
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-			}
-			else{
-				
+			if(complementaryFormation.isPresent()) {
 				if(complementaryFormation.get().getBeneficiary() != null) {
-					if(complementaryFormation.get().getBeneficiary().getOng().getUsername().equals(username)) {
-						
+					
+					if(complementaryFormation.get().getBeneficiary().getOng().getId() == ong.getId()) {
 						complementaryFormationRepository.delete(complementaryFormation.get());
 						
 					}else {
 						throw new UsernameNotFoundException("You don't have access!");
 					}
 				}
+				
 				else if(complementaryFormation.get().getVolunteer() != null) {
 					
-					if(complementaryFormation.get().getVolunteer().getOng().getUsername().equals(username)) {
+					if(complementaryFormation.get().getVolunteer().getOng().getId() == ong.getId()) {
 						complementaryFormationRepository.delete(complementaryFormation.get());
 						
 					}else {
@@ -440,14 +480,16 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 					}
 					
 				}else {
-					
 					throw new UsernameNotFoundException("You don't have access!");
 				}
+				
+			} else {
+				throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
 			}
-
-		} else {
-			throw new UsernameNotFoundException("Complementary formation not exist!");
-		}
+			
+		}else {
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+  		}
 	}
 
 }
