@@ -120,7 +120,7 @@ public class Person extends Account{
 	
 
 
-	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "person")
+	@OneToMany(cascade = CascadeType.PERSIST, mappedBy = "person")
 	private List<Attendance> attendance;
 	
 	

@@ -2,6 +2,7 @@ package com.ispp.heartforchange.entity;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -67,9 +69,9 @@ public class Task implements Serializable {
 	@NotNull
 	private String place;
 	
-//	
-//	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "task")
-//	private List<Attendance> attendance;
+	
+	@OneToMany(cascade = CascadeType.REMOVE, mappedBy = "task")
+	private List<Attendance> attendance;
 	
 	@NotNull
 	@ManyToOne(cascade = CascadeType.PERSIST)

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ispp.heartforchange.dto.AttendanceDTO;
 import com.ispp.heartforchange.dto.TaskDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.TaskServiceImpl;
@@ -42,18 +43,6 @@ public class TaskController {
 		this.jwtUtils = jwtUtils;
 	}
 	
-	/*
-	 * Get all task
-	 * 
-	 * 
-	 * @Return ResponseEntity
-	 */
-	
-	@GetMapping
-	public ResponseEntity<?> getAllTask(){
-		List<TaskDTO> tasks = taskService.getAll();
-		return ResponseEntity.ok(tasks);
-	}
 	
 	
 	/*
@@ -65,7 +54,7 @@ public class TaskController {
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("/{id}")
+	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getTaskById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -78,9 +67,14 @@ public class TaskController {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
 
-		String username = jwtUtils.getUserNameFromJwtToken(jwt);
-		TaskDTO task = taskService.getById(id, username);
-		return ResponseEntity.ok(task);
+		try {
+			TaskDTO task = taskService.getById(jwt, id);
+			return ResponseEntity.ok(task);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	/*
@@ -104,12 +98,13 @@ public class TaskController {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
 
-		String username = jwtUtils.getUserNameFromJwtToken(jwt);
-		
-		TaskDTO taskSave = taskService.saveTask(task, username);
-		logger.info("Task saved with name=={}", taskSave.getName());
-		return ResponseEntity.ok(taskSave);
-		
+		try {
+			TaskDTO taskSave = taskService.saveTask(jwt,task);
+			logger.info("Task saved with name=={}", taskSave.getName());
+			return ResponseEntity.ok(taskSave);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	/*
@@ -120,10 +115,27 @@ public class TaskController {
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("ong/{username}")
-	public ResponseEntity<?> getByOng(@PathVariable("username") String username){
-		List<TaskDTO> tasks = taskService.getByOng(username);
-		return ResponseEntity.ok(tasks);
+	@GetMapping("/ong/get/{id}")
+	public ResponseEntity<?> getByOng(HttpServletRequest request, @PathVariable("id") Long id){
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			List<TaskDTO> tasks = taskService.getByOng(jwt , id);
+			return ResponseEntity.ok(tasks);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	/*
@@ -148,12 +160,16 @@ public class TaskController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
-
-		String username = jwtUtils.getUserNameFromJwtToken(jwt);
 		
-		TaskDTO taskupdate = taskService.updateTask(id, task, username);
-		logger.info("Task update with name=={}", taskupdate.getName());
-		return ResponseEntity.ok(taskupdate);
+		try {
+			TaskDTO taskupdate = taskService.updateTask(jwt, id, task);
+			logger.info("Task update with name=={}", taskupdate.getName());
+			return ResponseEntity.ok(taskupdate);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 		
 	}
 	
@@ -178,8 +194,81 @@ public class TaskController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		taskService.deleteTask(id, jwt);
-		return ResponseEntity.ok("Task deleted");
+		try {
+			taskService.deleteTask(jwt, id);
+			return ResponseEntity.ok("Task deleted");
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/get/{id}/attendances")
+	public ResponseEntity<?> getAttendancesById(HttpServletRequest request, @PathVariable("id") Long id) {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			List<AttendanceDTO> attendances = taskService.getAllAttendancesByTask(jwt, id);
+			return ResponseEntity.ok(attendances);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/volunteer/get/{id}/attendances")
+	public ResponseEntity<?> getAttendancesByPersonId(HttpServletRequest request, @PathVariable("id") Long id) {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			List<AttendanceDTO> attendances = taskService.getAllAttendancesByVolunteer(jwt, id);
+			return ResponseEntity.ok(attendances);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/count")
+	public ResponseEntity<?> getNumberOfTasks(HttpServletRequest request) {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			Integer count = taskService.getNumberOfTasks(jwt);
+			return ResponseEntity.ok(count);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 }
