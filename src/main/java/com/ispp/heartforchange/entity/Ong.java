@@ -73,7 +73,7 @@ public class Ong extends Account{
 
 
 	public Ong( OngDTO ongDto ) {
-		super(ongDto.getUsername(),ongDto.getEmail(), ongDto.getPassword(), ongDto.getRolAccount());
+		super(ongDto.getUsername(),ongDto.getEmail(), ongDto.getPassword());
 		this.name = ongDto.getName();
 		this.cif = ongDto.getCif();
 		this.description = ongDto.getDescription();

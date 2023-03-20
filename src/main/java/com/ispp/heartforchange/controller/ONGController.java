@@ -1,7 +1,6 @@
 package com.ispp.heartforchange.controller;
 
-import java.util.List;
-
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
@@ -13,8 +12,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispp.heartforchange.dto.OngDTO;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.OngServiceImpl;
 
@@ -48,27 +48,33 @@ public class ONGController {
 	}
 	
 	/*
-	 * Get all ongs
-	 * 
-	 * @Return ResponseEntity
-	 */
-	@GetMapping
-	public ResponseEntity<?> getAllOngs() {
-		List<OngDTO> ongs = ongServiceImpl.getAllOngs();
-		return ResponseEntity.ok(ongs);
-	}
-	
-	/*
 	 * Get ong by id
 	 * 
 	 * @Paramas id
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@GetMapping("/{id}")
-	public ResponseEntity<?> getOngById(@PathVariable("id") Long id) {
-		OngDTO ong = ongServiceImpl.getOngById(id);
-		return ResponseEntity.ok(ong);
+	@GetMapping("/get")
+	public ResponseEntity<?> getOngById(HttpServletRequest request) throws OperationNotAllowedException {
+		String jwt = null;
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
+		}
+		try {
+			OngDTO ong = ongServiceImpl.getOng(jwt);
+			logger.info("ONG got with username={}", ong.getUsername());
+			return ResponseEntity.ok(ong);
+		}catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
+		
 	}
 	
 	/*
@@ -79,10 +85,16 @@ public class ONGController {
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/signup")
-	public ResponseEntity<?> saveOng(@Valid @RequestBody OngDTO ong) {
-		OngDTO ongSaved = ongServiceImpl.saveOng(ong);
-		logger.info("ONG saved with username={}", ongSaved.getUsername());
-		return ResponseEntity.ok(ongSaved);
+	public ResponseEntity<?> saveOng(@Valid @RequestBody OngDTO ong) throws OperationNotAllowedException {
+		try {
+			OngDTO ongSaved = ongServiceImpl.saveOng(ong);
+			logger.info("ONG saved with username={}", ongSaved.getUsername());
+			return ResponseEntity.ok(ongSaved);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>("That account already exists: "+e.toString(), HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	/*
@@ -94,20 +106,43 @@ public class ONGController {
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateOng(@PathVariable("id") Long id, @Valid @RequestBody OngDTO ong) {
-	    OngDTO ongToUpdate = ongServiceImpl.updateOng(id, ong);
-	    logger.info("Trying to authenticate with username={} and password={}", ongToUpdate.getUsername(), ongToUpdate.getPassword());
-	    Authentication authentication = authenticationManager.authenticate(
-	            new UsernamePasswordAuthenticationToken(ongToUpdate.getUsername(), ong.getPassword()));
-	    SecurityContextHolder.getContext().setAuthentication(authentication);
-	    String jwt = jwtUtils.generateJwtToken(authentication);
-	    String refresh = jwtUtils.generateJwtRefreshToken(authentication);
-	    HttpHeaders responseHeaders = new HttpHeaders();
-	    responseHeaders.set("Authorization", jwt);
-	    responseHeaders.set("Refresh", refresh);
-	    logger.info("ONG updated with id={}", id);
-	    return ResponseEntity.ok().headers(responseHeaders).body(ongToUpdate);
+	@PutMapping("/update")
+	public ResponseEntity<?> updateOng(HttpServletRequest request, @Valid @RequestBody OngDTO ong) throws OperationNotAllowedException {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			OngDTO ongToUpdate = ongServiceImpl.updateOng(jwt, ong);
+			
+			String username = jwtUtils.getUserNameFromJwtToken(jwt);
+			logger.info("ONG updated with username={}", username);
+			
+			//To refresh the token after updating
+		    Authentication authentication = authenticationManager.authenticate(
+		            new UsernamePasswordAuthenticationToken(ongToUpdate.getUsername(), ong.getPassword()));
+		    SecurityContextHolder.getContext().setAuthentication(authentication);
+		    String jwt2 = jwtUtils.generateJwtToken(authentication);
+		    String refresh = jwtUtils.generateJwtRefreshToken(authentication);
+		    HttpHeaders responseHeaders = new HttpHeaders();
+		    responseHeaders.set("Authorization", jwt2);
+		    responseHeaders.set("Refresh", refresh);
+		    
+		    return ResponseEntity.ok().headers(responseHeaders).body(ongToUpdate);
+		}catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>("That account already exists: "+e.toString(), HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	/*
@@ -117,10 +152,29 @@ public class ONGController {
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@PostMapping("/delete/{id}")
-	public ResponseEntity<?> deleteOng(@PathVariable("id") Long id) {
-		ongServiceImpl.deleteOng(id);
-		logger.info("ONG with id={} deleted", id);
-		return new ResponseEntity<String>("ONG deleted", HttpStatus.OK);
+	@PostMapping("/delete")
+	public ResponseEntity<?> deleteOng(HttpServletRequest request) throws OperationNotAllowedException {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+		try {
+			ongServiceImpl.deleteOng(jwt);
+			
+			String username = jwtUtils.getUserNameFromJwtToken(jwt);
+			logger.info("ONG with username={} deleted", username);
+			
+			return new ResponseEntity<String>("ONG deleted", HttpStatus.OK);	
+		}catch(OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
 	}
 }

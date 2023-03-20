@@ -66,17 +66,15 @@ public class Account implements Serializable {
 		this.id = accountDto.getId();
 		this.username = accountDto.getUsername();
 		this.password = accountDto.getPassword();
-		this.rolAccount = accountDto.getRolAccount();
 		this.email = accountDto.getEmail();
 	}
 
 	public Account(@NotNull @NotBlank @Size(max = 20) String username,
 			@NotNull @NotBlank @Size(max = 200) String email,
-			@NotNull @NotBlank @Size(max = 120) String password, @NotNull RolAccount rolAccount) {
+			@NotNull @NotBlank @Size(max = 120) String password) {
 		super();
 		this.username = username;
 		this.password = password;
-		this.rolAccount = rolAccount;
 		this.email = email;
 	}
 	
