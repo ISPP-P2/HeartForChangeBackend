@@ -245,7 +245,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 		Volunteer volunteerToDelete = new Volunteer(volunteerDTO, volunteerDTO.getHourOfAvailability(), volunteerDTO.getSexCrimes());
 		volunteerToDelete.setId(id);
 
-		List<AcademicExperience> academicExps = academicExperienceRepository.findByVolunteer(volunteerToDelete.getUsername()).get();
+		List<AcademicExperience> academicExps = academicExperienceRepository.findAcademicExperienceByVolunteerId(volunteerToDelete.getId()).get();
 		//Get all the work experiences that belong to the volunteer to delete
 
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByVolunteerId(volunteerToDelete.getId()).get();

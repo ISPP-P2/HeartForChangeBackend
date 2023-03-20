@@ -42,20 +42,7 @@ public class AttendanceController {
 		this.jwtUtils = jwtUtils;
 	}
 	
-	/*
-	 * Get all attendance
-	 * 
-	 * 
-	 * @Return ResponseEntity
-	 */
-	
-	@GetMapping
-	public ResponseEntity<?> getAllAttendances(){
-		List<AttendanceDTO> attendances = attendanceService.getAll();
-		return ResponseEntity.ok(attendances);
-	}
-	
-	
+		
 	/*
 	 * Get attendance by id
 	 * 
@@ -112,13 +99,13 @@ public class AttendanceController {
 	 * Delete Petition by a Volunteer.
 	 * 
 	 * @Param HttpServletRequest
-	 * @Param Long idTask
+	 * @Param Long idAttendance
 	 * 
 	 * @Return ResponseEntity
 	 */
-	
-	@PostMapping("/delete/{idTask}")
-	public ResponseEntity<?> deletePetition(HttpServletRequest request, @PathVariable("idTask") Long id) {
+	 
+	@PostMapping("/cancel/{id}")
+	public ResponseEntity<?> deletePetition(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -129,11 +116,11 @@ public class AttendanceController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		attendanceService.deletePetition(id, jwt);
-		return ResponseEntity.ok("Attendance Deleted");
+		AttendanceDTO atendanceDTO = attendanceService.cancelPetition(id, jwt);
+		return ResponseEntity.ok(atendanceDTO);
 	}
-	
-	
+	 
+	 
 	/*
 	 * Accept Petition by a ONG.
 	 * 
@@ -206,7 +193,7 @@ public class AttendanceController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		if(!List.of(1,2,3).contains(type)) {
+		if(!List.of(0,1,2).contains(type)) {
 			return new ResponseEntity<String>("Type not valid", HttpStatus.BAD_REQUEST);
 		}
 		

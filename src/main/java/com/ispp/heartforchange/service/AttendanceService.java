@@ -1,17 +1,14 @@
 package com.ispp.heartforchange.service;
 
-import java.util.List;
-
 import com.ispp.heartforchange.dto.AttendanceDTO;
 import com.ispp.heartforchange.entity.AttendanceType;
 
 public interface AttendanceService {
 
-	List<AttendanceDTO> getAll();
 
 	AttendanceDTO createPetition(Long id, String token);
 
-	void deletePetition(Long id, String token);
+	AttendanceDTO cancelPetition(Long id, String token);
 
 	AttendanceDTO acceptPetition(Long id, String token);
 

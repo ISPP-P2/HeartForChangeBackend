@@ -55,6 +55,7 @@ public class AccountDTO implements Serializable {
 	
 	@JsonProperty("rolAccount")
 	private RolAccount rolAccount;		
+
 	
 	public AccountDTO( Account account ) {
 		super();

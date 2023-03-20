@@ -10,6 +10,7 @@ import org.hibernate.validator.constraints.Length;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ispp.heartforchange.entity.Task;
 import com.ispp.heartforchange.entity.TaskType;
 
 import lombok.Getter;
@@ -68,6 +69,20 @@ public class TaskDTO implements Serializable{
 	@NotNull
 	private String place;
 	
+	
+	public TaskDTO(Task task) {
+		this.id = task.getId();
+		this.name = task.getName();
+		this.date = task.getDate();
+		this.teacher = task.getTeacher();
+		this.certificate = task.getCertificate();
+		this.observations = task.getObservations();
+		this.incidences = task.getIncidences();
+		this.coordinator = task.getCoordinator();
+		this.numParticipants = task.getNumParticipants();
+		this.type = task.getType();
+		this.place = task.getPlace();
+	}
 	
 
 
