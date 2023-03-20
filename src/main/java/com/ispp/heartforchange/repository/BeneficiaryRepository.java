@@ -12,5 +12,8 @@ public interface BeneficiaryRepository extends JpaRepository<Beneficiary, Long>{
 
 	@Query("Select distinct b from Beneficiary b, Person p where p.ong.username = :username")
 	List<Beneficiary> findBeneficiariesByOng(String username);
+	
+	Beneficiary findByUsername(String username);
+
 
 }

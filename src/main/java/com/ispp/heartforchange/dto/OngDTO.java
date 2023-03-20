@@ -51,5 +51,4 @@ public class OngDTO extends AccountDTO {
 		this.cif = ong.getCif();
 		this.description = ong.getDescription();
 	}
-	
 }

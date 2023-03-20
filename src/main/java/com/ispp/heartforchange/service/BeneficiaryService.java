@@ -9,21 +9,19 @@ import com.ispp.heartforchange.dto.BeneficiaryDTO;
 
 @Service
 public interface BeneficiaryService {
-	List<BeneficiaryDTO> getAllBeneficiares();
 	
-	BeneficiaryDTO getBeneficiaryById(Long id);
+	BeneficiaryDTO getBeneficiaryById(Long id, String username);
 	
-	
-	List<BeneficiaryDTO> getBeneficiaryByOng(Long id);
+	Integer getNumberBeneficiaresByOng(String username);
 	
 	
 	List<BeneficiaryDTO> getAllBeneficiaresByOng(String username);
 
 	
-	BeneficiaryDTO updateBeneficiary(Long id, BeneficiaryDTO beneficiaryDTO);
+	BeneficiaryDTO updateBeneficiary(Long id, BeneficiaryDTO beneficiaryDTO, String username);
 	
 	
-	void deteleBeneficiary(Long id);
+	void deteleBeneficiary(Long id, String username);
 
 	BeneficiaryDTO saveBeneficiary(BeneficiaryDTO beneficiaryDTO, String username );
 	

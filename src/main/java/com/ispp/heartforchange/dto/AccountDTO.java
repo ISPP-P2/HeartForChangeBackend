@@ -54,8 +54,8 @@ public class AccountDTO implements Serializable {
 	private String password;
 	
 	@JsonProperty("rolAccount")
-	@NotNull
 	private RolAccount rolAccount;		
+
 	
 	public AccountDTO( Account account ) {
 		super();

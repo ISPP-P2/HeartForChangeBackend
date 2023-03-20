@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
 import com.ispp.heartforchange.entity.Appointment;
 import com.ispp.heartforchange.entity.AcademicExperience;
+import com.ispp.heartforchange.entity.Account;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.ComplementaryFormation;
 import com.ispp.heartforchange.entity.Ong;
@@ -35,6 +36,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	private ONGRepository ongRepository;
 	private BeneficiaryRepository beneficiaryRepository;
 	private AppointmentRepository appointmentRepository;
+	private AccountRepository accountRepository;
 	private WorkExperienceRepository workExperienceRepository;	
 	private AcademicExperienceRepository academicExperienceRepository;
 	private ComplementaryFormationRepository complementaryFormationRepository;
@@ -43,7 +45,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 
 	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder, 
 		  ComplementaryFormationRepository complementaryFormationRepository, WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository, 
-		  AcademicExperienceRepository academicExperienceRepository,AppointmentRepository appointmentRepository ) {
+		  AcademicExperienceRepository academicExperienceRepository,AppointmentRepository appointmentRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
@@ -52,39 +54,11 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		this.encoder = encoder;
 		this.academicExperienceRepository = academicExperienceRepository;
 		this.appointmentRepository = appointmentRepository;
+		this.accountRepository = accountRepository;
 	}
 	
   
-	/*
-	 * Get all beneficiaries
-	 * @Return List<BeneficiaryDTO>
-	 */
-	@Override
-	public List<BeneficiaryDTO> getAllBeneficiares() {
-		List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
-		List<BeneficiaryDTO> beneficiariesDTOs = new ArrayList<>();
-		for(Beneficiary beneficiary: beneficiaries) {
-			BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
-					beneficiary.getId(), 
-					beneficiary.getNationality(), 
-					beneficiary.isDoubleNationality(), 
-					beneficiary.getArrivedDate(), 
-					beneficiary.isEuropeanCitizenAuthorization(), 
-					beneficiary.isTouristVisa(), 
-					beneficiary.getDateTouristVisa(), 
-					beneficiary.isHealthCard(), 
-					beneficiary.getEmploymentSector(), 
-					beneficiary.getPerceptionAid(), 
-					beneficiary.isSavingsPossesion(),
-					beneficiary.isSaeInscription(),
-					beneficiary.isWorking(), 
-					beneficiary.isComputerKnowledge(),
-					beneficiary.getOwnedDevices(), 
-					beneficiary.getLanguages());
-			beneficiariesDTOs.add(beneficiaryDTO);
-		}
-		return beneficiariesDTOs;
-	}
+
 
 	/*
 	 * Get beneficiary by id
@@ -92,12 +66,46 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	 * @Return BeneficiaryDTO
 	 */
 	@Override
-	public BeneficiaryDTO getBeneficiaryById(Long id) {
+	public BeneficiaryDTO getBeneficiaryById(Long id, String username) {
 		Optional<Beneficiary> optBenficiary = beneficiaryRepository.findById(id);
+		
 		
 		if(!optBenficiary.isPresent()) {
 			throw new UsernameNotFoundException("This Beneficiary not exist!");
 		}
+		
+		//Account of the person who calls the action
+		Account account = accountRepository.findByUsername(username);
+		Boolean res = null;
+		//if calls the action ong, checks that beneficiary is on the ong who calls the action
+		if(account.getRolAccount().equals(RolAccount.ONG)) {
+			Ong ong = ongRepository.findByUsername(username);
+			Ong ongBeneficiary = optBenficiary.get().getOng();
+			if(!ong.equals(ongBeneficiary)){
+				//If not are the same ong it´s an error
+				res = false;
+			}else {
+				res = true;
+			}
+			
+		}else if(account.getRolAccount().equals(RolAccount.BENEFICIARY)) {
+			Beneficiary beneficiaryById = optBenficiary.get();
+			Beneficiary beneficiaryByToken = beneficiaryRepository.findByUsername(username);
+			
+			if(!beneficiaryById.equals(beneficiaryByToken)) {
+				//if not are the same beneficiary it´s an error
+				res = false;
+			}else {
+				res = true;
+			}
+		}else {
+			res = false;
+		}
+		
+		if(res != true) {
+			throw new UsernameNotFoundException("You don´t have permissions on this beneficiary");
+		}
+		
 		Beneficiary beneficiary = optBenficiary.get();
 		BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
 				beneficiary.getId(), 
@@ -117,35 +125,12 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 				beneficiary.getOwnedDevices(), 
 				beneficiary.getLanguages());
 		return beneficiaryDTO;
+		
+		
 	}
 
 	
-	@Override
-	public List<BeneficiaryDTO> getBeneficiaryByOng(Long id) {
-		List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
-		List<BeneficiaryDTO> beneficiariesDTOs = new ArrayList<>();
-		for(Beneficiary beneficiary: beneficiaries) {
-			BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
-					beneficiary.getId(), 
-					beneficiary.getNationality(), 
-					beneficiary.isDoubleNationality(), 
-					beneficiary.getArrivedDate(), 
-					beneficiary.isEuropeanCitizenAuthorization(), 
-					beneficiary.isTouristVisa(), 
-					beneficiary.getDateTouristVisa(), 
-					beneficiary.isHealthCard(), 
-					beneficiary.getEmploymentSector(), 
-					beneficiary.getPerceptionAid(), 
-					beneficiary.isSavingsPossesion(),
-					beneficiary.isSaeInscription(),
-					beneficiary.isWorking(), 
-					beneficiary.isComputerKnowledge(),
-					beneficiary.getOwnedDevices(), 
-					beneficiary.getLanguages());
-			beneficiariesDTOs.add(beneficiaryDTO);
-		}
-		return beneficiariesDTOs;
-	}
+
 
 	
 	/*
@@ -155,8 +140,12 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	 */
 	@Override
 	public BeneficiaryDTO saveBeneficiary(BeneficiaryDTO beneficiaryDTO, String username ) {
-		Ong ong = ongRepository.findByUsername(username);
+		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
+			throw new UsernameNotFoundException("You are not an ONG");
+		}
 
+		Ong ong = ongRepository.findByUsername(username);
+		
 		
 		Beneficiary beneficiary = new Beneficiary(beneficiaryDTO, 
 				beneficiaryDTO.getNationality(), 
@@ -215,8 +204,22 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	 * @Return BeneficiaryDTO
 	 */
 	@Override
-	public BeneficiaryDTO updateBeneficiary(Long id, BeneficiaryDTO newBeneficiaryDTO) {
+	public BeneficiaryDTO updateBeneficiary(Long id, BeneficiaryDTO newBeneficiaryDTO, String username) {
 		Optional<Beneficiary> beneficiaryToUpdate = beneficiaryRepository.findById(id);
+		
+		Ong ongByBeneficiary = beneficiaryToUpdate.get().getOng();
+		Ong ongByToken = ongRepository.findByUsername(username);
+
+		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
+			throw new UsernameNotFoundException("You don´t have permissions to update a beneficiary. You are not an ONG");
+
+		}
+		
+		if(!ongByBeneficiary.equals(ongByToken)) {
+			throw new UsernameNotFoundException("This beneficiary don´t belogns to your ONG");
+
+		}
+		
 		logger.info("Beneficiary is updating with id={}", id);
 		if(beneficiaryToUpdate.isPresent()) {
 			beneficiaryToUpdate.get().setPassword(encoder.encode(newBeneficiaryDTO.getPassword()));
@@ -288,9 +291,26 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	 */
 	@Override
 	public List<BeneficiaryDTO> getAllBeneficiaresByOng(String username){
+		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
+			throw new UsernameNotFoundException("You are not an ONG");
+
+		}
+		List<Beneficiary> allBenficiaries = beneficiaryRepository.findAll();
+		List<Beneficiary> beneficiaries = new ArrayList<>();
+		for(Beneficiary b : allBenficiaries) {
+			if(b.getOng().equals(ongRepository.findByUsername(username))) {
+				beneficiaries.add(b);
+			}
+		}
 		
-		List<Beneficiary> beneficiaries = beneficiaryRepository.findBeneficiariesByOng(username);
+		if(beneficiaries.isEmpty()) {
+			throw new UsernameNotFoundException("You don´t have any beneficiaries");
+
+		}
+		
 		List<BeneficiaryDTO> beneficiariesDTOs = new ArrayList<>();
+		
+		
 		for(Beneficiary beneficiary: beneficiaries) {
 			BeneficiaryDTO beneficiaryDTO = new BeneficiaryDTO(beneficiary, 
 					beneficiary.getId(), 
@@ -315,6 +335,28 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		return beneficiariesDTOs;
 	}
 	
+	@Override
+	public Integer getNumberBeneficiaresByOng(String username){
+		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
+			throw new UsernameNotFoundException("You are not an ONG");
+
+		}
+		List<Beneficiary> allBenficiaries = beneficiaryRepository.findAll();
+		List<Beneficiary> beneficiaries = new ArrayList<>();
+		for(Beneficiary b : allBenficiaries) {
+			if(b.getOng().equals(ongRepository.findByUsername(username))) {
+				beneficiaries.add(b);
+			}
+		}
+		
+		if(beneficiaries.isEmpty()) {
+			throw new UsernameNotFoundException("You don´t have any beneficiaries");
+
+		}
+		
+		return beneficiaries.size();
+	}
+	
 	
 	/*
 	 * delete beneficiary
@@ -322,9 +364,9 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	 * @Return void
 	 */
 	@Override
- 	public void deteleBeneficiary(Long id) {
+ 	public void deteleBeneficiary(Long id, String username) {
 		logger.info("Deleting Beneficiary with id={}", id);
-		BeneficiaryDTO beneficiaryDTO = getBeneficiaryById(id);
+		BeneficiaryDTO beneficiaryDTO = getBeneficiaryById(id, username);
 		Beneficiary beneficiaryToDelete = new Beneficiary(beneficiaryDTO, 
 				beneficiaryDTO.getNationality(), 
 				beneficiaryDTO.isDoubleNationality(), 
@@ -343,10 +385,12 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 				beneficiaryDTO.getLanguages());
 		    beneficiaryToDelete.setId(id);
 		
-		List<AcademicExperience> acadExps = academicExperienceRepository.findByBeneficiary(beneficiaryDTO.getUsername()).get();
-		List<Appointment> appointments = appointmentRepository.findAppointmentsByBeneficiaryUsername(beneficiaryToDelete.getUsername()).get();
-		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryUserName(beneficiaryToDelete.getUsername()).get();
-		List<ComplementaryFormation> complementaryFormationList = complementaryFormationRepository.findComplementaryFormationByBeneficiary(beneficiaryToDelete.getUsername()).get();
+		List<AcademicExperience> acadExps = academicExperienceRepository.findAcademicExperienceByBeneficiaryId(beneficiaryToDelete.getId()).get();
+
+		List<Appointment> appointments = appointmentRepository.findAppointmentsByBeneficiaryId(beneficiaryToDelete.getId()).get();
+		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryId(beneficiaryToDelete.getId()).get();
+		List<ComplementaryFormation> complementaryFormationList = complementaryFormationRepository.findComplementaryFormationByBeneficiary(beneficiaryToDelete.getId()).get();
+
         
     try {
 	    	for(Appointment a : appointments) {
@@ -369,5 +413,10 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		}		
 		
 	}
+
+
+
+
+	
 
 }
