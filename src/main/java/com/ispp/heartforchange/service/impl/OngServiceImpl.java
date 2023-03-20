@@ -140,7 +140,7 @@ public class OngServiceImpl implements OngService{
 			//Get all the volunteers that belong to the Ong to delete
 			List<VolunteerDTO> volunteerList = volunteerService.getVolunteersByOng(loggedOng.getUsername());
 			List<Beneficiary> beneficiariesONG = beneficiaryRepository.findBeneficiariesByOng(loggedOng.getUsername());
-			List<Appointment> appointments = appointmentRepository.findAppointmentsByOngUsername(loggedOng.getUsername()).get();
+			List<Appointment> appointments = appointmentRepository.findAppointmentsByOngId(loggedOng.getId()).get();
 			try {
 				for( Beneficiary b : beneficiariesONG) {
 					beneficiaryRepository.delete(b);
@@ -155,7 +155,8 @@ public class OngServiceImpl implements OngService{
 				ongRepository.delete(loggedOng);	
 			} catch (Exception e) {
 				throw new UsernameNotFoundException(e.getMessage());
-		}else {
+			}
+		} else {
 			throw new OperationNotAllowedException("You must be logged as ONG to use this method.");
 		}
 	}
