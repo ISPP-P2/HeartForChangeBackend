@@ -92,7 +92,7 @@ public class AppointmentServiceImpl implements AppointmentService {
  			if (o.getId() == ongId){
  				exception = false;
  			}
- 		}
+ 		} 
 
  		if(exception==true) {
  			throw new UsernameNotFoundException("Not Found: The ONG with this ID doesn't exist!");
@@ -106,7 +106,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 				throw new UsernameNotFoundException("Not Found: Appointments not exist for the ONG!");
 			} else {
 				if(appointments.get().size() == 0) {
-					throw new UsernameNotFoundException("This ONG has not appointments!");
+					return appointmentsDTO;
 				}else {
 					if(appointments.get().get(0).getBeneficiary().getOng().getId() == ong.getId()) {
 						for (Appointment appointment : appointments.get()) {
