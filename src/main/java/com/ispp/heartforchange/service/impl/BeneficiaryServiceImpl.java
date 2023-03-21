@@ -302,13 +302,12 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 				beneficiaries.add(b);
 			}
 		}
-		
+		List<BeneficiaryDTO> beneficiariesDTOs = new ArrayList<>();
 		if(beneficiaries.isEmpty()) {
-			throw new UsernameNotFoundException("You don´t have any beneficiaries");
+			return beneficiariesDTOs;
 
 		}
 		
-		List<BeneficiaryDTO> beneficiariesDTOs = new ArrayList<>();
 		
 		
 		for(Beneficiary beneficiary: beneficiaries) {
@@ -350,7 +349,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		}
 		
 		if(beneficiaries.isEmpty()) {
-			throw new UsernameNotFoundException("You don´t have any beneficiaries");
+			return 0;
 
 		}
 		
