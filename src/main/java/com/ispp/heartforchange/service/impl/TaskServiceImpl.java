@@ -88,51 +88,35 @@ public class TaskServiceImpl implements TaskService{
 	 */
 
 	@Override
-    public List<TaskDTO> getByOng(String token, Long id) {
+    public List<TaskDTO> getByOng(String token) {
 
         //Identify if user logged is an ong or a volunteer
         String username = jwtUtils.getUserNameFromJwtToken(token);
         Ong loggedOng = ongRepository.findByUsername(username);
-        Volunteer loggedVolunteer =volunteerRepository.findByUsername(username);
+        Volunteer loggedVolunteer = volunteerRepository.findByUsername(username);
 
-        // ONG searched
-        Optional<Ong> ong = ongRepository.findById(id);
+		Ong ong = loggedOng;
 
-        if(ong.isPresent()) {      	
-        	// Tasks of the ONG
-        	List<Task> tasks = taskRepository.findByOng(ong.get());
-        	List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
-        	
-        	if(loggedOng != null) {
-        		// Logged as ong
-        		if(ong.get().equals(loggedOng)) {
-        			for(Task task : tasks) {
-        				TaskDTO tasktDTO = new TaskDTO(task);
-        				tasksDTO.add(tasktDTO);
-        			}
-        		}else {
-        			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
-        		}
-        	}else if(loggedVolunteer != null){
-        		// Logged as volunteer
-        		if(loggedVolunteer.getOng().equals(ong.get())) {
-        			for(Task task : tasks) {
-        				if(task.getType()==TaskType.ACTIVIDAD) {
-        					TaskDTO tasktDTO = new TaskDTO(task);
-        					tasksDTO.add(tasktDTO);
-        				}
-        			}
-        		}else {
-        			throw new UsernameNotFoundException("You cannot get information about an ONG which you do not belong to.");
-        		}
-        	}else {
-        		throw new UsernameNotFoundException("You must be logged to make this operation.");
-        	}
-        	
-        	logger.info("Trying to get the tasks from ONG with name={}", ong.get().getName());
-        	return tasksDTO;
-        }
-        throw new IllegalArgumentException("There is not an ONG with id=" + id);
+		if(username == null){
+			throw new UsernameNotFoundException("You must be logged to make this operation.");
+		}
+
+		if(loggedOng == null){
+			ong = loggedVolunteer.getOng();
+		}
+
+		if(ong == null){
+			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
+		}
+
+		List<Task> tasks = taskRepository.findByOng(loggedOng);
+		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
+		for(Task task : tasks) {
+			TaskDTO tasktDTO = new TaskDTO(task);
+			tasksDTO.add(tasktDTO);
+		}
+		logger.info("Trying to get the tasks from ONG with name={}", ong.getName());
+		return  tasksDTO;
     }
 
 	/*

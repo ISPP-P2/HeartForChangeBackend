@@ -32,8 +32,7 @@ public class TaskController {
 
 	private TaskServiceImpl taskService;
 	private JwtUtils jwtUtils;
-	
-	
+
 	/*
 	 * Dependency injection
 	 */
@@ -115,8 +114,8 @@ public class TaskController {
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("/ong/get/{id}")
-	public ResponseEntity<?> getByOng(HttpServletRequest request, @PathVariable("id") Long id){
+	@GetMapping("/ong/get")
+	public ResponseEntity<?> getByOng(HttpServletRequest request){
 		String jwt = null;
 
 		String headerAuth = request.getHeader("Authorization");
@@ -128,14 +127,8 @@ public class TaskController {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
 		
-		try {
-			List<TaskDTO> tasks = taskService.getByOng(jwt , id);
+			List<TaskDTO> tasks = taskService.getByOng(jwt);
 			return ResponseEntity.ok(tasks);
-		}catch(IllegalArgumentException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
-		}catch(Exception e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
 	}
 	
 	/*

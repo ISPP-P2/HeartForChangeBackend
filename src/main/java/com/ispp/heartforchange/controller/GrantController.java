@@ -9,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -111,8 +113,9 @@ public class GrantController {
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@GetMapping("/get/{id}/amount")
-	public ResponseEntity<?> getTotalAmountAcceptedGrantsByOng(HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException {
+	@GetMapping("/get/amount")
+	public ResponseEntity<?> getTotalAmountAcceptedGrantsByOng(HttpServletRequest request) throws OperationNotAllowedException {
+
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -122,7 +125,7 @@ public class GrantController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		
+
 		try {
 			Double amount = grantService.getTotalAmountAcceptedGrantsByOng(jwt);
 			return ResponseEntity.ok(amount);

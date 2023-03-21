@@ -19,7 +19,7 @@ public interface TaskService {
 
 	TaskDTO getById(String token, Long id);
 
-	List<TaskDTO> getByOng(String token, Long id);
+	List<TaskDTO> getByOng(String token);
 	
 	List<AttendanceDTO> getAllAttendancesByTask(String token, Long id);
 

@@ -1,6 +1,7 @@
 package com.ispp.heartforchange.controller;
 
 import java.util.List;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -151,8 +152,12 @@ public class BeneficiaryController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
-
 		String username = jwtUtils.getUserNameFromJwtToken(jwt);
+		String[] randomUUID = UUID.randomUUID().toString().split("-");
+
+		String usernameGenerated = beneficiary.getName().toLowerCase().substring(0, 3) + "-" + randomUUID[0].substring(0, 3);
+		beneficiary.setPassword(usernameGenerated);
+		beneficiary.setUsername(usernameGenerated);
 
 		BeneficiaryDTO beneficiarySaved = beneficiaryServiceImpl.saveBeneficiary(beneficiary, username);
 		logger.info("Beneficiary saved with username={}", beneficiarySaved.getUsername());
@@ -170,7 +175,7 @@ public class BeneficiaryController {
 	 * @Return ResponseEntity
 	 */
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateBeneficiary(HttpServletRequest request, @PathVariable("id") Long id, @Valid @RequestBody BeneficiaryDTO beneficiary) {
+	public ResponseEntity<?> updateBeneficiary(HttpServletRequest request, @PathVariable("id") Long id, @RequestBody BeneficiaryDTO beneficiary) {
 		String jwt2 = null;
 
 		String headerAuth = request.getHeader("Authorization");
@@ -183,21 +188,10 @@ public class BeneficiaryController {
 		}
 
 		String username = jwtUtils.getUserNameFromJwtToken(jwt2);
-		
-		
-		
+
 	    BeneficiaryDTO beneficiaryToUpdate = beneficiaryServiceImpl.updateBeneficiary(id, beneficiary, username);
 	    logger.info("Trying to authenticate with username={} and password={}", beneficiaryToUpdate.getUsername(), beneficiaryToUpdate.getPassword());
-	    Authentication authentication = authenticationManager.authenticate(
-	            new UsernamePasswordAuthenticationToken(beneficiaryToUpdate.getUsername(), beneficiary.getPassword()));
-	    SecurityContextHolder.getContext().setAuthentication(authentication);
-	    String jwt = jwtUtils.generateJwtToken(authentication);
-	    String refresh = jwtUtils.generateJwtRefreshToken(authentication);
-	    HttpHeaders responseHeaders = new HttpHeaders();
-	    responseHeaders.set("Authorization", jwt);
-	    responseHeaders.set("Refresh", refresh);
-	    logger.info("Beneficiary updated with id={}", id);
-	    return ResponseEntity.ok().headers(responseHeaders).body(beneficiaryToUpdate);
+	    return ResponseEntity.ok().body(beneficiaryToUpdate);
 	}
 	
 	/*

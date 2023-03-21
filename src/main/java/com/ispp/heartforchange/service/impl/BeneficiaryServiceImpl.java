@@ -217,12 +217,11 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		
 		if(!ongByBeneficiary.equals(ongByToken)) {
 			throw new UsernameNotFoundException("This beneficiary don´t belogns to your ONG");
-
 		}
 		
 		logger.info("Beneficiary is updating with id={}", id);
 		if(beneficiaryToUpdate.isPresent()) {
-			beneficiaryToUpdate.get().setPassword(encoder.encode(newBeneficiaryDTO.getPassword()));
+			beneficiaryToUpdate.get().setPassword(encoder.encode("a"));
 			beneficiaryToUpdate.get().setAddress(newBeneficiaryDTO.getAddress());
 			beneficiaryToUpdate.get().setBirthday(newBeneficiaryDTO.getBirthday());
 			beneficiaryToUpdate.get().setCivilStatus(newBeneficiaryDTO.getCivilStatus());

@@ -1,6 +1,9 @@
 package com.ispp.heartforchange.controller;
 
+import java.nio.charset.Charset;
 import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -134,7 +137,7 @@ public class VolunteerController {
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/signup")
-	public ResponseEntity<?> saveVolunteer(HttpServletRequest request, @Valid @RequestBody VolunteerDTO volunteer){
+	public ResponseEntity<?> saveVolunteer(HttpServletRequest request,@RequestBody VolunteerDTO volunteer){
 		
 		String jwt = null;
 
@@ -146,6 +149,11 @@ public class VolunteerController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
+		String[] randomUUID = UUID.randomUUID().toString().split("-");
+
+		String usernameGenerated = volunteer.getName().toLowerCase().substring(0, 3) + "-" + randomUUID[0].substring(0, 3);
+		volunteer.setPassword(usernameGenerated);
+		volunteer.setUsername(usernameGenerated);
 
 		String username = jwtUtils.getUserNameFromJwtToken(jwt);
 		
