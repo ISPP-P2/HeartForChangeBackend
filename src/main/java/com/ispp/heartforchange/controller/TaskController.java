@@ -107,7 +107,7 @@ public class TaskController {
 	}
 	
 	/*
-	 * Get all task by ong
+	 * Get all tasks by ong
 	 * 
 	 * @Param HttpServletRequest
 	 * 

@@ -31,7 +31,6 @@ public class BeneficiaryController {
 
 	private BeneficiaryServiceImpl beneficiaryServiceImpl;
 	private JwtUtils jwtUtils;
-	private AuthenticationManager authenticationManager;
 	
 
 	/*
@@ -42,7 +41,6 @@ public class BeneficiaryController {
 		super();
 		this.beneficiaryServiceImpl = beneficiaryServiceImpl;
 		this.jwtUtils = jwtUtils;
-		this.authenticationManager = authenticationManager;
 	}
 	
 	
@@ -55,7 +53,7 @@ public class BeneficiaryController {
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@GetMapping("/{id}")
+	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getBeneficiaryById(@PathVariable("id") Long id, HttpServletRequest request) {
 		
 		String jwt = null;
@@ -107,7 +105,7 @@ public class BeneficiaryController {
 		return ResponseEntity.ok(totalBeneficiaries);
 	}
 	
-	@GetMapping("/ong")
+	@GetMapping("/get")
 	public ResponseEntity<?> getBeneficiariesByOng(HttpServletRequest request) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");

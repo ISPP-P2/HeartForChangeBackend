@@ -52,7 +52,7 @@ public class AttendanceController {
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("/{id}")
+	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getAttendanceById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");

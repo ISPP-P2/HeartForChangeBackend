@@ -74,13 +74,13 @@ public class GrantController {
 	}
 	
 	/*
-	 * Get all grant by ong
+	 * Get all grants by ong
 	 * 
 	 * @Param HttpServletRequest
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@GetMapping("/get/ong")
+	@GetMapping("/get")
 	public ResponseEntity<?> getGrantsByOng(HttpServletRequest request) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
@@ -104,10 +104,9 @@ public class GrantController {
 	}
 	
 	/*
-	 * Get grant by id
+	 * Get sum of the different amounts of the accepted grants by ong
 	 * 
 	 * @Param HttpServletRequest
-	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
 	 */
@@ -135,7 +134,7 @@ public class GrantController {
 	}
 	
 	/*
-	 * Get amount of accepted grants by ong
+	 * Get grant by id
 	 * 
 	 * @Param HttpServletRequest
 	 * @Param Long id
@@ -143,7 +142,7 @@ public class GrantController {
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/get/{id}")
-	public ResponseEntity<?> getGrantsByOng(HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException {
+	public ResponseEntity<?> getGrantById(HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 

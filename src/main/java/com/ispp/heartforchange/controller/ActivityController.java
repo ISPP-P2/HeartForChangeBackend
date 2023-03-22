@@ -117,7 +117,7 @@ public class ActivityController {
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("/ong/get")
+	@GetMapping("/get")
 	public ResponseEntity<?> getByOng(HttpServletRequest request){
 		String jwt = null;
 

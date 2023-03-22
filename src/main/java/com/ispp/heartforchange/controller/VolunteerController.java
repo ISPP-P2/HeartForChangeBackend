@@ -53,13 +53,13 @@ public class VolunteerController {
 	
 
 	/*
-	 * Get all volunteer by ONG
+	 * Get all volunteers by ONG
 	 * 
-	 * @Params username
+	 * @Param HttpServletRequest
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@GetMapping("/ong")
+	@GetMapping("/get")
 	public ResponseEntity<?> getVolunteersByOng(HttpServletRequest request){
 		String jwt = null;
 
@@ -78,9 +78,9 @@ public class VolunteerController {
 	}
 	
 	/*
-	 * Get all volunteer by ONG
+	 * Get number of volunteers by ONG
 	 * 
-	 * @Params username
+	 * @Param HttpServletRequest
 	 * 
 	 * @Return ResponseEntity
 	 */
@@ -105,11 +105,12 @@ public class VolunteerController {
 	/*
 	 * Get volunteer by id
 	 * 
+	 * @Param HttpServletRequest
 	 * @Param id
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@GetMapping("/{id}")
+	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getVolunteerById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -130,6 +131,7 @@ public class VolunteerController {
 	/*
 	 * Signup volunteer
 	 * 
+	 * @Param HttpServletRequest
 	 * @Param volunteerDTO
 	 * 
 	 * @Return ResponseEntity
@@ -163,8 +165,8 @@ public class VolunteerController {
 	/*
 	 * Update volunteer
 	 * 
+	 * @Param HttpServletRequest
 	 * @Param id
-	 * 
 	 * @Param volunteerDTO
 	 * 
 	 * @Return ResponseEntity
@@ -203,6 +205,7 @@ public class VolunteerController {
 	/*
 	 * Delete volunteer
 	 * 
+	 * @Param HttpServletRequest
 	 * @Params Long id
 	 * 
 	 * @Return ResponseEntity

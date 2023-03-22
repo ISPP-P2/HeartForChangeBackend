@@ -49,7 +49,6 @@ public class Task implements Serializable {
 	@NotNull
 	private LocalDateTime date;   // fecha y hora
 	
-	@NotNull
 	private String teacher;
 	
 	@NotNull

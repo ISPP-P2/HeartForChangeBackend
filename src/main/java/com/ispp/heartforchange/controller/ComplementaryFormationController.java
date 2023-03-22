@@ -122,7 +122,7 @@ public class ComplementaryFormationController {
     
     
     /*
-     * Get all complementary formationby beneficiary
+     * Get all complementary formation by beneficiary
      * 
      * @Param HttpServletRequest
      * @Param Long id
