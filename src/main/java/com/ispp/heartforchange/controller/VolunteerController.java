@@ -8,13 +8,10 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,8 +24,6 @@ import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.VolunteerServiceImpl;
 
-import org.springframework.util.StringUtils;
-
 
 @RestController
 @RequestMapping("/volunteers")
@@ -38,7 +33,6 @@ public class VolunteerController {
 
 	private VolunteerServiceImpl volunteerServiceImpl;
 	private JwtUtils jwtUtils;
-	private AuthenticationManager authenticationManager;
 	
 	/*
 	 * Dependency injection
@@ -48,7 +42,6 @@ public class VolunteerController {
 		super();
 		this.volunteerServiceImpl = volunteerServiceImpl;
 		this.jwtUtils = jwtUtils;
-		this.authenticationManager = authenticationManager;
 	}
 	
 
@@ -188,17 +181,9 @@ public class VolunteerController {
 		String username = jwtUtils.getUserNameFromJwtToken(jwt2);
 		
 	    VolunteerDTO volunteerToUpdate = volunteerServiceImpl.updateVolunteer(id, volunteer, username);
-	    logger.info("Trying to authenticate with username={} and password={}", volunteerToUpdate.getUsername(), volunteerToUpdate.getPassword());
-	    Authentication authentication = authenticationManager.authenticate(
-	            new UsernamePasswordAuthenticationToken(volunteerToUpdate.getUsername(), volunteer.getPassword()));
-	    SecurityContextHolder.getContext().setAuthentication(authentication);
-	    String jwt = jwtUtils.generateJwtToken(authentication);
-	    String refresh = jwtUtils.generateJwtRefreshToken(authentication);
-	    HttpHeaders responseHeaders = new HttpHeaders();
-	    responseHeaders.set("Authorization", jwt);
-	    responseHeaders.set("Refresh", refresh);
+
 	    logger.info("Volunteer updated with id={}", id);
-	    return ResponseEntity.ok().headers(responseHeaders).body(volunteerToUpdate);
+	    return ResponseEntity.ok().body(volunteerToUpdate);
 	}
 	
 	

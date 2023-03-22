@@ -184,7 +184,7 @@ public class BeneficiaryController {
 		String username = jwtUtils.getUserNameFromJwtToken(jwt2);
 
 	    BeneficiaryDTO beneficiaryToUpdate = beneficiaryServiceImpl.updateBeneficiary(id, beneficiary, username);
-	    logger.info("Trying to authenticate with username={} and password={}", beneficiaryToUpdate.getUsername(), beneficiaryToUpdate.getPassword());
+	    logger.info("Beneficiary with id={} updated", id);
 	    return ResponseEntity.ok().body(beneficiaryToUpdate);
 	}
 	
