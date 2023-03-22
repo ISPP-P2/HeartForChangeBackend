@@ -25,8 +25,8 @@ import com.ispp.heartforchange.service.impl.TaskServiceImpl;
 
 
 @RestController
-@RequestMapping("/tasks")
-public class TaskController {
+@RequestMapping("/activities")
+public class ActivityController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
@@ -36,16 +36,15 @@ public class TaskController {
 	/*
 	 * Dependency injection
 	 */
-	public TaskController(TaskServiceImpl volunteerServiceImpl, JwtUtils jwtUtils) {
+	public ActivityController(TaskServiceImpl volunteerServiceImpl, JwtUtils jwtUtils) {
 		super();
 		this.taskService = volunteerServiceImpl;
 		this.jwtUtils = jwtUtils;
 	}
 	
 	
-	
 	/*
-	 * Get task by id
+	 * Get activity by id
 	 * 
 	 * @Param HttpServletRequest
 	 * @Param Long id
@@ -53,7 +52,7 @@ public class TaskController {
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("/get/{id}")
+	@GetMapping("/get/{id}") // REVISAR 
 	public ResponseEntity<?> getTaskById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -76,8 +75,10 @@ public class TaskController {
 		}
 	}
 	
+	
+	
 	/*
-	 * Save task
+	 * Save activity
 	 * 
 	 * @Param TaskDTO
 	 * 
@@ -98,7 +99,7 @@ public class TaskController {
 		}
 
 		try {
-			TaskDTO taskSave = taskService.saveActivity(jwt,task); // Borrar
+			TaskDTO taskSave = taskService.saveActivity(jwt,task);
 			logger.info("Task saved with name=={}", taskSave.getName());
 			return ResponseEntity.ok(taskSave);
 		}catch(Exception e) {
@@ -106,8 +107,10 @@ public class TaskController {
 		}
 	}
 	
+	
+	
 	/*
-	 * Get all task by ong
+	 * Get all activity by ong
 	 * 
 	 * @Param HttpServletRequest
 	 * 
@@ -127,18 +130,9 @@ public class TaskController {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
 		
-			List<TaskDTO> tasks = taskService.getByOng(jwt);
+			List<TaskDTO> tasks = taskService.getActivityByOng(jwt);
 			return ResponseEntity.ok(tasks);
 	}
-	
-	/*
-	 * Update task
-	 * 
-	 * @Param TaskDTO
-	 * @Param Long id
-	 * 
-	 * @Return ResponseEntity
-	 */
 	
 	
 	@PutMapping("/update/{id}")
@@ -155,7 +149,7 @@ public class TaskController {
 		}
 		
 		try {
-			TaskDTO taskupdate = taskService.updateActivity(jwt, id, task); // Borrar
+			TaskDTO taskupdate = taskService.updateActivity(jwt, id, task);
 			logger.info("Task update with name=={}", taskupdate.getName());
 			return ResponseEntity.ok(taskupdate);
 		}catch(IllegalArgumentException e) {
@@ -168,7 +162,7 @@ public class TaskController {
 	
 	
 	/*
-	 * Delete task
+	 * Delete Activity
 	 * 
 	 * @Param Long id
 	 * 
@@ -188,7 +182,7 @@ public class TaskController {
 		}
 		
 		try {
-			taskService.deleteActivity(jwt, id); // Borrar
+			taskService.deleteActivity(jwt, id);
 			return ResponseEntity.ok("Task deleted");
 		}catch(IllegalArgumentException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -199,7 +193,8 @@ public class TaskController {
 	
 	
 	
-	@GetMapping("/get/{id}/attendances")
+	
+	@GetMapping("/get/{id}/attendances") // REVISAR
 	public ResponseEntity<?> getAttendancesById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -222,7 +217,7 @@ public class TaskController {
 		}
 	}
 	
-	@GetMapping("/volunteer/get/{id}/attendances")
+	@GetMapping("/volunteer/get/{id}/attendances") // REVISAR
 	public ResponseEntity<?> getAttendancesByPersonId(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -244,26 +239,5 @@ public class TaskController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
-	
-	@GetMapping("/count")
-	public ResponseEntity<?> getNumberOfTasks(HttpServletRequest request) {
-		String jwt = null;
 
-		String headerAuth = request.getHeader("Authorization");
-
-		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
-			jwt = headerAuth.substring(7, headerAuth.length());
-		}
-		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
-			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
-		}
-
-		try {
-			Integer count = taskService.getNumberOfTasks(jwt);
-			return ResponseEntity.ok(count);
-		}catch(Exception e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
-	
 }

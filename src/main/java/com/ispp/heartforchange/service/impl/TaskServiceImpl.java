@@ -118,20 +118,142 @@ public class TaskServiceImpl implements TaskService{
 		logger.info("Trying to get the tasks from ONG with name={}", ong.getName());
 		return  tasksDTO;
     }
+	
+	
+	
+	/*
+	 * Get all Activity by Ong.
+	 * @Param String token
+	 * @Param Long id
+	 * @Return List<TaskDTO>
+	 */
+
+	@Override
+    public List<TaskDTO> getActivityByOng(String token) {
+
+        //Identify if user logged is an ong or a volunteer
+        String username = jwtUtils.getUserNameFromJwtToken(token);
+        Ong loggedOng = ongRepository.findByUsername(username);
+        Volunteer loggedVolunteer = volunteerRepository.findByUsername(username);
+
+		Ong ong = loggedOng;
+
+		if(username == null){
+			throw new UsernameNotFoundException("You must be logged to make this operation.");
+		}
+
+		if(loggedOng == null){
+			ong = loggedVolunteer.getOng();
+		}
+
+		if(ong == null){
+			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
+		}
+
+		List<Task> tasks = taskRepository.findyByOngAndActivity(loggedOng);
+		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
+		for(Task task : tasks) {
+			TaskDTO tasktDTO = new TaskDTO(task);
+			tasksDTO.add(tasktDTO);
+		}
+		logger.info("Trying to get the actividad from ONG with name={}", ong.getName());
+		return  tasksDTO;
+    }
+	
+	
+	/*
+	 * Get all Taller by Ong.
+	 * @Param String token
+	 * @Param Long id
+	 * @Return List<TaskDTO>
+	 */
+
+	@Override
+    public List<TaskDTO> getTallerByOng(String token) {
+
+        //Identify if user logged is an ong or a volunteer
+        String username = jwtUtils.getUserNameFromJwtToken(token);
+        Ong loggedOng = ongRepository.findByUsername(username);
+        Volunteer loggedVolunteer = volunteerRepository.findByUsername(username);
+
+		Ong ong = loggedOng;
+
+		if(username == null){
+			throw new UsernameNotFoundException("You must be logged to make this operation.");
+		}
+
+		if(loggedOng == null){
+			ong = loggedVolunteer.getOng();
+		}
+
+		if(ong == null){
+			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
+		}
+
+		List<Task> tasks = taskRepository.findyByOngAndTaller(loggedOng);
+		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
+		for(Task task : tasks) {
+			TaskDTO tasktDTO = new TaskDTO(task);
+			tasksDTO.add(tasktDTO);
+		}
+		logger.info("Trying to get the taller from ONG with name={}", ong.getName());
+		return  tasksDTO;
+    }
+	
+	
+	/*
+	 * Get all Curso by Ong.
+	 * @Param String token
+	 * @Param Long id
+	 * @Return List<TaskDTO>
+	 */
+
+	@Override
+    public List<TaskDTO> getCursoByOng(String token) {
+
+        //Identify if user logged is an ong or a volunteer
+        String username = jwtUtils.getUserNameFromJwtToken(token);
+        Ong loggedOng = ongRepository.findByUsername(username);
+        Volunteer loggedVolunteer = volunteerRepository.findByUsername(username);
+
+		Ong ong = loggedOng;
+
+		if(username == null){
+			throw new UsernameNotFoundException("You must be logged to make this operation.");
+		}
+
+		if(loggedOng == null){
+			ong = loggedVolunteer.getOng();
+		}
+
+		if(ong == null){
+			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
+		}
+
+		List<Task> tasks = taskRepository.findyByOngAndCurso(loggedOng);
+		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
+		for(Task task : tasks) {
+			TaskDTO tasktDTO = new TaskDTO(task);
+			tasksDTO.add(tasktDTO);
+		}
+		logger.info("Trying to get the curso from ONG with name={}", ong.getName());
+		return  tasksDTO;
+    }
+	
 
 	/*
-	 * Save task.
+	 * Save Activity.
 	 * @Param String token
 	 * @Param TaskDTO taskDTO
 	 * @Return TaskDTO
 	 */
 	@Override
-	public TaskDTO saveTask(String token, TaskDTO taskDTO) {
+	public TaskDTO saveActivity(String token, TaskDTO taskDTO) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
-		Task newTask = new Task(taskDTO, ong);
+		Task newTask = new Task(taskDTO, ong, TaskType.ACTIVIDAD);
 		newTask.setId(Long.valueOf(0));
-		logger.info("Starting to save task with name={}", newTask.getName());
+		logger.info("Starting to save Activity with name={}", newTask.getName());
 		try {
 			logger.info("Saving task with name={}", newTask.getName());
 			Task taskSave = taskRepository.save(newTask);
@@ -142,8 +264,58 @@ public class TaskServiceImpl implements TaskService{
 		}
 	}
 	
+	
 	/*
-	 * Update task.
+	 * Save Curso.
+	 * @Param String token
+	 * @Param TaskDTO taskDTO
+	 * @Return TaskDTO
+	 */
+	@Override
+	public TaskDTO saveCurso(String token, TaskDTO taskDTO) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		Task newTask = new Task(taskDTO, ong, TaskType.CURSO);
+		newTask.setId(Long.valueOf(0));
+		logger.info("Starting to save Activity with name={}", newTask.getName());
+		try {
+			logger.info("Saving task with name={}", newTask.getName());
+			Task taskSave = taskRepository.save(newTask);
+			logger.info("Saving task with name={}", newTask.getName());
+			return new TaskDTO(taskSave);
+		} catch (Exception e) {
+			throw new UsernameNotFoundException(e.getMessage());
+		}
+	}
+	
+	
+	/*
+	 * Save Taller.
+	 * @Param String token
+	 * @Param TaskDTO taskDTO
+	 * @Return TaskDTO
+	 */
+	@Override
+	public TaskDTO saveTaller(String token, TaskDTO taskDTO) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		Task newTask = new Task(taskDTO, ong, TaskType.TALLER);
+		newTask.setId(Long.valueOf(0));
+		logger.info("Starting to save Activity with name={}", newTask.getName());
+		try {
+			logger.info("Saving task with name={}", newTask.getName());
+			Task taskSave = taskRepository.save(newTask);
+			logger.info("Saving task with name={}", newTask.getName());
+			return new TaskDTO(taskSave);
+		} catch (Exception e) {
+			throw new UsernameNotFoundException(e.getMessage());
+		}
+	}
+	
+	
+	
+	/*
+	 * Update Activity.
 	 * @Param String token
 	 * @Param Long id
 	 * @Param TaskDTO taskDTO
@@ -151,7 +323,7 @@ public class TaskServiceImpl implements TaskService{
 	 */
 	
 	@Override
-	public TaskDTO updateTask(String token, Long id, TaskDTO newTaskDTO) {
+	public TaskDTO updateActivity(String token, Long id, TaskDTO newTaskDTO) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Task> taskToUpdate = taskRepository.findById(id);
@@ -164,12 +336,14 @@ public class TaskServiceImpl implements TaskService{
 				taskToUpdate.get().setDate(newTaskDTO.getDate());
 				taskToUpdate.get().setIncidences(newTaskDTO.getIncidences());
 				taskToUpdate.get().setName(newTaskDTO.getName());
+				taskToUpdate.get().setType(TaskType.ACTIVIDAD);
 				taskToUpdate.get().setNumParticipants(newTaskDTO.getNumParticipants());
 				taskToUpdate.get().setObservations(newTaskDTO.getObservations());
 				taskToUpdate.get().setPlace(newTaskDTO.getPlace());
 				taskToUpdate.get().setTeacher(newTaskDTO.getTeacher());
 				taskToUpdate.get().setOng(ong);
 				Task taskSave = taskRepository.save(taskToUpdate.get());
+				newTaskDTO.setType(taskSave.getType());
 				newTaskDTO.setId(taskSave.getId());
 				return newTaskDTO;
 			}
@@ -179,8 +353,90 @@ public class TaskServiceImpl implements TaskService{
 		
 	}
 	
+	
 	/*
-	 * Delete task.
+	 * Update Curso.
+	 * @Param String token
+	 * @Param Long id
+	 * @Param TaskDTO taskDTO
+	 * @Return TaskDTO
+	 */
+	
+	@Override
+	public TaskDTO updateCurso(String token, Long id, TaskDTO newTaskDTO) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		Optional<Task> taskToUpdate = taskRepository.findById(id);
+		logger.info("Task is updating with id={}", id);
+		if(taskToUpdate.isPresent()) {
+			if(taskToUpdate.get().getOng().getId() == ong.getId()) {
+				
+				taskToUpdate.get().setCertificate(newTaskDTO.getCertificate());
+				taskToUpdate.get().setCoordinator(newTaskDTO.getCoordinator());
+				taskToUpdate.get().setDate(newTaskDTO.getDate());
+				taskToUpdate.get().setIncidences(newTaskDTO.getIncidences());
+				taskToUpdate.get().setName(newTaskDTO.getName());
+				taskToUpdate.get().setType(TaskType.CURSO);
+				taskToUpdate.get().setNumParticipants(newTaskDTO.getNumParticipants());
+				taskToUpdate.get().setObservations(newTaskDTO.getObservations());
+				taskToUpdate.get().setPlace(newTaskDTO.getPlace());
+				taskToUpdate.get().setTeacher(newTaskDTO.getTeacher());
+				taskToUpdate.get().setOng(ong);
+				Task taskSave = taskRepository.save(taskToUpdate.get());
+				newTaskDTO.setType(taskSave.getType());
+				newTaskDTO.setId(taskSave.getId());
+				return newTaskDTO;
+			}
+			throw new UsernameNotFoundException("You cannot update a task which does not belong to your ONG.");
+		}
+		throw new IllegalArgumentException("This task does not exist!");
+		
+	}
+	
+	
+	
+	/*
+	 * Update Taller.
+	 * @Param String token
+	 * @Param Long id
+	 * @Param TaskDTO taskDTO
+	 * @Return TaskDTO
+	 */
+	
+	@Override
+	public TaskDTO updateTaller(String token, Long id, TaskDTO newTaskDTO) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		Optional<Task> taskToUpdate = taskRepository.findById(id);
+		logger.info("Task is updating with id={}", id);
+		if(taskToUpdate.isPresent()) {
+			if(taskToUpdate.get().getOng().getId() == ong.getId()) {
+				
+				taskToUpdate.get().setCertificate(newTaskDTO.getCertificate());
+				taskToUpdate.get().setCoordinator(newTaskDTO.getCoordinator());
+				taskToUpdate.get().setDate(newTaskDTO.getDate());
+				taskToUpdate.get().setIncidences(newTaskDTO.getIncidences());
+				taskToUpdate.get().setName(newTaskDTO.getName());
+				taskToUpdate.get().setType(TaskType.TALLER);
+				taskToUpdate.get().setNumParticipants(newTaskDTO.getNumParticipants());
+				taskToUpdate.get().setObservations(newTaskDTO.getObservations());
+				taskToUpdate.get().setPlace(newTaskDTO.getPlace());
+				taskToUpdate.get().setTeacher(newTaskDTO.getTeacher());
+				taskToUpdate.get().setOng(ong);
+				Task taskSave = taskRepository.save(taskToUpdate.get());
+				newTaskDTO.setType(taskSave.getType());
+				newTaskDTO.setId(taskSave.getId());
+				return newTaskDTO;
+			}
+			throw new UsernameNotFoundException("You cannot update a task which does not belong to your ONG.");
+		}
+		throw new IllegalArgumentException("This task does not exist!");
+		
+	}
+	
+	
+	/*
+	 * Delete Activity.
 	 * @Param Long id
 	 * @Param String token
 	 * @Return TaskDTO
@@ -188,16 +444,76 @@ public class TaskServiceImpl implements TaskService{
 	
 	
 	@Override
-	public void deleteTask(String token, Long id) {
+	public void deleteActivity(String token, Long id) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Task> task = taskRepository.findById(id);
 		if (task.isPresent()) {
-			if (task.get().getOng().getId() == ong.getId()) {
-				taskRepository.delete(task.get());
-			} else {
-				throw new UsernameNotFoundException("You cannot delete a task which does not belong to your ONG.");
-			}
+			if(task.get().getType().equals(TaskType.ACTIVIDAD)) {				
+				if (task.get().getOng().getId() == ong.getId()) {
+					taskRepository.delete(task.get());
+				} else {
+					throw new UsernameNotFoundException("You cannot delete a task which does not belong to your ONG.");
+				}
+			}else throw new IllegalArgumentException("This task is not a Actividad!");
+
+		} else {
+			throw new IllegalArgumentException("This task does not exist!");
+		}
+	}
+	
+	
+	
+	/*
+	 * Delete Curso.
+	 * @Param Long id
+	 * @Param String token
+	 * @Return TaskDTO
+	 */
+	
+	
+	@Override
+	public void deleteCurso(String token, Long id) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		Optional<Task> task = taskRepository.findById(id);
+		if (task.isPresent()) {
+			if(task.get().getType().equals(TaskType.CURSO)) {				
+				if (task.get().getOng().getId() == ong.getId()) {
+					taskRepository.delete(task.get());
+				} else {
+					throw new UsernameNotFoundException("You cannot delete a task which does not belong to your ONG.");
+				}
+			}else throw new IllegalArgumentException("This task is not a Curso!");
+
+		} else {
+			throw new IllegalArgumentException("This task does not exist!");
+		}
+	}
+	
+	
+	
+	/*
+	 * Delete Taller.
+	 * @Param Long id
+	 * @Param String token
+	 * @Return TaskDTO
+	 */
+	
+	
+	@Override
+	public void deleteTaller(String token, Long id) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		Optional<Task> task = taskRepository.findById(id);
+		if (task.isPresent()) {
+			if(task.get().getType().equals(TaskType.TALLER)) {				
+				if (task.get().getOng().getId() == ong.getId()) {
+					taskRepository.delete(task.get());
+				} else {
+					throw new UsernameNotFoundException("You cannot delete a task which does not belong to your ONG.");
+				}
+			}else throw new IllegalArgumentException("This task is not a Taller!");
 
 		} else {
 			throw new IllegalArgumentException("This task does not exist!");

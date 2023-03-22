@@ -10,12 +10,7 @@ import com.ispp.heartforchange.dto.TaskDTO;
 @Service
 public interface TaskService {
 	
-	
-	TaskDTO saveTask(String token,TaskDTO taskDTO);
 
-	void deleteTask(String token, Long id);
-
-	TaskDTO updateTask(String token, Long id, TaskDTO newTaskDTO);
 
 	TaskDTO getById(String token, Long id);
 
@@ -26,6 +21,33 @@ public interface TaskService {
 	List<AttendanceDTO> getAllAttendancesByVolunteer(String token, Long id);
 	
 	Integer getNumberOfTasks(String token);
+
+	TaskDTO saveActivity(String token, TaskDTO taskDTO);
+
+	TaskDTO saveCurso(String token, TaskDTO taskDTO);
+
+	TaskDTO saveTaller(String token, TaskDTO taskDTO);
+
+	TaskDTO updateActivity(String token, Long id, TaskDTO newTaskDTO);
+
+
+	TaskDTO updateCurso(String token, Long id, TaskDTO newTaskDTO);
+
+
+	TaskDTO updateTaller(String token, Long id, TaskDTO newTaskDTO);
+
+
+	void deleteActivity(String token, Long id);
+
+	void deleteCurso(String token, Long id);
+
+	void deleteTaller(String token, Long id);
+
+	List<TaskDTO> getActivityByOng(String token);
+
+	List<TaskDTO> getTallerByOng(String token);
+
+	List<TaskDTO> getCursoByOng(String token);
 
 
 	
