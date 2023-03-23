@@ -5,7 +5,6 @@ import org.springframework.stereotype.Repository;
 
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.Task;
-import com.ispp.heartforchange.entity.TaskType;
 
 import java.util.List;
 

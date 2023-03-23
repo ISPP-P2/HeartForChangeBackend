@@ -1,11 +1,7 @@
 package com.ispp.heartforchange.service;
 
 import java.util.List;
-
-import javax.validation.Valid;
-
 import org.springframework.stereotype.Service;
-
 import com.ispp.heartforchange.dto.AcademicExperienceDTO;
 import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 

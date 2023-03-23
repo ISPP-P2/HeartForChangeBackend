@@ -1,16 +1,12 @@
 package com.ispp.heartforchange.controller;
 
 import java.util.List;
-import java.util.UUID;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,7 +15,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.ispp.heartforchange.dto.UpdatePasswordDTO;
 import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.VolunteerServiceImpl;
@@ -37,8 +33,7 @@ public class VolunteerController {
 	/*
 	 * Dependency injection
 	 */
-	public VolunteerController(VolunteerServiceImpl volunteerServiceImpl, JwtUtils jwtUtils,
-			AuthenticationManager authenticationManager) {
+	public VolunteerController(VolunteerServiceImpl volunteerServiceImpl, JwtUtils jwtUtils) {
 		super();
 		this.volunteerServiceImpl = volunteerServiceImpl;
 		this.jwtUtils = jwtUtils;
@@ -142,15 +137,8 @@ public class VolunteerController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
-		String[] randomUUID = UUID.randomUUID().toString().split("-");
-
-		String usernameGenerated = volunteer.getName().toLowerCase().substring(0, 3) + "-" + randomUUID[0].substring(0, 3);
-		volunteer.setPassword(usernameGenerated);
-		volunteer.setUsername(usernameGenerated);
-
-		String username = jwtUtils.getUserNameFromJwtToken(jwt);
 		
-		VolunteerDTO volunteerSave = volunteerServiceImpl.saveVolunteer(volunteer, username);
+		VolunteerDTO volunteerSave = volunteerServiceImpl.saveVolunteer(volunteer, jwt);
 		logger.info("Volunteer saved with username={}", volunteerSave.getUsername());
 		return ResponseEntity.ok(volunteerSave);
 	}
@@ -183,6 +171,35 @@ public class VolunteerController {
 	    VolunteerDTO volunteerToUpdate = volunteerServiceImpl.updateVolunteer(id, volunteer, username);
 
 	    logger.info("Volunteer updated with id={}", id);
+	    return ResponseEntity.ok().body(volunteerToUpdate);
+	}
+	
+	/*
+	 * Update volunteer
+	 * 
+	 * @Param HttpServletRequest
+	 * @Param id
+	 * @Param volunteerDTO
+	 * 
+	 * @Return ResponseEntity
+	 */
+	@PutMapping("/update/{id}/password")
+	public ResponseEntity<?> updateVolunteerPassword(HttpServletRequest request, @PathVariable("id") Long id, @Valid @RequestBody UpdatePasswordDTO passwordDTO) {
+		
+		String jwt2 = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt2 = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt2 == null || !jwtUtils.validateJwtToken(jwt2)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+				
+	    VolunteerDTO volunteerToUpdate = volunteerServiceImpl.updateVolunteerPassword(id, passwordDTO, jwt2);
+	    
+	    logger.info("Volunteer password updated");
 	    return ResponseEntity.ok().body(volunteerToUpdate);
 	}
 	
