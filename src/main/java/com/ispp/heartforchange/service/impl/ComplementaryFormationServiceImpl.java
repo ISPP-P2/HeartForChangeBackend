@@ -74,7 +74,7 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 			
 			Optional<ComplementaryFormation> complementaryFormation = complementaryFormationRepository.findById(id);
 			if (!complementaryFormation.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+				throw new UsernameNotFoundException("Complementary Formation not exist!");
 				
 			} else {
 				if(rol == RolAccount.VOLUNTEER) {
@@ -104,11 +104,11 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 							return new ComplementaryFormationDTO(complementaryFormation.get());
 							
 						}else {
-							throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+							throw new UsernameNotFoundException("Complementary Formation not exist!");
 						}
 						
 					}else {
-						throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+						throw new UsernameNotFoundException("Complementary Formation not exist!");
 					}
 				}
 			}
@@ -147,7 +147,7 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 		}
 		
 		if(a==0) {
-			throw new UsernameNotFoundException("Not Found: The volunteer with this ID doesn't exist!");
+			throw new UsernameNotFoundException("The volunteer with this ID doesn't exist!");
 
 		}
 		
@@ -156,18 +156,15 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 			List<ComplementaryFormationDTO> complementaryFormationsDTO = new ArrayList<>();
 			
 			if (!complementaryFormations.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+				throw new UsernameNotFoundException("Complementary Formation not exist!");
 				
 			} else {
 				
 				if(rol == RolAccount.ONG) {
 					
 					if(complementaryFormations.get().size() == 0) {
-		 				throw new UsernameNotFoundException("Not Found: This volunteer has not complementary formations!");
-		 			
+		 				return complementaryFormationsDTO;
 					}else {
-						
-						
 		 				if(complementaryFormations.get().get(0).getVolunteer().getOng().getId() == ong.getId() ) {
 		 					
 							for (ComplementaryFormation complementaryFormation : complementaryFormations.get()) {
@@ -184,7 +181,7 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 				}else if(rol == RolAccount.VOLUNTEER) {
 					
 					if(complementaryFormations.get().size() == 0) {
-		 				throw new UsernameNotFoundException("Not Found: This volunteer has not complementary formations!");
+		 				throw new UsernameNotFoundException("This volunteer has not complementary formations!");
 		 			
 					}else {
 						
@@ -242,24 +239,21 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 		}
 		
 		if(a==0) {
-			throw new UsernameNotFoundException("Not Found: The beneficiary with this ID doesn't exist!");
-
+			throw new UsernameNotFoundException("The beneficiary with this ID doesn't exist!");
 		}
-		
 		
 		if(ong!=null || volunteer!=null) {
 			List<ComplementaryFormationDTO> complementaryFormationsDTO = new ArrayList<>();
 			
 			if (!complementaryFormations.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+				throw new UsernameNotFoundException("Complementary Formation not exist!");
 			
 			} else {
 				
 				if(rol == RolAccount.ONG) {
 					
 					if(complementaryFormations.get().size() == 0) {
-		 				throw new UsernameNotFoundException("Not Found: This beneficiary has not complementary formations!");
-		 			
+						return complementaryFormationsDTO;
 					}else {
 						
 		 				if(complementaryFormations.get().get(0).getBeneficiary().getId() == beneficiaryId) {
@@ -356,7 +350,7 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 	        		
 	        	}else {
 	        		
-	        		throw new UsernameNotFoundException("Not Found: The volunteer or beneficiary doesn't exist");
+	        		throw new UsernameNotFoundException("The volunteer or beneficiary doesn't exist");
 	        	}
 	        	
 	        } catch (Exception e) {
@@ -434,7 +428,7 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 				}
 				
 			} else {
-				throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+				throw new UsernameNotFoundException("Complementary Formation not exist!");
 			}
 			
 		}else {
@@ -484,7 +478,7 @@ public class ComplementaryFormationServiceImpl implements ComplementaryFormation
 				}
 				
 			} else {
-				throw new UsernameNotFoundException("Not Found: Complementary Formation not exist!");
+				throw new UsernameNotFoundException("Complementary Formation not exist!");
 			}
 			
 		}else {
