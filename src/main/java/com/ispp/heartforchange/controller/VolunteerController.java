@@ -153,7 +153,7 @@ public class VolunteerController {
 	 * @Return ResponseEntity
 	 */
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> updateVolunteer(HttpServletRequest request, @PathVariable("id") Long id, @Valid @RequestBody VolunteerDTO volunteer) {
+	public ResponseEntity<?> updateVolunteer(HttpServletRequest request, @PathVariable("id") Long id, @RequestBody VolunteerDTO volunteer) {
 		
 		String jwt2 = null;
 

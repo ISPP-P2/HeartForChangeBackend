@@ -144,7 +144,6 @@ public class TaskServiceImpl implements TaskService{
         String username = jwtUtils.getUserNameFromJwtToken(token);
         Ong loggedOng = ongRepository.findByUsername(username);
         Volunteer loggedVolunteer = volunteerRepository.findByUsername(username);
-
 		Ong ong = loggedOng;
 
 		if(username == null){
@@ -159,7 +158,7 @@ public class TaskServiceImpl implements TaskService{
 			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
 		}
 
-		List<Task> tasks = taskRepository.findyByOngAndActivity(loggedOng);
+		List<Task> tasks = taskRepository.findyByOngAndActivity(ong);
 		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
 		for(Task task : tasks) {
 			TaskDTO tasktDTO = new TaskDTO(task);
@@ -199,7 +198,7 @@ public class TaskServiceImpl implements TaskService{
 			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
 		}
 
-		List<Task> tasks = taskRepository.findyByOngAndTaller(loggedOng);
+		List<Task> tasks = taskRepository.findyByOngAndTaller(ong);
 		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
 		for(Task task : tasks) {
 			TaskDTO tasktDTO = new TaskDTO(task);
@@ -239,7 +238,7 @@ public class TaskServiceImpl implements TaskService{
 			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
 		}
 
-		List<Task> tasks = taskRepository.findyByOngAndCurso(loggedOng);
+		List<Task> tasks = taskRepository.findyByOngAndCurso(ong);
 		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
 		for(Task task : tasks) {
 			TaskDTO tasktDTO = new TaskDTO(task);
@@ -540,7 +539,6 @@ public class TaskServiceImpl implements TaskService{
 	public List<VolunteerDTO> getAllVoluntariesByTask(String token, Long id) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
-		System.out.println(ong != null);
 		List<VolunteerDTO> attendances = new ArrayList<>();
 		//Logged as ONG
 		if(ong != null) {
@@ -571,7 +569,6 @@ public class TaskServiceImpl implements TaskService{
 	public List<BeneficiaryDTO> getAllBeneficiariesByTask(String token, Long id) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
-		System.out.println(ong != null);
 		List<BeneficiaryDTO> attendances = new ArrayList<>();
 		//Logged as ONG
 		if(ong != null) {
@@ -714,7 +711,7 @@ public class TaskServiceImpl implements TaskService{
 			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
 		}
 
-		List<Task> tasks = taskRepository.findByOngAndDateAfter(loggedOng, LocalDateTime.now());
+		List<Task> tasks = taskRepository.findByOngAndDateAfterAndType(loggedOng, LocalDateTime.now(), TaskType.ACTIVIDAD);
 		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
 		for(Task task : tasks) {
 			TaskDTO tasktDTO = new TaskDTO(task);

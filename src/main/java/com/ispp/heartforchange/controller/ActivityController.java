@@ -143,7 +143,7 @@ public class ActivityController {
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("/ong/get/")
+	@GetMapping("/ong/get/date")
 	public ResponseEntity<?> getByOngNotFinish(HttpServletRequest request){
 		String jwt = null;
 
@@ -162,7 +162,7 @@ public class ActivityController {
 	
 	
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> update(HttpServletRequest request, @Valid @RequestBody TaskDTO task, @PathVariable("id") Long id){
+	public ResponseEntity<?> update(HttpServletRequest request,@RequestBody TaskDTO task, @PathVariable("id") Long id){
 		String jwt = null;
 
 		String headerAuth = request.getHeader("Authorization");

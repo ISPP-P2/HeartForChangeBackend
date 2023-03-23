@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.Task;
+import com.ispp.heartforchange.entity.TaskType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +31,6 @@ public interface TaskRepository extends JpaRepository<Task, Long>{
 
 	
 	//@Query("SELECT DISTINCT t FROM Task t where t.ong = :loggedOng and ")
-	List<Task> findByOngAndDateAfter(Ong loggedOng, LocalDateTime now);
+	List<Task> findByOngAndDateAfterAndType(Ong loggedOng, LocalDateTime now, TaskType type);
 
 }
