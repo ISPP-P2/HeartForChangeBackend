@@ -6,6 +6,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ispp.heartforchange.entity.Person;
+import com.ispp.heartforchange.entity.Volunteer;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -39,6 +40,13 @@ public class VolunteerDTO extends PersonDTO{
 		super(person);
 		this.hourOfAvailability = hourOfAvailability;
 		this.sexCrimes = sexCrimes;
+	}
+
+
+	public VolunteerDTO(Volunteer volunteer, Person person) {
+		super(person);
+		this.hourOfAvailability = volunteer.getHourOfAvailability();
+		this.sexCrimes = volunteer.getSexCrimes();
 	}
 
 

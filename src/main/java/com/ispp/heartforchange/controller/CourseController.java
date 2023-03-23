@@ -19,16 +19,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispp.heartforchange.dto.AttendanceDTO;
+import com.ispp.heartforchange.dto.BeneficiaryDTO;
 import com.ispp.heartforchange.dto.TaskDTO;
-import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.TaskServiceImpl;
 
-
 @RestController
-@RequestMapping("/activities")
-public class ActivityController {
-	
+@RequestMapping("/courses")
+public class CourseController {
+
 	private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
 	private TaskServiceImpl taskService;
@@ -37,7 +36,7 @@ public class ActivityController {
 	/*
 	 * Dependency injection
 	 */
-	public ActivityController(TaskServiceImpl volunteerServiceImpl, JwtUtils jwtUtils) {
+	public CourseController(TaskServiceImpl volunteerServiceImpl, JwtUtils jwtUtils) {
 		super();
 		this.taskService = volunteerServiceImpl;
 		this.jwtUtils = jwtUtils;
@@ -76,10 +75,8 @@ public class ActivityController {
 		}
 	}
 	
-	
-	
 	/*
-	 * Save activity
+	 * Save course
 	 * 
 	 * @Param TaskDTO
 	 * 
@@ -100,8 +97,8 @@ public class ActivityController {
 		}
 
 		try {
-			TaskDTO taskSave = taskService.saveActivity(jwt,task);
-			logger.info("Task saved with name=={}", taskSave.getName());
+			TaskDTO taskSave = taskService.saveCurso(jwt,task);
+			logger.info("Course saved with name=={}", taskSave.getName());
 			return ResponseEntity.ok(taskSave);
 		}catch(Exception e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -109,16 +106,15 @@ public class ActivityController {
 	}
 	
 	
-	
 	/*
-	 * Get all activity by ong and volunteer
+	 * Get all course by ong
 	 * 
 	 * @Param HttpServletRequest
 	 * 
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("/ong/get/all")
+	@GetMapping("/ong/get")
 	public ResponseEntity<?> getByOng(HttpServletRequest request){
 		String jwt = null;
 
@@ -131,38 +127,21 @@ public class ActivityController {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
 		
-			List<TaskDTO> tasks = taskService.getActivityByOng(jwt);
+			List<TaskDTO> tasks = taskService.getCursoByOng(jwt);
 			return ResponseEntity.ok(tasks);
 	}
 	
+	
 	/*
-	 * Get all activity by ong and volunteer that are not finish
+	 * Update Course 
 	 * 
 	 * @Param HttpServletRequest
 	 * 
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("/ong/get/")
-	public ResponseEntity<?> getByOngNotFinish(HttpServletRequest request){
-		String jwt = null;
-
-		String headerAuth = request.getHeader("Authorization");
-
-		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
-			jwt = headerAuth.substring(7, headerAuth.length());
-		}
-		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
-			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
-		}
-		
-			List<TaskDTO> tasks = taskService.getActivityByOngNotFinish(jwt);
-			return ResponseEntity.ok(tasks);
-	}
-	
-	
 	@PutMapping("/update/{id}")
-	public ResponseEntity<?> update(HttpServletRequest request, @Valid @RequestBody TaskDTO task, @PathVariable("id") Long id){
+	public ResponseEntity<?> update(HttpServletRequest request, @RequestBody TaskDTO task, @PathVariable("id") Long id){
 		String jwt = null;
 
 		String headerAuth = request.getHeader("Authorization");
@@ -175,8 +154,8 @@ public class ActivityController {
 		}
 		
 		try {
-			TaskDTO taskupdate = taskService.updateActivity(jwt, id, task);
-			logger.info("Task update with name=={}", taskupdate.getName());
+			TaskDTO taskupdate = taskService.updateCurso(jwt, id, task);
+			logger.info("Course update with name=={}", taskupdate.getName());
 			return ResponseEntity.ok(taskupdate);
 		}catch(IllegalArgumentException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -186,9 +165,8 @@ public class ActivityController {
 		
 	}
 	
-	
 	/*
-	 * Delete Activity
+	 * Delete Course
 	 * 
 	 * @Param Long id
 	 * 
@@ -196,7 +174,7 @@ public class ActivityController {
 	 */
 	
 	@PostMapping("/delete/{id}")
-	public ResponseEntity<?> deleteGrant(@PathVariable("id") Long id, HttpServletRequest request) {
+	public ResponseEntity<?> deleteWorkshop(@PathVariable("id") Long id, HttpServletRequest request) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -208,8 +186,8 @@ public class ActivityController {
 		}
 		
 		try {
-			taskService.deleteActivity(jwt, id);
-			return ResponseEntity.ok("Task deleted");
+			taskService.deleteCurso(jwt, id);
+			return ResponseEntity.ok("Course deleted");
 		}catch(IllegalArgumentException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
 		}catch(Exception e) {
@@ -218,9 +196,13 @@ public class ActivityController {
 	}
 	
 	/*
+	 * get beneficiaries in a course
+	 * 
+	 * @Param Long id
+	 * 
+	 * @Return ResponseEntity
 	 * 
 	 */
-
 	
 	@GetMapping("/get/{id}/attendances") // REVISAR
 	public ResponseEntity<?> getAttendancesById(HttpServletRequest request, @PathVariable("id") Long id) {
@@ -236,7 +218,7 @@ public class ActivityController {
 		}
 
 		try {
-			List<VolunteerDTO> attendances = taskService.getAllVoluntariesByTask(jwt, id);
+			List<BeneficiaryDTO> attendances = taskService.getAllBeneficiariesByTask(jwt, id);
 			return ResponseEntity.ok(attendances);
 		}catch(IllegalArgumentException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -246,68 +228,4 @@ public class ActivityController {
 	}
 	
 	
-	/*
-	 * Get Attendances of a Volunteer by himself
-	 * 
-	 * @Param Long id
-	 * 
-	 * @Return ResponseEntity
-	 */
-	
-	@GetMapping("/volunteer/get/attendances")
-	public ResponseEntity<?> getAttendancesByPersonId(HttpServletRequest request) {
-		String jwt = null;
-
-		String headerAuth = request.getHeader("Authorization");
-
-		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
-			jwt = headerAuth.substring(7, headerAuth.length());
-		}
-		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
-			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
-		}
-
-		try {
-			List<AttendanceDTO> attendances = taskService.getAllAttendancesVolunteerByVolunteer(jwt);
-			return ResponseEntity.ok(attendances);
-		}catch(IllegalArgumentException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
-		}catch(Exception e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
-	
-	
-	
-	/*
-	 * Get Attendances of a Volunteer by Ong
-	 * 
-	 * @Param Long id
-	 * 
-	 * @Return ResponseEntity
-	 */
-	
-	@GetMapping("/volunteer/get/{id}/attendances")
-	public ResponseEntity<?> getAttendancesByPersonId(HttpServletRequest request, @PathVariable("id") Long id ) {
-		String jwt = null;
-
-		String headerAuth = request.getHeader("Authorization");
-
-		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
-			jwt = headerAuth.substring(7, headerAuth.length());
-		}
-		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
-			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
-		}
-
-		try {
-			List<AttendanceDTO> attendances = taskService.getAllAttendancesOngByVolunteer(jwt, id);
-			return ResponseEntity.ok(attendances);
-		}catch(IllegalArgumentException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
-		}catch(Exception e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
-
 }

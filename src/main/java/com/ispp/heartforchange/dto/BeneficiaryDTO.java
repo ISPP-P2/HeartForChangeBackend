@@ -8,7 +8,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Person;
+import com.ispp.heartforchange.entity.Volunteer;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -127,6 +129,27 @@ public class BeneficiaryDTO extends PersonDTO{
 		this.computerKnowledge = computerKnowledge;
 		this.ownedDevices = ownedDevices;
 		this.languages = languages;
+	}
+
+
+	public BeneficiaryDTO(Beneficiary beneficiary, Person person) {
+		super(person);
+		this.id = beneficiary.getId();
+		this.nationality = beneficiary.getNationality();
+//		this.doubleNationality = beneficiary.get;
+		this.arrivedDate = beneficiary.getArrivedDate();
+//		this.europeanCitizenAuthorization = beneficiary;
+//		this.touristVisa = beneficiary.getT;
+		this.dateTouristVisa = beneficiary.getDateTouristVisa();
+//		this.healthCard = beneficiary.get;
+		this.employmentSector = beneficiary.getEmploymentSector();
+		this.perceptionAid = beneficiary.getPerceptionAid();
+//		this.savingsPossesion = beneficiary.getS;
+//		this.saeInscription = saeInscription;
+//		this.working = working;
+//		this.computerKnowledge = computerKnowledge;
+		this.ownedDevices = beneficiary.getOwnedDevices();
+		this.languages = beneficiary.getLanguages();
 	}
 
 

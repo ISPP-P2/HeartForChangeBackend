@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.AttendanceDTO;
+import com.ispp.heartforchange.dto.BeneficiaryDTO;
+import com.ispp.heartforchange.dto.PersonDTO;
 import com.ispp.heartforchange.dto.TaskDTO;
+import com.ispp.heartforchange.dto.VolunteerDTO;
 
 @Service
 public interface TaskService {
@@ -15,10 +18,8 @@ public interface TaskService {
 	TaskDTO getById(String token, Long id);
 
 	List<TaskDTO> getByOng(String token);
-	
-	List<AttendanceDTO> getAllAttendancesByTask(String token, Long id);
 
-	List<AttendanceDTO> getAllAttendancesByVolunteer(String token, Long id);
+	List<AttendanceDTO> getAllAttendancesOngByVolunteer(String token, Long id);
 	
 	Integer getNumberOfTasks(String token);
 
@@ -48,6 +49,12 @@ public interface TaskService {
 	List<TaskDTO> getTallerByOng(String token);
 
 	List<TaskDTO> getCursoByOng(String token);
+
+	List<AttendanceDTO> getAllAttendancesVolunteerByVolunteer(String token);
+
+	List<VolunteerDTO> getAllVoluntariesByTask(String token, Long id);
+
+	List<BeneficiaryDTO> getAllBeneficiariesByTask(String token, Long id);
 
 
 	

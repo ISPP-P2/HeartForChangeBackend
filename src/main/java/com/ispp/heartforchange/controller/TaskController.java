@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ispp.heartforchange.dto.AttendanceDTO;
+import com.ispp.heartforchange.dto.PersonDTO;
 import com.ispp.heartforchange.dto.TaskDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.TaskServiceImpl;
@@ -199,30 +200,30 @@ public class TaskController {
 	
 	
 	
-	@GetMapping("/get/{id}/attendances")
-	public ResponseEntity<?> getAttendancesById(HttpServletRequest request, @PathVariable("id") Long id) {
-		String jwt = null;
-
-		String headerAuth = request.getHeader("Authorization");
-
-		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
-			jwt = headerAuth.substring(7, headerAuth.length());
-		}
-		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
-			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
-		}
-
-		try {
-			List<AttendanceDTO> attendances = taskService.getAllAttendancesByTask(jwt, id);
-			return ResponseEntity.ok(attendances);
-		}catch(IllegalArgumentException e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
-		}catch(Exception e) {
-			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
-		}
-	}
+//	@GetMapping("/get/{id}/attendances")
+//	public ResponseEntity<?> getAttendancesById(HttpServletRequest request, @PathVariable("id") Long id) {
+//		String jwt = null;
+//
+//		String headerAuth = request.getHeader("Authorization");
+//
+//		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+//			jwt = headerAuth.substring(7, headerAuth.length());
+//		}
+//		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+//			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+//		}
+//
+//		try {
+//			List<PersonDTO> attendances = taskService.getAllPaticipantsByTask(jwt, id);
+//			return ResponseEntity.ok(attendances);
+//		}catch(IllegalArgumentException e) {
+//			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+//		}catch(Exception e) {
+//			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+//		}
+//	}
 	
-	@GetMapping("/volunteer/get/{id}/attendances")
+	@GetMapping("/beneficiary/get/{id}/attendances")
 	public ResponseEntity<?> getAttendancesByPersonId(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -236,7 +237,7 @@ public class TaskController {
 		}
 
 		try {
-			List<AttendanceDTO> attendances = taskService.getAllAttendancesByVolunteer(jwt, id);
+			List<AttendanceDTO> attendances = taskService.getAllAttendancesByBeneficiary(jwt, id);
 			return ResponseEntity.ok(attendances);
 		}catch(IllegalArgumentException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);

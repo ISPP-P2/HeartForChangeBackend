@@ -1,5 +1,6 @@
 package com.ispp.heartforchange.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,14 +11,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.AttendanceDTO;
+import com.ispp.heartforchange.dto.BeneficiaryDTO;
+import com.ispp.heartforchange.dto.PersonDTO;
 import com.ispp.heartforchange.dto.TaskDTO;
+import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.entity.Attendance;
+import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.Person;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Task;
 import com.ispp.heartforchange.entity.TaskType;
 import com.ispp.heartforchange.entity.Volunteer;
+import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.PersonRepository;
 import com.ispp.heartforchange.repository.TaskRepository;
@@ -34,6 +40,7 @@ public class TaskServiceImpl implements TaskService{
 	private TaskRepository taskRepository;
 	private PersonRepository personRepository;
 	private VolunteerRepository volunteerRepository;
+	private BeneficiaryRepository beneficiaryRepository;
 	private JwtUtils jwtUtils;
 	
 	
@@ -41,12 +48,14 @@ public class TaskServiceImpl implements TaskService{
 	 * Dependency injection 
 	 */
 	public TaskServiceImpl(TaskRepository volunteerRepository,
-			ONGRepository ongRepository, JwtUtils jwtUtils, PersonRepository personRepository, VolunteerRepository volunterRepositor) {
+			ONGRepository ongRepository, JwtUtils jwtUtils, PersonRepository personRepository, VolunteerRepository volunterRepositor
+			, BeneficiaryRepository beneficiaryRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.taskRepository = volunteerRepository;
 		this.personRepository = personRepository;
 		this.volunteerRepository = volunterRepositor;
+		this.beneficiaryRepository = beneficiaryRepository;
 		this.jwtUtils = jwtUtils;
 	}
 	
@@ -72,7 +81,7 @@ public class TaskServiceImpl implements TaskService{
 				Task task = optionalTask.get();
 				TaskDTO tasktDTO = new TaskDTO(task);
 				return tasktDTO;
-			}else if(person != null && person.getRolAccount() == RolAccount.VOLUNTEER && optionalTask.get().getOng().getId() == person.getOng().getId()) {
+			}else if(person != null && person.getRolAccount() == RolAccount.VOLUNTEER && optionalTask.get().getOng().getId() == person.getOng().getId() &&optionalTask.get().getType() == TaskType.ACTIVIDAD) {
 				Task task = optionalTask.get();
 				TaskDTO tasktDTO = new TaskDTO(task);
 				return tasktDTO;
@@ -255,9 +264,9 @@ public class TaskServiceImpl implements TaskService{
 		newTask.setId(Long.valueOf(0));
 		logger.info("Starting to save Activity with name={}", newTask.getName());
 		try {
-			logger.info("Saving task with name={}", newTask.getName());
+			logger.info("Saving Activity with name={}", newTask.getName());
 			Task taskSave = taskRepository.save(newTask);
-			logger.info("Saving task with name={}", newTask.getName());
+			logger.info("Saving Activity with name={}", newTask.getName());
 			return new TaskDTO(taskSave);
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
@@ -277,11 +286,11 @@ public class TaskServiceImpl implements TaskService{
 		Ong ong = ongRepository.findByUsername(username);
 		Task newTask = new Task(taskDTO, ong, TaskType.CURSO);
 		newTask.setId(Long.valueOf(0));
-		logger.info("Starting to save Activity with name={}", newTask.getName());
+		logger.info("Starting to save Curso with name={}", newTask.getName());
 		try {
-			logger.info("Saving task with name={}", newTask.getName());
+			logger.info("Saving Curso with name={}", newTask.getName());
 			Task taskSave = taskRepository.save(newTask);
-			logger.info("Saving task with name={}", newTask.getName());
+			logger.info("Saving Curso with name={}", newTask.getName());
 			return new TaskDTO(taskSave);
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
@@ -301,11 +310,11 @@ public class TaskServiceImpl implements TaskService{
 		Ong ong = ongRepository.findByUsername(username);
 		Task newTask = new Task(taskDTO, ong, TaskType.TALLER);
 		newTask.setId(Long.valueOf(0));
-		logger.info("Starting to save Activity with name={}", newTask.getName());
+		logger.info("Starting to save Taller with name={}", newTask.getName());
 		try {
-			logger.info("Saving task with name={}", newTask.getName());
+			logger.info("Saving Taller with name={}", newTask.getName());
 			Task taskSave = taskRepository.save(newTask);
-			logger.info("Saving task with name={}", newTask.getName());
+			logger.info("Saving Taller with name={}", newTask.getName());
 			return new TaskDTO(taskSave);
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
@@ -327,7 +336,7 @@ public class TaskServiceImpl implements TaskService{
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Task> taskToUpdate = taskRepository.findById(id);
-		logger.info("Task is updating with id={}", id);
+		logger.info("Activity is updating with id={}", id);
 		if(taskToUpdate.isPresent()) {
 			if(taskToUpdate.get().getOng().getId() == ong.getId()) {
 				
@@ -347,9 +356,9 @@ public class TaskServiceImpl implements TaskService{
 				newTaskDTO.setId(taskSave.getId());
 				return newTaskDTO;
 			}
-			throw new UsernameNotFoundException("You cannot update a task which does not belong to your ONG.");
+			throw new UsernameNotFoundException("You cannot update an Activity which does not belong to your ONG.");
 		}
-		throw new IllegalArgumentException("This task does not exist!");
+		throw new IllegalArgumentException("This Activity does not exist!");
 		
 	}
 	
@@ -367,7 +376,7 @@ public class TaskServiceImpl implements TaskService{
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Task> taskToUpdate = taskRepository.findById(id);
-		logger.info("Task is updating with id={}", id);
+		logger.info("Curso is updating with id={}", id);
 		if(taskToUpdate.isPresent()) {
 			if(taskToUpdate.get().getOng().getId() == ong.getId()) {
 				
@@ -387,9 +396,9 @@ public class TaskServiceImpl implements TaskService{
 				newTaskDTO.setId(taskSave.getId());
 				return newTaskDTO;
 			}
-			throw new UsernameNotFoundException("You cannot update a task which does not belong to your ONG.");
+			throw new UsernameNotFoundException("You cannot update a Curso which does not belong to your ONG.");
 		}
-		throw new IllegalArgumentException("This task does not exist!");
+		throw new IllegalArgumentException("This Curso does not exist!");
 		
 	}
 	
@@ -408,7 +417,7 @@ public class TaskServiceImpl implements TaskService{
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Task> taskToUpdate = taskRepository.findById(id);
-		logger.info("Task is updating with id={}", id);
+		logger.info("Taller is updating with id={}", id);
 		if(taskToUpdate.isPresent()) {
 			if(taskToUpdate.get().getOng().getId() == ong.getId()) {
 				
@@ -428,9 +437,9 @@ public class TaskServiceImpl implements TaskService{
 				newTaskDTO.setId(taskSave.getId());
 				return newTaskDTO;
 			}
-			throw new UsernameNotFoundException("You cannot update a task which does not belong to your ONG.");
+			throw new UsernameNotFoundException("You cannot update a Taller which does not belong to your ONG.");
 		}
-		throw new IllegalArgumentException("This task does not exist!");
+		throw new IllegalArgumentException("This Taller does not exist!");
 		
 	}
 	
@@ -521,26 +530,57 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	/*
-	 * Get all attendances from a task.
+	 * Get all volunteer from a task.
 	 * @Param String token
 	 * @Param Long id
-	 * @Return List<AttendanceDTO>
+	 * @Return List<VolunteerDTO>
 	 */
 	
 	@Override
-	public List<AttendanceDTO> getAllAttendancesByTask(String token, Long id) {
+	public List<VolunteerDTO> getAllVoluntariesByTask(String token, Long id) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		System.out.println(ong != null);
-		List<AttendanceDTO> attendances = new ArrayList<>();
+		List<VolunteerDTO> attendances = new ArrayList<>();
 		//Logged as ONG
 		if(ong != null) {
 			Optional<Task> optionalTask = taskRepository.findById(id);
 			// If the task you are searching for is part of your ONG
 			if(optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
 				for(Attendance attendance: optionalTask.get().getAttendance()) {
-					AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
-					attendances.add(attendanceDTO);
+					VolunteerDTO volunteerDTO = new VolunteerDTO(volunteerRepository.findById(attendance.getPerson().getId()).get(), attendance.getPerson());
+					attendances.add(volunteerDTO);
+				}
+			}else {
+				throw new UsernameNotFoundException("You cannot get information about an ONG which you do not belong to.");
+			}
+		}else {
+			throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
+		}
+		return attendances;
+	}
+	
+	/*
+	 * Get all beneficiaries from a task.
+	 * @Param String token
+	 * @Param Long id
+	 * @Return List<VolunteerDTO>
+	 */
+	
+	@Override
+	public List<BeneficiaryDTO> getAllBeneficiariesByTask(String token, Long id) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		System.out.println(ong != null);
+		List<BeneficiaryDTO> attendances = new ArrayList<>();
+		//Logged as ONG
+		if(ong != null) {
+			Optional<Task> optionalTask = taskRepository.findById(id);
+			// If the task you are searching for is part of your ONG
+			if(optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
+				for(Attendance attendance: optionalTask.get().getAttendance()) {
+					BeneficiaryDTO volunteerDTO = new BeneficiaryDTO(beneficiaryRepository.findById(attendance.getPerson().getId()).get(), attendance.getPerson());
+					attendances.add(volunteerDTO);
 				}
 			}else {
 				throw new UsernameNotFoundException("You cannot get information about an ONG which you do not belong to.");
@@ -552,23 +592,21 @@ public class TaskServiceImpl implements TaskService{
 	}
 
 	/*
-	 * Get all attendances from a volunteer (being a logged ONG or volunteer).
+	 * Get all attendances from a volunteer (being a logged ONG).
 	 * @Param String token
 	 * @Param Long id
 	 * @Return List<AttendanceDTO>
 	 */
 	
 	@Override
-	public List<AttendanceDTO> getAllAttendancesByVolunteer(String token, Long id) {
+	public List<AttendanceDTO> getAllAttendancesOngByVolunteer(String token, Long id) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong loggedOng = ongRepository.findByUsername(username);
-		Volunteer loggedVolunteer = volunteerRepository.findByUsername(username);
 		List<AttendanceDTO> attendances = new ArrayList<>();
 		
 		Optional<Volunteer> volunteer = volunteerRepository.findById(id);
 		if(volunteer.isPresent()) {
 			//Logged as ONG
-			if(loggedOng != null) {
 				//If the volunteer you are searching for is part of your ONG, return the list
 				if(volunteer.get().getOng().equals(loggedOng)) {
 					for(Attendance attendance: volunteer.get().getAttendance()) {
@@ -579,21 +617,32 @@ public class TaskServiceImpl implements TaskService{
 					throw new UsernameNotFoundException("You cannot get information about volunteers who do not belong to your ONG.");
 				}		
 			//Logged as volunteer
-			}else if(loggedVolunteer != null) {
-				//If the volunteer you are searching for is yourself, return the list
-				if(volunteer.get().equals(loggedVolunteer)) {
-					for(Attendance attendance: loggedVolunteer.getAttendance()) {
-						AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
-						attendances.add(attendanceDTO);
-					}
-				}else {
-					throw new UsernameNotFoundException("As a volunteer, you cannot get information about other volunteers.");
-				}
-			}
+	
 		}else{
 			throw new IllegalArgumentException("This volunteer does not exist!");
 		}
 		
+		return attendances;
+	}
+	
+	/*
+	 * Get all attendances from a volunteer (being a logged volunteer).
+	 * @Param String token
+	 * @Param Long id
+	 * @Return List<AttendanceDTO>
+	 */
+	
+	@Override
+	public List<AttendanceDTO> getAllAttendancesVolunteerByVolunteer(String token) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Volunteer loggedVolunteer = volunteerRepository.findByUsername(username);
+		List<AttendanceDTO> attendances = new ArrayList<>();
+		if(loggedVolunteer != null) {			
+			for(Attendance attendance: loggedVolunteer.getAttendance()) {
+				AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
+				attendances.add(attendanceDTO);
+			}	
+		}else throw new UsernameNotFoundException("You must be logged as ONG to make this operation."); 
 		return attendances;
 	}
 
@@ -616,4 +665,62 @@ public class TaskServiceImpl implements TaskService{
 		return count;
 	}
 
+
+	public List<AttendanceDTO> getAllAttendancesByBeneficiary(String token, Long id) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong loggedOng = ongRepository.findByUsername(username);
+		List<AttendanceDTO> attendances = new ArrayList<>();
+		
+		Optional<Beneficiary> beneficiary = beneficiaryRepository.findById(id);
+		if(beneficiary.isPresent()) {
+			//Logged as ONG
+				//If the volunteer you are searching for is part of your ONG, return the list
+				if(beneficiary.get().getOng().equals(loggedOng)) {
+					for(Attendance attendance: beneficiary.get().getAttendance()) {
+						AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
+						attendances.add(attendanceDTO);
+					}
+				}else {
+					throw new UsernameNotFoundException("You cannot get information about beneficiaries who do not belong to your ONG.");
+				}		
+			//Logged as volunteer
+	
+		}else{
+			throw new IllegalArgumentException("This beneficiary does not exist!");
+		}
+		
+		return attendances;
+	}
+
+
+	public List<TaskDTO> getActivityByOngNotFinish(String token) {
+
+        //Identify if user logged is an ong or a volunteer
+        String username = jwtUtils.getUserNameFromJwtToken(token);
+        Ong loggedOng = ongRepository.findByUsername(username);
+        Volunteer loggedVolunteer = volunteerRepository.findByUsername(username);
+
+		Ong ong = loggedOng;
+
+		if(username == null){
+			throw new UsernameNotFoundException("You must be logged to make this operation.");
+		}
+
+		if(loggedOng == null){
+			ong = loggedVolunteer.getOng();
+		}
+
+		if(ong == null){
+			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
+		}
+
+		List<Task> tasks = taskRepository.findByOngAndDateAfter(loggedOng, LocalDateTime.now());
+		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
+		for(Task task : tasks) {
+			TaskDTO tasktDTO = new TaskDTO(task);
+			tasksDTO.add(tasktDTO);
+		}
+		logger.info("Trying to get the tasks from ONG with name={}", ong.getName());
+		return  tasksDTO;
+    }
 }
