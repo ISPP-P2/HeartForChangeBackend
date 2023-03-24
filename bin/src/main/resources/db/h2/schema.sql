@@ -1,0 +1,11 @@
+DROP TABLE account IF EXISTS;
+DROP TABLE academicExp IF EXISTS;
+DROP TABLE appointment IF EXISTS;
+DROP TABLE attendance IF EXISTS;
+DROP TABLE beneficiary IF EXISTS;
+DROP TABLE complementary_formation IF EXISTS;
+DROP TABLE grant IF EXISTS;
+DROP TABLE person IF EXISTS;
+DROP TABLE task IF EXISTS;
+DROP TABLE volunteer IF EXISTS;
+DROP TABLE work_experience IF EXISTS;

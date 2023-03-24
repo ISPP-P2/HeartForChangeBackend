@@ -50,7 +50,7 @@ public class ONGController {
 	/*
 	 * Get ong by id
 	 * 
-	 * @Paramas id
+	 * @Param HttpServletRequest
 	 * 
 	 * @Return ResponseEntity
 	 */
@@ -100,7 +100,7 @@ public class ONGController {
 	/*
 	 * Update ong
 	 * 
-	 * @Param id
+	 * @Param HttpServletRequest
 	 * 
 	 * @Param ongDTO
 	 * 
@@ -148,7 +148,7 @@ public class ONGController {
 	/*
 	 * Delete ong
 	 * 
-	 * @Params Long id
+	 * @Param HttpServletRequest
 	 * 
 	 * @Return ResponseEntity
 	 */

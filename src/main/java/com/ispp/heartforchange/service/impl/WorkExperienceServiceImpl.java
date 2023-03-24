@@ -70,7 +70,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 		if(ong!=null || volunteer!=null) {
 			Optional<WorkExperience> workExperience = workExperienceRepository.findById(id);
 			if (!workExperience.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Work Experience not exist!");
+				throw new UsernameNotFoundException("Work Experience not exist!");
 			} else {
 				if(rol == RolAccount.VOLUNTEER) {
 					if(workExperience.get().getBeneficiary() == null) {
@@ -95,10 +95,10 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 						if(workExperience.get().getVolunteer().getOng().getId()==ong.getId()) {
 							return new WorkExperienceDTO(workExperience.get());
 						}else {
-							throw new UsernameNotFoundException("Not Found: Work Experience not exist!");
+							throw new UsernameNotFoundException("Work Experience not exist!");
 						}
 					}else {
-						throw new UsernameNotFoundException("Not Found: Work Experience not exist!");
+						throw new UsernameNotFoundException("Work Experience not exist!");
 					}
 				}
 			}
@@ -133,7 +133,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
   		}
 
   		if(exception==true) {
-  			throw new UsernameNotFoundException("Not Found: The volunteer with this ID doesn't exist!");
+  			throw new UsernameNotFoundException("The volunteer with this ID doesn't exist!");
 
   		}
   		
@@ -141,11 +141,11 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 			List<WorkExperienceDTO> workExperiencesDTO = new ArrayList<>();
 			
 			if (!workExperiences.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Work Experience not exist!");
+				throw new UsernameNotFoundException("Work Experience not exist!");
 			} else {
 				if(rol == RolAccount.ONG) {
 					if(workExperiences.get().size() == 0) {
-		 				throw new UsernameNotFoundException("Not Found: This volunteer has not work experiences!");
+		 				return workExperiencesDTO;
 		 			}else {
 		 				if(workExperiences.get().get(0).getVolunteer().getOng().getId() == ong.getId()) {
 							for (WorkExperience workExperience : workExperiences.get()) {
@@ -159,7 +159,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 		 			}
 				}else if(rol == RolAccount.VOLUNTEER) {
 					if(workExperiences.get().size() == 0) {
-		 				throw new UsernameNotFoundException("Not Found: This volunteer has not work experiences!");
+		 				throw new UsernameNotFoundException("This volunteer has not work experiences!");
 		 			}else {
 						if (workExperiences.get().get(0).getVolunteer().getId() == volunteer.getId()) {
 							for (WorkExperience workExperience : workExperiences.get()) {
@@ -204,7 +204,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
   		}
 
   		if(exception==true) {
-  			throw new UsernameNotFoundException("Not Found: The beneficiary with this ID doesn't exist!");
+  			throw new UsernameNotFoundException("The beneficiary with this ID doesn't exist!");
 
   		}
 		
@@ -212,11 +212,11 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 			List<WorkExperienceDTO> workExperiencesDTO = new ArrayList<>();
 			
 			if (!workExperiences.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Work Experience not exist!");
+				throw new UsernameNotFoundException("Work Experience not exist!");
 			} else {
 				if(rol == RolAccount.ONG) {
 					if(workExperiences.get().size() == 0) {
-		 				throw new UsernameNotFoundException("Not Found: This beneficiary has not work experiences!");
+		 				return workExperiencesDTO;
 		 			}else {
 		 				if(workExperiences.get().get(0).getBeneficiary().getId() == beneficiaryId) {
 							for (WorkExperience workExperience : workExperiences.get()) {
@@ -292,7 +292,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 						throw new UsernameNotFoundException("You don't have access!");
 	        		}
 	        	}else {
-	        		throw new UsernameNotFoundException("Not Found: The volunteer or beneficiary doesn't exist");
+	        		throw new UsernameNotFoundException("The volunteer or beneficiary doesn't exist");
 	        	}
 	        } catch (Exception e) {
 	            throw new UsernameNotFoundException(e.getMessage());
@@ -356,7 +356,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 					throw new UsernameNotFoundException("You don't have access!");
 				}
 			} else {
-				throw new UsernameNotFoundException("Not Found: Work Experience not exist!");
+				throw new UsernameNotFoundException("Work Experience not exist!");
 			}
 		}else {
   			throw new OperationNotAllowedException("You must be an ONG to use this method.");
@@ -397,7 +397,7 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 					throw new UsernameNotFoundException("You don't have access!");
 				}
 			} else {
-				throw new UsernameNotFoundException("Not Found: Work Experience not exist!");
+				throw new UsernameNotFoundException("Work Experience not exist!");
 			}
 		}else {
   			throw new OperationNotAllowedException("You must be an ONG to use this method.");

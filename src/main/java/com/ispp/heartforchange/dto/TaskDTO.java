@@ -35,7 +35,6 @@ public class TaskDTO implements Serializable{
 	private String name;
 	
 	@JsonProperty("type")
-	@NotNull
 	private TaskType type;
 	
 	@JsonFormat(shape=JsonFormat.Shape.STRING, pattern="yyyy-MM-dd HH:mm:ss")
@@ -89,7 +88,7 @@ public class TaskDTO implements Serializable{
 
 	public TaskDTO(Long id, @NotNull @NotBlank @Size(max = 32) String name, 	@NotNull LocalDateTime date, @NotNull String teacher,
 			@NotNull Boolean certificate, @Length(max = 256) String observations, @Length(max = 256) String incidences,
-			@NotNull String coordinator, Integer numParticipants, @NotNull TaskType taskType, @NotNull String place) {
+			@NotNull String coordinator, Integer numParticipants, TaskType taskType, @NotNull String place) {
 		
 		this.id = id;
 		this.name = name;

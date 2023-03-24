@@ -49,7 +49,6 @@ public class Task implements Serializable {
 	@NotNull
 	private LocalDateTime date;   // fecha y hora
 	
-	@NotNull
 	private String teacher;
 	
 	@NotNull
@@ -90,6 +89,21 @@ public class Task implements Serializable {
 		this.numParticipants = taskDTO.getNumParticipants();
 		this.place = taskDTO.getPlace();
 		this.type = taskDTO.getType();
+		this.ong = ong;
+	}
+	
+	public Task(TaskDTO taskDTO, Ong ong, TaskType type) {
+		
+		this.name = taskDTO.getName();
+		this.date = taskDTO.getDate();
+		this.teacher = taskDTO.getTeacher();
+		this.certificate = taskDTO.getCertificate();
+		this.observations = taskDTO.getObservations();
+		this.incidences = taskDTO.getIncidences();
+		this.coordinator = taskDTO.getCoordinator();
+		this.numParticipants = taskDTO.getNumParticipants();
+		this.place = taskDTO.getPlace();
+		this.type = type;
 		this.ong = ong;
 	}
 	

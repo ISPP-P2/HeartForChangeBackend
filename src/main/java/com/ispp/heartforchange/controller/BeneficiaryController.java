@@ -8,13 +8,9 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,7 +31,6 @@ public class BeneficiaryController {
 
 	private BeneficiaryServiceImpl beneficiaryServiceImpl;
 	private JwtUtils jwtUtils;
-	private AuthenticationManager authenticationManager;
 	
 
 	/*
@@ -46,7 +41,6 @@ public class BeneficiaryController {
 		super();
 		this.beneficiaryServiceImpl = beneficiaryServiceImpl;
 		this.jwtUtils = jwtUtils;
-		this.authenticationManager = authenticationManager;
 	}
 	
 	
@@ -59,7 +53,7 @@ public class BeneficiaryController {
 	 * 
 	 * @Return ResponseEntity
 	 */
-	@GetMapping("/{id}")
+	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getBeneficiaryById(@PathVariable("id") Long id, HttpServletRequest request) {
 		
 		String jwt = null;
@@ -111,7 +105,7 @@ public class BeneficiaryController {
 		return ResponseEntity.ok(totalBeneficiaries);
 	}
 	
-	@GetMapping("/ong")
+	@GetMapping("/get")
 	public ResponseEntity<?> getBeneficiariesByOng(HttpServletRequest request) {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
@@ -190,7 +184,7 @@ public class BeneficiaryController {
 		String username = jwtUtils.getUserNameFromJwtToken(jwt2);
 
 	    BeneficiaryDTO beneficiaryToUpdate = beneficiaryServiceImpl.updateBeneficiary(id, beneficiary, username);
-	    logger.info("Trying to authenticate with username={} and password={}", beneficiaryToUpdate.getUsername(), beneficiaryToUpdate.getPassword());
+	    logger.info("Beneficiary with id={} updated", id);
 	    return ResponseEntity.ok().body(beneficiaryToUpdate);
 	}
 	

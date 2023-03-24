@@ -41,7 +41,7 @@ public class AccountServiceImpl implements AccountService {
 	public SigninResponseDTO authenticateUser(SigninRequestDTO accountDto) {
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(accountDto.getUsername(), accountDto.getPassword()));
-		logger.info("Atuhenticating account with username = {}", accountDto.getUsername());
+		logger.info("Authenticating account with username = {}", accountDto.getUsername());
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		String jwt = jwtUtils.generateJwtToken(authentication);
 		String refresh = jwtUtils.generateJwtRefreshToken(authentication);
