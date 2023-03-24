@@ -211,7 +211,6 @@ public class VolunteerServiceImpl implements VolunteerService{
 		}
 		logger.info("Volunteer is updating with id={}", id);
 		if(volunteerToUpdate.isPresent()) {
-			volunteerToUpdate.get().setPassword(encoder.encode(newVolunteerDTO.getPassword()));
 			volunteerToUpdate.get().setAddress(newVolunteerDTO.getAddress());
 			volunteerToUpdate.get().setBirthday(newVolunteerDTO.getBirthday());
 			volunteerToUpdate.get().setCivilStatus(newVolunteerDTO.getCivilStatus());
@@ -233,7 +232,6 @@ public class VolunteerServiceImpl implements VolunteerService{
 			volunteerToUpdate.get().setSexCrimes(newVolunteerDTO.getSexCrimes());
 			volunteerToUpdate.get().setTelephone(newVolunteerDTO.getTelephone());
 			volunteerToUpdate.get().setTown(newVolunteerDTO.getTown());
-			volunteerToUpdate.get().setUsername(newVolunteerDTO.getUsername());
 		} else {
 			throw new UsernameNotFoundException("This Volunteer doesn't exist!");
 		} 

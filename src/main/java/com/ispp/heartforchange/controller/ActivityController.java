@@ -53,7 +53,7 @@ public class ActivityController {
 	 * @Return ResponseEntity
 	 */
 	
-	@GetMapping("/get/{id}") // REVISAR 
+	@GetMapping("/get/{id}") 
 	public ResponseEntity<?> getTaskById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -222,7 +222,7 @@ public class ActivityController {
 	 */
 
 	
-	@GetMapping("/get/{id}/attendances") // REVISAR
+	@GetMapping("/get/{id}/attendances") 
 	public ResponseEntity<?> getAttendancesById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 

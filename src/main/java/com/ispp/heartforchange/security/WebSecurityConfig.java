@@ -62,7 +62,6 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 				.antMatchers("/accounts/signin/**").permitAll()
 				.antMatchers("/ongs/signup/**").permitAll()
 				.antMatchers("/ongs/**").permitAll()
-				.antMatchers("/activities/**").permitAll() // Borrar despues de pruebas
 				.antMatchers("/volunteer/signup/**").hasAnyAuthority("ONG")
 				.antMatchers("/tasks/volunteer/get/{id}/attendances").hasAnyAuthority("ONG", "VOLUNTEER")
 				.antMatchers("/beneficiaries/signup").hasAnyAuthority("ONG")
@@ -70,6 +69,9 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 				.antMatchers("/tasks/new/", "/tasks/update/**", "/tasks/delete/**", "/tasks/count").hasAnyAuthority("ONG")
 				.antMatchers("/courses/**").hasAnyAuthority("ONG")
 				.antMatchers("/workshops/**").hasAnyAuthority("ONG")
+				.antMatchers("/activities/new", "/activities/update/**", "/activities/delete/**", "/activities/get/{id}/attendances", "/activities/volunteer/get/{id}/attendances").hasAnyAuthority("ONG")
+				.antMatchers("/activities/volunteer/get/attendances").hasAnyAuthority("VOLUNTEER")
+				.antMatchers("/activities/ong/get/all", "/activities/ong/get/date" ).hasAnyAuthority("ONG", "VOLUNTEER")
 				.antMatchers("/attendances/ong/**", "/attendances/{id}", "/attendances/accept/**", "/attendances/deny/**", "/attendances/confirm/**", "/attendances/add/**", "/attendances/quit/**").hasAnyAuthority("ONG")
 				.antMatchers("/attendances/volunteer/**", "/attendances/{id}", "/attendances/new/**", "/attendances/cancel/**").hasAnyAuthority("VOLUNTEER")
 				.antMatchers("/grants/**").hasAnyAuthority("ONG")
