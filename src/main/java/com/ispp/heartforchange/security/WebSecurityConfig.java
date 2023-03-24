@@ -75,9 +75,15 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 				.antMatchers("/attendances/ong/**", "/attendances/{id}", "/attendances/accept/**", "/attendances/deny/**", "/attendances/confirm/**", "/attendances/add/**", "/attendances/quit/**").hasAnyAuthority("ONG")
 				.antMatchers("/attendances/volunteer/**", "/attendances/{id}", "/attendances/new/**", "/attendances/cancel/**").hasAnyAuthority("VOLUNTEER")
 				.antMatchers("/grants/**").hasAnyAuthority("ONG")
-				.antMatchers("/grants/**").permitAll()
-				.antMatchers("/workExperiences/**").permitAll()
-				.antMatchers("/appointments/**").permitAll()
+				.antMatchers("/workExperiences/**").authenticated()
+				.antMatchers("/appointments/**").hasAnyAuthority("ONG")
+				.antMatchers("/v2/api-docs",
+                        "/configuration/ui",
+                        "/swagger-resources/**",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/webjars/**").permitAll()
 				.anyRequest().authenticated();
 		http.headers().frameOptions().disable();
 		http.authenticationProvider(authenticationProvider());

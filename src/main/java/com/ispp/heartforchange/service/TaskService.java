@@ -1,26 +1,23 @@
 package com.ispp.heartforchange.service;
 
-import java.util.List; 
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.AttendanceDTO;
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
-import com.ispp.heartforchange.dto.PersonDTO;
 import com.ispp.heartforchange.dto.TaskDTO;
 import com.ispp.heartforchange.dto.VolunteerDTO;
 
 @Service
 public interface TaskService {
-	
-
 
 	TaskDTO getById(String token, Long id);
 
 	List<TaskDTO> getByOng(String token);
 
 	List<AttendanceDTO> getAllAttendancesOngByVolunteer(String token, Long id);
-	
+
 	Integer getNumberOfTasks(String token);
 
 	TaskDTO saveActivity(String token, TaskDTO taskDTO);
@@ -31,12 +28,9 @@ public interface TaskService {
 
 	TaskDTO updateActivity(String token, Long id, TaskDTO newTaskDTO);
 
-
 	TaskDTO updateCurso(String token, Long id, TaskDTO newTaskDTO);
 
-
 	TaskDTO updateTaller(String token, Long id, TaskDTO newTaskDTO);
-
 
 	void deleteActivity(String token, Long id);
 
@@ -56,6 +50,4 @@ public interface TaskService {
 
 	List<BeneficiaryDTO> getAllBeneficiariesByTask(String token, Long id);
 
-
-	
 }
