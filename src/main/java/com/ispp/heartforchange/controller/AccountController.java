@@ -70,7 +70,7 @@ public class AccountController {
 				return ResponseEntity.ok(signinDto);
 			}
 		}catch(Exception e){
-			logger.error("Cannot find the account: {}", e);
+			logger.error("Cannot find the account: {}", e.getMessage());
 
 		}
 		

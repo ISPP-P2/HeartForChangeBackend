@@ -1,6 +1,6 @@
 package com.ispp.heartforchange.service.impl;
 
-import java.util.ArrayList;
+import java.util.ArrayList; 
 import java.util.List;
 import java.util.Optional;
 
@@ -81,29 +81,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 	 * @Return AppointmentDTO
 	 */
 	@Override
-	public List<AppointmentDTO> getAppointmentsByONG(Long ongId, String token) throws OperationNotAllowedException{
+	public List<AppointmentDTO> getAppointmentsByONG(String token) throws OperationNotAllowedException{
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
-		Optional<List<Appointment>> appointments = appointmentRepository.findAppointmentsByOngId(ongId);
-		
-		List<Ong> auxOngs = ongRepository.findAll();
- 		boolean exception = true;
- 		for(Ong o: auxOngs) {
- 			if (o.getId() == ongId){
- 				exception = false;
- 			}
- 		} 
-
- 		if(exception==true) {
- 			throw new UsernameNotFoundException("Not Found: The ONG with this ID doesn't exist!");
-
- 		}
 		
  		if(ong!=null) {
 			List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+			Optional<List<Appointment>> appointments = appointmentRepository.findAppointmentsByOngId(ong.getId());
 	
 			if (!appointments.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Appointments not exist for the ONG!");
+				throw new UsernameNotFoundException("Appointments do not exist for this ONG!");
 			} else {
 				if(appointments.get().size() == 0) {
 					return appointmentsDTO;
@@ -115,13 +102,13 @@ public class AppointmentServiceImpl implements AppointmentService {
 						}
 						return appointmentsDTO;
 					}else {
-						throw new UsernameNotFoundException("You don't have access!");
+						throw new UsernameNotFoundException("You don't have access to information of others ONGs!");
 					}
 				}
 			}
  		}else{
  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
-		}
+ 		}
 	}
 	
 	/*
@@ -146,7 +133,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
  		if(exception==true) {
  			throw new UsernameNotFoundException("Not Found: The Beneficiary with this ID doesn't exist!");
-
  		}
 		
  		if(ong!=null) {

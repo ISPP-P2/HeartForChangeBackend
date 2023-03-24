@@ -10,7 +10,7 @@ public interface AppointmentService {
 
 	AppointmentDTO getAppointmentById(Long id, String token) throws OperationNotAllowedException;
 	
-	List<AppointmentDTO> getAppointmentsByONG(Long ongId, String token) throws OperationNotAllowedException;
+	List<AppointmentDTO> getAppointmentsByONG(String token) throws OperationNotAllowedException;
 
 	List<AppointmentDTO> getAppointmentsByBeneficiary(Long beneficiaryId, String token) throws OperationNotAllowedException;
 	

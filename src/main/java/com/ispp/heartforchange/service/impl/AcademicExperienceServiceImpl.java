@@ -67,7 +67,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
         if(ong!=null || volunteer!=null) {
 			Optional<AcademicExperience> academicExperience = academicExperienceRepository.findById(id);
 			if (!academicExperience.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Academic Experience not exist!");
+				throw new UsernameNotFoundException("Academic Experience not exist!");
 			} else {
 				if(rol == RolAccount.VOLUNTEER) {
 					if(academicExperience.get().getBeneficiary() == null && academicExperience.get().getVolunteer().getId()==volunteer.getId()) {
@@ -88,10 +88,10 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 						if(academicExperience.get().getVolunteer().getOng().getId()==ong.getId()) {
 							return new AcademicExperienceDTO(academicExperience.get());
 						}else {
-							throw new UsernameNotFoundException("Not Found: Academic Experience not exist!");
+							throw new UsernameNotFoundException("Academic Experience not exist!");
 						}
 					}else {
-						throw new UsernameNotFoundException("Not Found: Academic Experience not exist!");
+						throw new UsernameNotFoundException("Academic Experience not exist!");
 					}
 				}
 			}
@@ -126,7 +126,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 		}
 		
 		if(exception==true) {
-			throw new UsernameNotFoundException("Not Found: The volunteer with this ID doesn't exist!");
+			throw new UsernameNotFoundException("The volunteer with this ID doesn't exist!");
 
 		}        
         
@@ -134,11 +134,11 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 			List<AcademicExperienceDTO> academicExperiencesDTO = new ArrayList<>();
 			
 			if (!academicExperiences.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Academic Experience not exist!");
+				throw new UsernameNotFoundException("Academic Experience not exist!");
 			} else {
 				if(rol == RolAccount.ONG) {
 					if(academicExperiences.get().size() == 0) {
-		 				throw new UsernameNotFoundException("Not Found: This volunteer has not academic experiences!");
+		 				return academicExperiencesDTO;
 		 			}else {
 		 				if(academicExperiences.get().get(0).getVolunteer().getOng().getId() == ong.getId()) {
 							for (AcademicExperience academicExperience : academicExperiences.get()) {
@@ -152,7 +152,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 		 			}
 				}else if(rol == RolAccount.VOLUNTEER) {
 					if(academicExperiences.get().size() == 0) {
-		 				throw new UsernameNotFoundException("Not Found: This volunteer has not academic experiences!");
+		 				throw new UsernameNotFoundException("This volunteer has not academic experiences!");
 		 			}else {
 						if (academicExperiences.get().get(0).getVolunteer().getId() == volunteer.getId()) {
 							for (AcademicExperience academicExperience : academicExperiences.get()) {
@@ -198,7 +198,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
   		}
 
   		if(exception==true) {
-  			throw new UsernameNotFoundException("Not Found: The beneficiary with this ID doesn't exist!");
+  			throw new UsernameNotFoundException("The beneficiary with this ID doesn't exist!");
 
   		}
 		
@@ -206,11 +206,11 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 			List<AcademicExperienceDTO> academicExperiencesDTO = new ArrayList<>();
 			
 			if (!academicExperiences.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Academic Experience not exist!");
+				throw new UsernameNotFoundException("Academic Experience not exist!");
 			} else {
 				if(rol == RolAccount.ONG) {
 					if(academicExperiences.get().size() == 0) {
-		 				throw new UsernameNotFoundException("Not Found: This beneficiary has not academic experiences!");
+		 				return academicExperiencesDTO;
 		 			}else {
 		 				if(academicExperiences.get().get(0).getBeneficiary().getId() == beneficiaryId) {
 							for (AcademicExperience academicExperience : academicExperiences.get()) {
@@ -289,7 +289,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 							throw new UsernameNotFoundException("You don't have access!");
 		        		}
 		        	}else {
-		        		throw new UsernameNotFoundException("Not Found: The volunteer or beneficiary doesn't exist");
+		        		throw new UsernameNotFoundException("The volunteer or beneficiary doesn't exist");
 		        	}
 		        } catch (Exception e) {
 		            throw new UsernameNotFoundException(e.getMessage());
@@ -353,7 +353,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 					throw new UsernameNotFoundException("You don't have access!");
 				}
 			} else {
-				throw new UsernameNotFoundException("Not Found: Academic Experience not exist!");
+				throw new UsernameNotFoundException("Academic Experience not exist!");
 			}
 		}else {
   			throw new OperationNotAllowedException("You must be an ONG to use this method.");
@@ -393,7 +393,7 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 					throw new UsernameNotFoundException("You don't have access!");
 				}
 			} else {
-				throw new UsernameNotFoundException("Not Found: Work Experience not exist!");
+				throw new UsernameNotFoundException("Work Experience not exist!");
 			}
 		}else {
   			throw new OperationNotAllowedException("You must be an ONG to use this method.");

@@ -76,16 +76,14 @@ public class AppointmentController {
 	
 	
 	/*
-     * Get all appointments by ong id
+     * Get all appointments by ong
      * 
      * @Param HttpServletRequest
-     * @Param Long id
      * 
      * @Return ResponseEntity
      */
-    @GetMapping("/get/ong/{id}")
-    public ResponseEntity<?> getAppointmentByOng(HttpServletRequest request,
-            @PathVariable("id") Long id) throws OperationNotAllowedException {
+    @GetMapping("/get")
+    public ResponseEntity<?> getAppointmentByOng(HttpServletRequest request) throws OperationNotAllowedException {
         String jwt = null;
         String headerAuth = request.getHeader("Authorization");
 
@@ -97,7 +95,7 @@ public class AppointmentController {
         }
 
         try {
-        	List<AppointmentDTO> appointments = appointmentService.getAppointmentsByONG(id, jwt);
+        	List<AppointmentDTO> appointments = appointmentService.getAppointmentsByONG(jwt);
             return ResponseEntity.ok(appointments);
         }
         catch(OperationNotAllowedException e) {

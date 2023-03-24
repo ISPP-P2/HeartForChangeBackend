@@ -76,7 +76,6 @@ public class Person extends Account{
 	@NotNull
 	private CivilStatus civilStatus;
 	
-	@NotNull
 	@Min(0)
 	private int numberOfChildren;
 	
@@ -105,8 +104,6 @@ public class Person extends Account{
 	
 	private LocalDate leavingDate;
 	
-	@NotNull
-	@NotBlank
 	@Size(max=100)
 	private String driveLicenses;
 	

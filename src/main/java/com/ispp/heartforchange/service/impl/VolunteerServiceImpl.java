@@ -3,13 +3,12 @@ package com.ispp.heartforchange.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import com.ispp.heartforchange.dto.UpdatePasswordDTO;
 import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.Account;
@@ -25,6 +24,8 @@ import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.VolunteerRepository;
 import com.ispp.heartforchange.repository.WorkExperienceRepository;
 import com.ispp.heartforchange.service.VolunteerService;
+import com.ispp.heartforchange.security.jwt.JwtUtils;
+
 
 @Service
 public class VolunteerServiceImpl implements VolunteerService{
@@ -38,6 +39,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 	private AcademicExperienceRepository academicExperienceRepository;
 	private WorkExperienceRepository workExperienceRepository;
 	private AccountRepository accountRepository;
+	private JwtUtils jwtUtils;
 	
 
 	
@@ -45,7 +47,8 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 * Dependency injection 
 	 */
 	public VolunteerServiceImpl(VolunteerRepository volunteerRepository, PasswordEncoder encoder,	WorkExperienceRepository workExperienceRepository, 
-  ComplementaryFormationRepository complementaryFormationRepository, ONGRepository ongRepository, AcademicExperienceRepository academicExperienceRepository, AccountRepository accountRepository) {
+  ComplementaryFormationRepository complementaryFormationRepository, ONGRepository ongRepository, AcademicExperienceRepository academicExperienceRepository, AccountRepository accountRepository,
+  JwtUtils jwtUtils) {
 		super();
 		this.ongRepository = ongRepository;
 		this.volunteerRepository = volunteerRepository;
@@ -55,6 +58,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 		this.complementaryFormationRepository = complementaryFormationRepository;
 		this.academicExperienceRepository = academicExperienceRepository;
 		this.accountRepository = accountRepository;
+		this.jwtUtils = jwtUtils;
 	}
   
 	
@@ -153,27 +157,38 @@ public class VolunteerServiceImpl implements VolunteerService{
 	/*
 	 * Save a Volunteer with their account.
 	 * @Params VolunteerDTO
-	 * @Params String username
+	 * @Params String token
 	 * @Return VolunteerDTO
 	 */
 	@Override
-	public VolunteerDTO saveVolunteer(VolunteerDTO volunteerDTO, String username) {
+	public VolunteerDTO saveVolunteer(VolunteerDTO volunteerDTO, String token) {
 		
-		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		
+		Ong ong = ongRepository.findByUsername(username);
+		
+		if(ong == null) {
 			throw new UsernameNotFoundException("You must be logged as ONG to create this volunteer");
 		}
 		
-		Ong ong2 = ongRepository.findByUsername(username);
+		
+
+		String usernameGenerated = ong.getName().replace(" ", "").toLowerCase() + "-" + volunteerDTO.getDocumentNumber();		
+		
 		Volunteer volunteer = new Volunteer(volunteerDTO, volunteerDTO.getHourOfAvailability(), volunteerDTO.getSexCrimes());
+		
 		volunteer.setId(Long.valueOf(0));
 		volunteer.setRolAccount(RolAccount.VOLUNTEER);
-		volunteer.setPassword(encoder.encode(volunteer.getPassword()));
-		volunteer.setOng(ong2);
-		logger.info("Saving Volunteer with username={}", volunteer.getUsername());
+		volunteer.setPassword(encoder.encode(volunteerDTO.getPassword()));
+		volunteer.setOng(ong);
+		
+		
 		try {
+			volunteer.setUsername(usernameGenerated);
+			logger.info("Saving Volunteer with username={}", volunteer.getUsername());
 			Volunteer volunteerSave = volunteerRepository.save(volunteer);
 			return new VolunteerDTO(volunteerSave, volunteer.getHourOfAvailability(), volunteer.getSexCrimes());
-		} catch (Exception e) {
+		}catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
 		} 
 	}
@@ -196,7 +211,6 @@ public class VolunteerServiceImpl implements VolunteerService{
 		}
 		logger.info("Volunteer is updating with id={}", id);
 		if(volunteerToUpdate.isPresent()) {
-			volunteerToUpdate.get().setPassword(encoder.encode(newVolunteerDTO.getPassword()));
 			volunteerToUpdate.get().setAddress(newVolunteerDTO.getAddress());
 			volunteerToUpdate.get().setBirthday(newVolunteerDTO.getBirthday());
 			volunteerToUpdate.get().setCivilStatus(newVolunteerDTO.getCivilStatus());
@@ -218,7 +232,41 @@ public class VolunteerServiceImpl implements VolunteerService{
 			volunteerToUpdate.get().setSexCrimes(newVolunteerDTO.getSexCrimes());
 			volunteerToUpdate.get().setTelephone(newVolunteerDTO.getTelephone());
 			volunteerToUpdate.get().setTown(newVolunteerDTO.getTown());
-			volunteerToUpdate.get().setUsername(newVolunteerDTO.getUsername());
+		} else {
+			throw new UsernameNotFoundException("This Volunteer doesn't exist!");
+		} 
+		try {
+			Volunteer volunteerSave = volunteerRepository.save(volunteerToUpdate.get());
+			return new VolunteerDTO(volunteerSave, volunteerSave.getHourOfAvailability(), volunteerSave.getSexCrimes());
+		} catch (Exception e) {
+			throw new UsernameNotFoundException(e.getMessage());
+		} 
+	}
+	
+	/*
+	 * Update volunteer
+	 * @Params Long id
+	 * @Params UpdatePasswordDTO passwordDTO
+	 * @Params String token
+	 * 
+	 * @Return VolunteerDTO
+	 */
+	@Override 
+	public VolunteerDTO updateVolunteerPassword(Long id, UpdatePasswordDTO passwordDTO, String token) {
+
+		Optional<Volunteer> volunteerToUpdate = volunteerRepository.findById(id);
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		
+		logger.info("Password from volunteer with id={} is updating", id);
+		
+		if(volunteerToUpdate.isPresent()) {
+			if(ong == null) {
+				throw new UsernameNotFoundException("You must be logged as ONG to create this volunteer");
+			} else if(!ong.equals(volunteerToUpdate.get().getOng())) {
+				throw new UsernameNotFoundException("You cannot edit a volunteer who does not belong to your ONG");
+			}
+			volunteerToUpdate.get().setPassword(encoder.encode(passwordDTO.getPassword()));
 		} else {
 			throw new UsernameNotFoundException("This Volunteer doesn't exist!");
 		} 
