@@ -49,5 +49,7 @@ public interface TaskService {
 	List<VolunteerDTO> getAllVoluntariesByTask(String token, Long id);
 
 	List<BeneficiaryDTO> getAllBeneficiariesByTask(String token, Long id);
+	
+	List<VolunteerDTO> getPetitionsByTask(String token, Long id);
 
 }
