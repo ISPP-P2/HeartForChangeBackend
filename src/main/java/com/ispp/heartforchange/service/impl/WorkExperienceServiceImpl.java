@@ -111,78 +111,59 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 
 	
 	/*
-	 * Get all work experiences of an volunteer by his username
+	 * Get all work experiences of an volunteer by his id
 	 * @Params Long volunteerId
 	 * @Params String token
 	 * @Return List<WorkExperienceDTO>
 	 */
 	@Override
 	public List<WorkExperienceDTO> getWorkExperienceByVolunteer(Long volunteerId, String token) throws OperationNotAllowedException{
+				
 		String username = jwtUtils.getUserNameFromJwtToken(token);
-		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
-		Optional<List<WorkExperience>> workExperiences = workExperienceRepository.findWorkExperienceByVolunteerId(volunteerId);
-		Volunteer volunteer = volunteerRepository.findVolunteerByUsername(username);
-		Ong ong = ongRepository.findByUsername(username);
+		Volunteer loggedVolunteer = volunteerRepository.findVolunteerByUsername(username);
+		Ong loggedOng = ongRepository.findByUsername(username);
 		
-		List<Volunteer> auxVolunteers = volunteerRepository.findAll();
-  		boolean exception = true;
-  		for(Volunteer v: auxVolunteers) {
-  			if (v.getId()==volunteerId){
-  				exception = false;
-  			}
-  		}
-
-  		if(exception==true) {
-  			throw new UsernameNotFoundException("The volunteer with this ID doesn't exist!");
-
-  		}
+		Optional<List<WorkExperience>> workExperiences = workExperienceRepository.findWorkExperienceByVolunteerId(volunteerId);
   		
-  		if(ong!=null || volunteer!=null) {
-			List<WorkExperienceDTO> workExperiencesDTO = new ArrayList<>();
-			
-			if (!workExperiences.isPresent()) {
-				throw new UsernameNotFoundException("Work Experience not exist!");
-			} else {
-				if(rol == RolAccount.ONG) {
-					if(workExperiences.get().size() == 0) {
-		 				return workExperiencesDTO;
-		 			}else {
-		 				if(workExperiences.get().get(0).getVolunteer().getOng().getId() == ong.getId()) {
-							for (WorkExperience workExperience : workExperiences.get()) {
+  		Optional<Volunteer> volunteer = volunteerRepository.findById(volunteerId);
+  		
+  		List<WorkExperienceDTO> workExperiencesDTO = new ArrayList<>();
+  		
+  		if(loggedOng != null || loggedVolunteer != null) {
+  	  		if(volunteer.isPresent()){
+  	  			if(workExperiences.isPresent()) {
+  	  				if(loggedOng != null) {
+  	  					if(volunteer.get().getOng().equals(loggedOng)) {
+	  	  					for (WorkExperience workExperience : workExperiences.get()) {
+								WorkExperienceDTO workExperienceDTO = new WorkExperienceDTO(workExperience);
+								workExperiencesDTO.add(workExperienceDTO);
+	  	  					}
+  	  					}else {
+  	  						throw new UsernameNotFoundException("This volunteer does not belong to your ONG!");
+  	  					}
+  	  				}else if(loggedVolunteer != null) {
+  	  					if(loggedVolunteer.equals(volunteer.get())) {
+	  	  					for (WorkExperience workExperience : workExperiences.get()) {
 								WorkExperienceDTO workExperienceDTO = new WorkExperienceDTO(workExperience);
 								workExperiencesDTO.add(workExperienceDTO);
 							}
-							return workExperiencesDTO;
-						}else {
-							throw new UsernameNotFoundException("You don't have access!");
-						}
-		 			}
-				}else if(rol == RolAccount.VOLUNTEER) {
-					if(workExperiences.get().size() == 0) {
-		 				throw new UsernameNotFoundException("This volunteer has not work experiences!");
-		 			}else {
-						if (workExperiences.get().get(0).getVolunteer().getId() == volunteer.getId()) {
-							for (WorkExperience workExperience : workExperiences.get()) {
-								WorkExperienceDTO workExperienceDTO = new WorkExperienceDTO(workExperience);
-								workExperiencesDTO.add(workExperienceDTO);
-							}
-							return workExperiencesDTO;
-						}else {
-							throw new UsernameNotFoundException("You don't have access!");
-						}
-		 			}
-		 		}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-			}
+  	  					}else {
+  	  						throw new UsernameNotFoundException("You cannot get information about other volunteers.");
+  	  					}
+  	  				}
+  	  			}
+  	  		}else {
+  	  			throw new UsernameNotFoundException("The volunteer with this ID doesn't exist!");
+  	  		}
   		}else {
   			throw new OperationNotAllowedException("You must be a volunteer or an ONG to use this method.");
   		}
-		
+  		
+  		return workExperiencesDTO;		
 	}
 	
 	/*
-	 * Get all work experiences of an beneficiary by his username
+	 * Get all work experiences of an beneficiary by his id
 	 * @Params Long beneficiaryId
 	 * @Params String token
 	 * @Return WorkExperienceDTO
@@ -190,51 +171,34 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
 	@Override
 	public List<WorkExperienceDTO> getWorkExperienceByBeneficiary(Long beneficiaryId, String token) throws OperationNotAllowedException{
 		String username = jwtUtils.getUserNameFromJwtToken(token);
-		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
-		Optional<List<WorkExperience>> workExperiences = workExperienceRepository.findWorkExperienceByBeneficiaryId(beneficiaryId);
-		Volunteer volunteer = volunteerRepository.findVolunteerByUsername(username);
 		Ong ong = ongRepository.findByUsername(username);
 		
-		List<Beneficiary> auxBeneficiaries = beneficiaryRepository.findAll();
-  		boolean exception = true;
-  		for(Beneficiary b: auxBeneficiaries) {
-  			if (b.getId()==beneficiaryId){
-  				exception = false;
-  			}
-  		}
-
-  		if(exception==true) {
-  			throw new UsernameNotFoundException("The beneficiary with this ID doesn't exist!");
-
-  		}
-		
-  		if(ong!=null || volunteer!=null) {
-			List<WorkExperienceDTO> workExperiencesDTO = new ArrayList<>();
-			
-			if (!workExperiences.isPresent()) {
-				throw new UsernameNotFoundException("Work Experience not exist!");
-			} else {
-				if(rol == RolAccount.ONG) {
-					if(workExperiences.get().size() == 0) {
-		 				return workExperiencesDTO;
-		 			}else {
-		 				if(workExperiences.get().get(0).getBeneficiary().getId() == beneficiaryId) {
-							for (WorkExperience workExperience : workExperiences.get()) {
-								WorkExperienceDTO workExperienceDTO = new WorkExperienceDTO(workExperience);
-								workExperiencesDTO.add(workExperienceDTO);
-							}
-							return workExperiencesDTO;
-						}else {
-							throw new UsernameNotFoundException("You don't have access!");
-						}
-		 			}
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-			}
+		Optional<List<WorkExperience>> workExperiences = workExperienceRepository.findWorkExperienceByBeneficiaryId(beneficiaryId);
+  		
+  		Optional<Beneficiary> beneficiary = beneficiaryRepository.findById(beneficiaryId);
+  		
+  		List<WorkExperienceDTO> workExperiencesDTO = new ArrayList<>();
+  		
+  		if(ong != null) {
+  	  		if(beneficiary.isPresent()){
+  	  			if(workExperiences.isPresent()) {
+  					if(beneficiary.get().getOng().equals(ong)) {
+  	  					for (WorkExperience workExperience : workExperiences.get()) {
+							WorkExperienceDTO workExperienceDTO = new WorkExperienceDTO(workExperience);
+							workExperiencesDTO.add(workExperienceDTO);
+  	  					}
+  					}else {
+  						throw new UsernameNotFoundException("This beneficiary does not belong to your ONG!");
+  					}
+  	  			}
+  	  		}else {
+  	  			throw new UsernameNotFoundException("The beneficiary with this ID doesn't exist!");
+  	  		}
   		}else {
-  			throw new OperationNotAllowedException("You must be a volunteer or an ONG to use this method.");
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
   		}
+  		
+  		return workExperiencesDTO;	
 	}
 
 	
@@ -249,57 +213,41 @@ public class WorkExperienceServiceImpl implements WorkExperienceService {
     public WorkExperienceDTO saveWorkExperience(WorkExperienceDTO workExperienceDTO, Long id, String token) throws OperationNotAllowedException{
 
     	String username = jwtUtils.getUserNameFromJwtToken(token);
-		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
 		Ong ong = ongRepository.findByUsername(username);
     	
     	WorkExperience workExperience = new WorkExperience(workExperienceDTO);
     	workExperience.setId(Long.valueOf(0));
-        List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
-        List<Volunteer> volunteers = volunteerRepository.findAll();
-        Beneficiary beneficiaryAux = new Beneficiary();
-        Volunteer volunteerAux = new Volunteer();
+    	
+        Optional<Beneficiary> beneficiary = beneficiaryRepository.findById(id);
+        Optional<Volunteer> volunteer = volunteerRepository.findById(id);
         
-        for (Beneficiary b: beneficiaries) {
-            if(b.getId() == id) {
-            	beneficiaryAux = b;
-            	workExperience.setBeneficiary(b);
-            }
-        }
-
-        for (Volunteer v: volunteers) {
-            if(v.getId() == id) {
-            	volunteerAux = v;
-            	workExperience.setVolunteer(v);
-            }
-        }
-
         if(ong!=null) {
-	        try {
-	        	if(volunteerAux.getId() != null) {
-	        		if(rol == RolAccount.ONG && volunteerAux.getOng().getId() == ong.getId()) {
-		        		logger.info("Work Experience saved associated with id={}", id);
-		        		WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience);
-		                return new WorkExperienceDTO(workExperienceSaved);
-	        		}else {
-						throw new UsernameNotFoundException("You don't have access!");
-	        		}
-	        	}else if(beneficiaryAux.getId() != null) {
-	        		if(rol == RolAccount.ONG && beneficiaryAux.getOng().getId() == ong.getId()) {
-		        		logger.info("Work Experience saved associated with id={}", id);
-		        		WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience);
-		                return new WorkExperienceDTO(workExperienceSaved);
-	        		}else {
-						throw new UsernameNotFoundException("You don't have access!");
-	        		}
-	        	}else {
-	        		throw new UsernameNotFoundException("The volunteer or beneficiary doesn't exist");
-	        	}
-	        } catch (Exception e) {
-	            throw new UsernameNotFoundException(e.getMessage());
-	        }
+            if(beneficiary.isPresent()) {
+            	if(beneficiary.get().getOng().equals(ong)) {
+            		logger.info("Work Experience saved associated with id={}", id);
+            		workExperience.setBeneficiary(beneficiary.get());
+	        		WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience);
+	                return new WorkExperienceDTO(workExperienceSaved);
+            	}else{
+            		throw new UsernameNotFoundException("You cannot edit information about a beneficiary who does not belong to your ONG!");
+            	}
+            	
+            }else if(volunteer.isPresent()) {
+            	if(volunteer.get().getOng().equals(ong)) {
+            		workExperience.setVolunteer(volunteer.get());
+            		logger.info("Work Experience saved associated with id={}", id);
+	        		WorkExperience workExperienceSaved = workExperienceRepository.save(workExperience);
+	                return new WorkExperienceDTO(workExperienceSaved);
+            	}else{
+            		throw new UsernameNotFoundException("You cannot edit information about a volunteer who does not belong to your ONG!");
+            	}
+            }else {
+            	throw new UsernameNotFoundException("The volunteer or beneficiary doesn't exist");
+            }
         }else {
-  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
-  		}
+        	throw new OperationNotAllowedException("You must be an ONG to use this method.");
+        }
+
     }
 
     
