@@ -24,7 +24,7 @@ import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.ComplementaryFormationServiceImpl;
 
 @Controller
-@RequestMapping("/complementaryFunctions")
+@RequestMapping("/complementaryFormations")
 public class ComplementaryFormationController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AccountController.class);

@@ -35,7 +35,7 @@ public class AcademicExperienceDTO implements Serializable {
 	private String speciality;
 
 	@NotNull
-	@Min(2023)
+	@Max(2023)
 	@JsonProperty("endingYear")
 	private Integer endingYear;
 

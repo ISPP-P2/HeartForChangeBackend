@@ -110,67 +110,47 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 	 */
 	@Override
     public List<AcademicExperienceDTO> getAcademicExperienceByVolunteer(Long volunteerId, String token) throws OperationNotAllowedException {
-        String username = jwtUtils.getUserNameFromJwtToken(token);
-        RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
-        Volunteer volunteer = volunteerRepository.findVolunteerByUsername(username);
-        Ong ong = ongRepository.findByUsername(username);
-        
-        Optional<List<AcademicExperience>> academicExperiences = academicExperienceRepository.findAcademicExperienceByVolunteerId(volunteerId);
-        
-		List<Volunteer> aux = volunteerRepository.findAll();
-		boolean exception = true;
-		for(Volunteer v: aux) {
-			if (v.getId()==volunteerId){
-				exception=false;
-			}
-		}
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Volunteer loggedVolunteer = volunteerRepository.findVolunteerByUsername(username);
+		Ong loggedOng = ongRepository.findByUsername(username);
 		
-		if(exception==true) {
-			throw new UsernameNotFoundException("The volunteer with this ID doesn't exist!");
-
-		}        
-        
-        if(ong!=null || volunteer!=null) {
-			List<AcademicExperienceDTO> academicExperiencesDTO = new ArrayList<>();
-			
-			if (!academicExperiences.isPresent()) {
-				throw new UsernameNotFoundException("Academic Experience not exist!");
-			} else {
-				if(rol == RolAccount.ONG) {
-					if(academicExperiences.get().size() == 0) {
-		 				return academicExperiencesDTO;
-		 			}else {
-		 				if(academicExperiences.get().get(0).getVolunteer().getOng().getId() == ong.getId()) {
-							for (AcademicExperience academicExperience : academicExperiences.get()) {
-								AcademicExperienceDTO academicExperienceDTO = new AcademicExperienceDTO(academicExperience);
+		Optional<List<AcademicExperience>> academicExperiences = academicExperienceRepository.findAcademicExperienceByVolunteerId(volunteerId);
+  		
+  		Optional<Volunteer> volunteer = volunteerRepository.findById(volunteerId);
+  		
+  		List<AcademicExperienceDTO> academicExperiencesDTO = new ArrayList<>();
+  		
+  		if(loggedOng != null || loggedVolunteer != null) {
+  	  		if(volunteer.isPresent()){
+  	  			if(academicExperiences.isPresent()) {
+  	  				if(loggedOng != null) {
+  	  					if(volunteer.get().getOng().equals(loggedOng)) {
+	  	  					for (AcademicExperience academicExperience : academicExperiences.get()) {
+	  	  						AcademicExperienceDTO academicExperienceDTO = new AcademicExperienceDTO(academicExperience);
+								academicExperiencesDTO.add(academicExperienceDTO);
+	  	  					}
+  	  					}else {
+  	  						throw new UsernameNotFoundException("This volunteer does not belong to your ONG!");
+  	  					}
+  	  				}else if(loggedVolunteer != null) {
+  	  					if(loggedVolunteer.equals(volunteer.get())) {
+	  	  					for (AcademicExperience academicExperience : academicExperiences.get()) {
+	  	  						AcademicExperienceDTO academicExperienceDTO = new AcademicExperienceDTO(academicExperience);
 								academicExperiencesDTO.add(academicExperienceDTO);
 							}
-							return academicExperiencesDTO;
-						}else {
-							throw new UsernameNotFoundException("You don't have access!");
-						}
-		 			}
-				}else if(rol == RolAccount.VOLUNTEER) {
-					if(academicExperiences.get().size() == 0) {
-		 				throw new UsernameNotFoundException("This volunteer has not academic experiences!");
-		 			}else {
-						if (academicExperiences.get().get(0).getVolunteer().getId() == volunteer.getId()) {
-							for (AcademicExperience academicExperience : academicExperiences.get()) {
-								AcademicExperienceDTO academicExperienceDTO = new AcademicExperienceDTO(academicExperience);
-								academicExperiencesDTO.add(academicExperienceDTO);
-							}
-							return academicExperiencesDTO;
-						}else {
-							throw new UsernameNotFoundException("You don't have access!");
-						}
-		 			}
-		 		}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-			}
+  	  					}else {
+  	  						throw new UsernameNotFoundException("You cannot get information about other volunteers.");
+  	  					}
+  	  				}
+  	  			}
+  	  		}else {
+  	  			throw new UsernameNotFoundException("The volunteer with this ID doesn't exist!");
+  	  		}
   		}else {
   			throw new OperationNotAllowedException("You must be a volunteer or an ONG to use this method.");
   		}
+  		
+  		return academicExperiencesDTO;		
     }
 	
 	/*
@@ -184,51 +164,34 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 	@Override
 	public List<AcademicExperienceDTO> getAcademicExperienceByBeneficiary(Long beneficiaryId, String token) throws OperationNotAllowedException{
 		String username = jwtUtils.getUserNameFromJwtToken(token);
-		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
-		Optional<List<AcademicExperience>> academicExperiences = academicExperienceRepository.findAcademicExperienceByBeneficiaryId(beneficiaryId);
-		Volunteer volunteer = volunteerRepository.findVolunteerByUsername(username);
 		Ong ong = ongRepository.findByUsername(username);
 		
-		List<Beneficiary> auxBeneficiaries = beneficiaryRepository.findAll();
-  		boolean exception = true;
-  		for(Beneficiary b: auxBeneficiaries) {
-  			if (b.getId()==beneficiaryId){
-  				exception = false;
-  			}
-  		}
-
-  		if(exception==true) {
-  			throw new UsernameNotFoundException("The beneficiary with this ID doesn't exist!");
-
-  		}
-		
-  		if(ong!=null || volunteer!=null) {
-			List<AcademicExperienceDTO> academicExperiencesDTO = new ArrayList<>();
-			
-			if (!academicExperiences.isPresent()) {
-				throw new UsernameNotFoundException("Academic Experience not exist!");
-			} else {
-				if(rol == RolAccount.ONG) {
-					if(academicExperiences.get().size() == 0) {
-		 				return academicExperiencesDTO;
-		 			}else {
-		 				if(academicExperiences.get().get(0).getBeneficiary().getId() == beneficiaryId) {
-							for (AcademicExperience academicExperience : academicExperiences.get()) {
-								AcademicExperienceDTO academicExperienceDTO = new AcademicExperienceDTO(academicExperience);
-								academicExperiencesDTO.add(academicExperienceDTO);
-							}
-							return academicExperiencesDTO;
-						}else {
-							throw new UsernameNotFoundException("You don't have access!");
-						}
-		 			}
-				}else {
-					throw new UsernameNotFoundException("You don't have access!");
-				}
-			}
+		Optional<List<AcademicExperience>> academicExperiences = academicExperienceRepository.findAcademicExperienceByBeneficiaryId(beneficiaryId);
+  		
+  		Optional<Beneficiary> beneficiary = beneficiaryRepository.findById(beneficiaryId);
+  		
+  		List<AcademicExperienceDTO> academicExperiencesDTO = new ArrayList<>();
+  		
+  		if(ong != null) {
+  	  		if(beneficiary.isPresent()){
+  	  			if(academicExperiences.isPresent()) {
+  					if(beneficiary.get().getOng().equals(ong)) {
+  	  					for (AcademicExperience academicExperience : academicExperiences.get()) {
+  	  						AcademicExperienceDTO academicExperienceDTO = new AcademicExperienceDTO(academicExperience);
+							academicExperiencesDTO.add(academicExperienceDTO);
+  	  					}
+  					}else {
+  						throw new UsernameNotFoundException("This beneficiary does not belong to your ONG!");
+  					}
+  	  			}
+  	  		}else {
+  	  			throw new UsernameNotFoundException("The beneficiary with this ID doesn't exist!");
+  	  		}
   		}else {
-  			throw new OperationNotAllowedException("You must be a volunteer or an ONG to use this method.");
+  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
   		}
+  		
+  		return academicExperiencesDTO;	
 	}
 	
 	/*
@@ -246,57 +209,40 @@ public class AcademicExperienceServiceImpl implements AcademicExperienceService{
 			Long id, String token) throws OperationNotAllowedException {
 		
 		String username = jwtUtils.getUserNameFromJwtToken(token);
-		RolAccount rol = accountRepository.findByUsername(username).getRolAccount();
 		Ong ong = ongRepository.findByUsername(username);
-		
-		AcademicExperience acadExp = new AcademicExperience(academicExperienceDTO);
-		acadExp.setId(Long.valueOf(0));
-		List<Beneficiary> benfs = beneficiaryRepository.findAll();
-		List<Volunteer> voluns = volunteerRepository.findAll();
-		Beneficiary beneficiaryAux = new Beneficiary();
-		Volunteer volunteerAux = new Volunteer();
-		
-		for (Beneficiary ben: benfs) {
-			if(ben.getId() == id) {
-				beneficiaryAux=ben;
-				acadExp.setBeneficiary(ben);
-			}
-		}
-		
-		for (Volunteer vol: voluns) {
-			if(vol.getId() == id) {
-				volunteerAux=vol;
-				acadExp.setVolunteer(vol);
-			}
-		}
-
-		 if(ong!=null) {
-		        try {
-		        	if(volunteerAux.getId() != null) {
-		        		if(rol == RolAccount.ONG && volunteerAux.getOng().getId() == ong.getId()) {
-			        		logger.info("Academic Experience saved associated with id={}", id);
-			        		AcademicExperience academicExperienceSaved = academicExperienceRepository.save(acadExp);
-			                return new AcademicExperienceDTO(academicExperienceSaved);
-		        		}else {
-							throw new UsernameNotFoundException("You don't have access!");
-		        		}
-		        	}else if(beneficiaryAux.getId() != null) {
-		        		if(rol == RolAccount.ONG && beneficiaryAux.getOng().getId() == ong.getId()) {
-			        		logger.info("Academic Experience saved associated with id={}", id);
-			        		AcademicExperience academicExperienceSaved = academicExperienceRepository.save(acadExp);
-			                return new AcademicExperienceDTO(academicExperienceSaved);
-		        		}else {
-							throw new UsernameNotFoundException("You don't have access!");
-		        		}
-		        	}else {
-		        		throw new UsernameNotFoundException("The volunteer or beneficiary doesn't exist");
-		        	}
-		        } catch (Exception e) {
-		            throw new UsernameNotFoundException(e.getMessage());
-		        }
-		 }else {
-	  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
-		 }
+    	
+    	AcademicExperience academicExperience = new AcademicExperience(academicExperienceDTO);
+    	academicExperience.setId(Long.valueOf(0));
+    	
+        Optional<Beneficiary> beneficiary = beneficiaryRepository.findById(id);
+        Optional<Volunteer> volunteer = volunteerRepository.findById(id);
+        
+        if(ong!=null) {
+            if(beneficiary.isPresent()) {
+            	if(beneficiary.get().getOng().equals(ong)) {
+            		logger.info("Academic Experience saved associated with id={}", id);
+            		academicExperience.setBeneficiary(beneficiary.get());
+	        		AcademicExperience academicExperienceSaved = academicExperienceRepository.save(academicExperience);
+	                return new AcademicExperienceDTO(academicExperienceSaved);
+            	}else{
+            		throw new UsernameNotFoundException("You cannot edit information about a beneficiary who does not belong to your ONG!");
+            	}
+            	
+            }else if(volunteer.isPresent()) {
+            	if(volunteer.get().getOng().equals(ong)) {
+            		academicExperience.setVolunteer(volunteer.get());
+            		logger.info("Academic Experience saved associated with id={}", id);
+            		AcademicExperience academicExperienceSaved = academicExperienceRepository.save(academicExperience);
+	                return new AcademicExperienceDTO(academicExperienceSaved);
+            	}else{
+            		throw new UsernameNotFoundException("You cannot edit information about a volunteer who does not belong to your ONG!");
+            	}
+            }else {
+            	throw new UsernameNotFoundException("The volunteer or beneficiary doesn't exist");
+            }
+        }else {
+        	throw new OperationNotAllowedException("You must be an ONG to use this method.");
+        }
 	}
 	
 	/*

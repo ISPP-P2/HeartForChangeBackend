@@ -18,10 +18,12 @@ import com.ispp.heartforchange.entity.Attendance;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.Person;
+import com.ispp.heartforchange.entity.PetitionState;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Task;
 import com.ispp.heartforchange.entity.TaskType;
 import com.ispp.heartforchange.entity.Volunteer;
+import com.ispp.heartforchange.repository.AttendanceRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.PersonRepository;
@@ -40,6 +42,7 @@ public class TaskServiceImpl implements TaskService {
 	private PersonRepository personRepository;
 	private VolunteerRepository volunteerRepository;
 	private BeneficiaryRepository beneficiaryRepository;
+	private AttendanceRepository attendanceRepository;
 	private JwtUtils jwtUtils;
 
 	/*
@@ -47,13 +50,14 @@ public class TaskServiceImpl implements TaskService {
 	 */
 	public TaskServiceImpl(TaskRepository volunteerRepository, ONGRepository ongRepository, JwtUtils jwtUtils,
 			PersonRepository personRepository, VolunteerRepository volunterRepositor,
-			BeneficiaryRepository beneficiaryRepository) {
+			BeneficiaryRepository beneficiaryRepository, AttendanceRepository attendanceRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.taskRepository = volunteerRepository;
 		this.personRepository = personRepository;
 		this.volunteerRepository = volunterRepositor;
 		this.beneficiaryRepository = beneficiaryRepository;
+		this.attendanceRepository = attendanceRepository;
 		this.jwtUtils = jwtUtils;
 	}
 
@@ -574,9 +578,10 @@ public class TaskServiceImpl implements TaskService {
 		// Logged as ONG
 		if (ong != null) {
 			Optional<Task> optionalTask = taskRepository.findById(id);
+			List<Attendance> aceptedAttendances = attendanceRepository.findByTaskIdAndState(id, PetitionState.ACEPTADA);
 			// If the task you are searching for is part of your ONG
 			if (optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
-				for (Attendance attendance : optionalTask.get().getAttendance()) {
+				for (Attendance attendance : aceptedAttendances) {
 					VolunteerDTO volunteerDTO = new VolunteerDTO(
 							volunteerRepository.findById(attendance.getPerson().getId()).get(), attendance.getPerson());
 					attendances.add(volunteerDTO);
@@ -768,5 +773,30 @@ public class TaskServiceImpl implements TaskService {
 		}
 		logger.info("Trying to get the tasks from ONG with name={}", ong.getName());
 		return tasksDTO;
+	}
+
+	public List<VolunteerDTO> getPetitionsByTask(String token, Long id) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		List<VolunteerDTO> attendances = new ArrayList<>();
+		// Logged as ONG
+		if (ong != null) {
+			Optional<Task> optionalTask = taskRepository.findById(id);
+			List<Attendance> aceptedAttendances = attendanceRepository.findByTaskIdAndState(id, PetitionState.ESPERA);
+			// If the task you are searching for is part of your ONG
+			if (optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
+				for (Attendance attendance : aceptedAttendances) {
+					VolunteerDTO volunteerDTO = new VolunteerDTO(
+							volunteerRepository.findById(attendance.getPerson().getId()).get(), attendance.getPerson());
+					attendances.add(volunteerDTO);
+				}
+			} else {
+				throw new UsernameNotFoundException(
+						"You cannot get information about an ONG which you do not belong to.");
+			}
+		} else {
+			throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
+		}
+		return attendances;
 	}
 }
