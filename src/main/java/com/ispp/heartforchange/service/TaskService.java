@@ -50,6 +50,16 @@ public interface TaskService {
 
 	List<BeneficiaryDTO> getAllBeneficiariesByTask(String token, Long id);
 	
-	List<VolunteerDTO> getPetitionsByTask(String token, Long id);
+	List<AttendanceDTO> getPetitionsByTask(String token, Long id);
+
+	List<AttendanceDTO> getAttendancesByActivity(String token, Long id);
+
+	List<AttendanceDTO> getAllAttendancesByWorkshop(String token, Long id);
+
+	List<AttendanceDTO> getAllAttendancesByCourse(String token, Long id);
+
+	AttendanceDTO getPetitionStateByVolunteer(String token, Long id);
+
+	AttendanceDTO getPetitionStateByONG(String token, Long idPerson, Long idTask);
 
 }

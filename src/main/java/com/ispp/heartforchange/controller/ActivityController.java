@@ -227,7 +227,7 @@ public class ActivityController {
 	 */
 
 	
-	@GetMapping("/get/{id}/attendances") 
+	@GetMapping("/get/{id}/attendances/volunteer") 
 	public ResponseEntity<?> getAttendancesById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -317,7 +317,7 @@ public class ActivityController {
 	
 	
 	/*
-	 * Get Attendances of a Volunteer by Ong
+	 * Get petition of a task by Ong
 	 * 
 	 * @Param Long id
 	 * 
@@ -339,7 +339,7 @@ public class ActivityController {
 		}
 
 		try {
-			List<VolunteerDTO> attendances = taskService.getPetitionsByTask(jwt, id);
+			List<AttendanceDTO> attendances = taskService.getPetitionsByTask(jwt, id);
 			return ResponseEntity.ok(attendances);
 		}catch(IllegalArgumentException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -347,5 +347,85 @@ public class ActivityController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	/*
+	 * Get petition of a task by Ong
+	 * 
+	 * @Param Long id
+	 * 
+	 * @Return ResponseEntity
+	 */
+	
+	
+	@GetMapping("/get/{id}/attendances/list") 
+	public ResponseEntity<?> getAttendancesByTask(HttpServletRequest request, @PathVariable("id") Long id) {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			List<AttendanceDTO> attendances = taskService.getAttendancesByActivity(jwt, id);
+			return ResponseEntity.ok(attendances);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/get/{id}/petition/state/") 
+	public ResponseEntity<?> getStatePetitionByVolunteer(HttpServletRequest request, @PathVariable("id") Long id) {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			AttendanceDTO attendances = taskService.getPetitionStateByVolunteer(jwt, id);
+			return ResponseEntity.ok(attendances);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	@GetMapping("/get/{idPerson}/{idTask}/petition/state/") 
+	public ResponseEntity<?> getStatePetitionByONG(HttpServletRequest request, @PathVariable("idPerson") Long idPerson, @PathVariable("idTask") Long idTask) {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			AttendanceDTO attendances = taskService.getPetitionStateByONG(jwt, idPerson, idTask);
+			return ResponseEntity.ok(attendances);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+	
+	
 
 }
