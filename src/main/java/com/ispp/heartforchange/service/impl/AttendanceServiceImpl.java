@@ -1,6 +1,8 @@
 package com.ispp.heartforchange.service.impl;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -60,19 +62,20 @@ public class AttendanceServiceImpl implements AttendanceService{
 	@Override
 	public AttendanceDTO getAttendanceById(Long id, String token) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
-		Optional<Ong> ong = Optional.of(ongRepository.findByUsername(username));
-		Optional<Person> person = Optional.of(personRepository.findByUsername(username));
+		Ong ong = ongRepository.findByUsername(username);
+		Person person = personRepository.findByUsername(username);
 		Optional<Attendance> attendance = attendanceRepository.findById(id);
 
-		if (!attendance.isPresent()) {
+		if (attendance == null) {
 			throw new UsernameNotFoundException("Attendace not found!");
 		} else {
-			if (ong.isPresent() && attendance.get().getTask().getOng().getId() == ong.get().getId()) {
+			if (ong != null && attendance.get().getTask().getOng().getId() == ong.getId()) {
 				return new AttendanceDTO(attendance.get());
-			} else if(person.isPresent() && attendance.get().getPerson().getId() == person.get().getId()){
+			} else if(person != null && attendance.get().getPerson().getId() == person.getId()){
 				return new AttendanceDTO(attendance.get());
 			}else throw new UsernameNotFoundException("You don't have access!");
 		}
+		
 	}
 	
 	/*
@@ -314,6 +317,36 @@ public class AttendanceServiceImpl implements AttendanceService{
 		} else {
 			throw new UsernameNotFoundException("This attendance not exist!");
 		}
+	}
+
+	/*
+	 * Get all attendances by id task
+	 * @Param Long idTask
+	 * @Param String token
+	 * @Return List<AttendanceDTO>
+	 */
+
+	public List<AttendanceDTO> getAllAttendanceByIdTask(Long idTask, String token) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		Optional<Task> task = taskRepository.findById(idTask);
+
+		List<AttendanceDTO> attendancesDTO = new ArrayList<AttendanceDTO>();
+		if(task.isPresent()) {
+			if(ong==null) {
+				throw new UsernameNotFoundException("You must be an ONG to use this method!");
+			}
+			if(!task.get().getOng().equals(ong)){
+				throw new UsernameNotFoundException("You cannot get information about other ONGs!");
+			}
+			for(Attendance att: task.get().getAttendance()) {
+				AttendanceDTO attDTO = new AttendanceDTO(att);
+				attendancesDTO.add(attDTO);
+			}
+		}else {
+			throw new UsernameNotFoundException("Task not found!");
+		}
+		return attendancesDTO;
 	}
 	
 	

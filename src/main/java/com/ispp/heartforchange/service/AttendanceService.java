@@ -1,5 +1,7 @@
 package com.ispp.heartforchange.service;
 
+import java.util.List;
+
 import com.ispp.heartforchange.dto.AttendanceDTO;
 import com.ispp.heartforchange.entity.AttendanceType;
 
@@ -21,5 +23,7 @@ public interface AttendanceService {
 	void deleteBeneficiary(Long idTask, String token, Long idPerson);
 
 	AttendanceDTO getAttendanceById(Long id, String token);
+	
+	List<AttendanceDTO> getAllAttendanceByIdTask(Long idTask, String token);
 	
 }
