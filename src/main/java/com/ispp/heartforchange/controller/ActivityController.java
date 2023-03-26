@@ -87,7 +87,7 @@ public class ActivityController {
 	 */
 	
 	@PostMapping("/new")
-	public ResponseEntity<?> save(HttpServletRequest request, @Valid @RequestBody TaskDTO task){
+	public ResponseEntity<?> save(HttpServletRequest request, @RequestBody TaskDTO task){
 		String jwt = null;
 
 		String headerAuth = request.getHeader("Authorization");
@@ -134,7 +134,10 @@ public class ActivityController {
 			List<TaskDTO> tasks = taskService.getActivityByOng(jwt);
 			return ResponseEntity.ok(tasks);
 	}
-	
+
+
+
+
 	/*
 	 * Get all activity by ong and volunteer that are not finish
 	 * 
@@ -227,7 +230,30 @@ public class ActivityController {
 	 */
 
 	
-	@GetMapping("/get/{id}/attendances/volunteer") 
+	@GetMapping("/get/{id}/attendances/volunteer/accepted")
+	public ResponseEntity<?> getAttendancesByIdAccepted(HttpServletRequest request, @PathVariable("id") Long id) {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			List<VolunteerDTO> attendances = taskService.getAllVoluntariesByTaskAccepted(jwt, id);
+			return ResponseEntity.ok(attendances);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
+
+	@GetMapping("/get/{id}/attendances/volunteer")
 	public ResponseEntity<?> getAttendancesById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -249,7 +275,6 @@ public class ActivityController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
-	
 	
 	/*
 	 * Get Attendances of a Volunteer by himself

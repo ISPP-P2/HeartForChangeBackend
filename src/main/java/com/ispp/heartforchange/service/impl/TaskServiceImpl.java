@@ -276,6 +276,9 @@ public class TaskServiceImpl implements TaskService {
 	public TaskDTO saveActivity(String token, TaskDTO taskDTO) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
+
+
+
 		Task newTask = new Task(taskDTO, ong, TaskType.ACTIVIDAD);
 		newTask.setId(Long.valueOf(0));
 		logger.info("Starting to save Activity with name={}", newTask.getName());
@@ -570,8 +573,7 @@ public class TaskServiceImpl implements TaskService {
 	 * @Return List<VolunteerDTO>
 	 */
 
-	@Override
-	public List<VolunteerDTO> getAllVoluntariesByTask(String token, Long id) {
+	public List<VolunteerDTO> getAllVoluntariesByTaskAccepted(String token, Long id) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		List<VolunteerDTO> attendances = new ArrayList<>();
@@ -582,6 +584,32 @@ public class TaskServiceImpl implements TaskService {
 			// If the task you are searching for is part of your ONG
 			if (optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
 				for (Attendance attendance : aceptedAttendances) {
+					VolunteerDTO volunteerDTO = new VolunteerDTO(
+							volunteerRepository.findById(attendance.getPerson().getId()).get(), attendance.getPerson());
+					attendances.add(volunteerDTO);
+				}
+			} else {
+				throw new UsernameNotFoundException(
+						"You cannot get information about an ONG which you do not belong to.");
+			}
+		} else {
+			throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
+		}
+		return attendances;
+	}
+
+
+	public List<VolunteerDTO> getAllVoluntariesByTask(String token, Long id) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		List<VolunteerDTO> attendances = new ArrayList<>();
+		// Logged as ONG
+		if (ong != null) {
+			Optional<Task> optionalTask = taskRepository.findById(id);
+			List<Attendance> attendances1 = attendanceRepository.findByTaskId(id);
+			// If the task you are searching for is part of your ONG
+			if (optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
+				for (Attendance attendance : attendances1) {
 					VolunteerDTO volunteerDTO = new VolunteerDTO(
 							volunteerRepository.findById(attendance.getPerson().getId()).get(), attendance.getPerson());
 					attendances.add(volunteerDTO);
