@@ -709,18 +709,18 @@ public class TaskServiceImpl implements TaskService {
 	 */
 
 	@Override
-	public List<AttendanceDTO> getAllAttendancesVolunteerByVolunteer(String token) {
+	public List<TaskDTO> getAllAttendancesVolunteerByVolunteer(String token) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Volunteer loggedVolunteer = volunteerRepository.findByUsername(username);
-		List<AttendanceDTO> attendances = new ArrayList<>();
+		List<TaskDTO> tasks = new ArrayList<>();
 		if (loggedVolunteer != null) {
 			for (Attendance attendance : loggedVolunteer.getAttendance()) {
-				AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
-				attendances.add(attendanceDTO);
+				TaskDTO taskDTO = new TaskDTO(attendance.getTask());
+				tasks.add(taskDTO);
 			}
 		} else
 			throw new UsernameNotFoundException("You must be logged as ONG to make this operation.");
-		return attendances;
+		return tasks;
 	}
 
 	/*
@@ -903,11 +903,11 @@ public class TaskServiceImpl implements TaskService {
 	}
 
 	@Override
-	public AttendanceDTO getPetitionStateByVolunteer(String token, Long id) {
+	public AttendanceDTO getPetitionStateByVolunteer(String token, Long idTask) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Person person = personRepository.findByUsername(username);
 		if (person != null) {
-			Optional<Attendance> attendance = attendanceRepository.findByPersonId(id);
+			Optional<Attendance> attendance = attendanceRepository.findByPersonIdAndTaskId(idTask,person.getId());
 			if(attendance.isPresent()) {
 				return new AttendanceDTO(attendance.get());
 			}else throw new UsernameNotFoundException("You dont have attendance on this Activity!!");
@@ -920,9 +920,9 @@ public class TaskServiceImpl implements TaskService {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		if (ong != null) {
-			Optional<Attendance> attendance = attendanceRepository.findByPersonIdAndTaskId(idPerson, idTask);
+			Optional<Attendance> attendance = attendanceRepository.findByPersonIdAndTaskId(idTask, idPerson);
 			if(attendance.isPresent()) {
-				if(attendance.get().getTask().getOng().equals(ong)) {					
+				if(attendance.get().getTask().getOng().equals(ong)) {
 					return new AttendanceDTO(attendance.get());
 				}else throw new UsernameNotFoundException("You cannot get information about an ONG which you do not belong to.");
 			}else throw new UsernameNotFoundException("This voluntary doesnt have an attendance on this Activity!!");

@@ -298,7 +298,7 @@ public class ActivityController {
 		}
 
 		try {
-			List<AttendanceDTO> attendances = taskService.getAllAttendancesVolunteerByVolunteer(jwt);
+			List<TaskDTO> attendances = taskService.getAllAttendancesVolunteerByVolunteer(jwt);
 			return ResponseEntity.ok(attendances);
 		}catch(IllegalArgumentException e) {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);

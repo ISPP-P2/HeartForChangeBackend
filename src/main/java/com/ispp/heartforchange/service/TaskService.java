@@ -44,7 +44,7 @@ public interface TaskService {
 
 	List<TaskDTO> getCursoByOng(String token);
 
-	List<AttendanceDTO> getAllAttendancesVolunteerByVolunteer(String token);
+	List<TaskDTO> getAllAttendancesVolunteerByVolunteer(String token);
 
 	List<VolunteerDTO> getAllVoluntariesByTask(String token, Long id);
 
