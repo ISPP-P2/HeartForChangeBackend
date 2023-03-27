@@ -276,6 +276,9 @@ public class TaskServiceImpl implements TaskService {
 	public TaskDTO saveActivity(String token, TaskDTO taskDTO) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
+
+
+
 		Task newTask = new Task(taskDTO, ong, TaskType.ACTIVIDAD);
 		newTask.setId(Long.valueOf(0));
 		logger.info("Starting to save Activity with name={}", newTask.getName());
@@ -570,8 +573,7 @@ public class TaskServiceImpl implements TaskService {
 	 * @Return List<VolunteerDTO>
 	 */
 
-	@Override
-	public List<VolunteerDTO> getAllVoluntariesByTask(String token, Long id) {
+	public List<VolunteerDTO> getAllVoluntariesByTaskAccepted(String token, Long id) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		List<VolunteerDTO> attendances = new ArrayList<>();
@@ -582,6 +584,32 @@ public class TaskServiceImpl implements TaskService {
 			// If the task you are searching for is part of your ONG
 			if (optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
 				for (Attendance attendance : aceptedAttendances) {
+					VolunteerDTO volunteerDTO = new VolunteerDTO(
+							volunteerRepository.findById(attendance.getPerson().getId()).get(), attendance.getPerson());
+					attendances.add(volunteerDTO);
+				}
+			} else {
+				throw new UsernameNotFoundException(
+						"You cannot get information about an ONG which you do not belong to.");
+			}
+		} else {
+			throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
+		}
+		return attendances;
+	}
+
+
+	public List<VolunteerDTO> getAllVoluntariesByTask(String token, Long id) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		List<VolunteerDTO> attendances = new ArrayList<>();
+		// Logged as ONG
+		if (ong != null) {
+			Optional<Task> optionalTask = taskRepository.findById(id);
+			List<Attendance> attendances1 = attendanceRepository.findByTaskId(id);
+			// If the task you are searching for is part of your ONG
+			if (optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
+				for (Attendance attendance : attendances1) {
 					VolunteerDTO volunteerDTO = new VolunteerDTO(
 							volunteerRepository.findById(attendance.getPerson().getId()).get(), attendance.getPerson());
 					attendances.add(volunteerDTO);
@@ -681,18 +709,18 @@ public class TaskServiceImpl implements TaskService {
 	 */
 
 	@Override
-	public List<AttendanceDTO> getAllAttendancesVolunteerByVolunteer(String token) {
+	public List<TaskDTO> getAllAttendancesVolunteerByVolunteer(String token) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Volunteer loggedVolunteer = volunteerRepository.findByUsername(username);
-		List<AttendanceDTO> attendances = new ArrayList<>();
+		List<TaskDTO> tasks = new ArrayList<>();
 		if (loggedVolunteer != null) {
 			for (Attendance attendance : loggedVolunteer.getAttendance()) {
-				AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
-				attendances.add(attendanceDTO);
+				TaskDTO taskDTO = new TaskDTO(attendance.getTask());
+				tasks.add(taskDTO);
 			}
 		} else
 			throw new UsernameNotFoundException("You must be logged as ONG to make this operation.");
-		return attendances;
+		return tasks;
 	}
 
 	/*
@@ -764,8 +792,11 @@ public class TaskServiceImpl implements TaskService {
 			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
 		}
 
-		List<Task> tasks = taskRepository.findByOngAndDateAfterAndType(loggedOng, LocalDateTime.now(),
+		List<Task> tasks = taskRepository.findByOngAndDateAfterAndType(
+				ong,
+				LocalDateTime.now(),
 				TaskType.ACTIVIDAD);
+
 		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
 		for (Task task : tasks) {
 			TaskDTO tasktDTO = new TaskDTO(task);
@@ -775,20 +806,20 @@ public class TaskServiceImpl implements TaskService {
 		return tasksDTO;
 	}
 
-	public List<VolunteerDTO> getPetitionsByTask(String token, Long id) {
+	@Override
+	public List<AttendanceDTO> getPetitionsByTask(String token, Long id) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
-		List<VolunteerDTO> attendances = new ArrayList<>();
+		List<AttendanceDTO> attendances = new ArrayList<>();
 		// Logged as ONG
 		if (ong != null) {
 			Optional<Task> optionalTask = taskRepository.findById(id);
-			List<Attendance> aceptedAttendances = attendanceRepository.findByTaskIdAndState(id, PetitionState.ESPERA);
+			List<Attendance> waitingAttendances = attendanceRepository.findByTaskIdAndState(id, PetitionState.ESPERA);
 			// If the task you are searching for is part of your ONG
 			if (optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
-				for (Attendance attendance : aceptedAttendances) {
-					VolunteerDTO volunteerDTO = new VolunteerDTO(
-							volunteerRepository.findById(attendance.getPerson().getId()).get(), attendance.getPerson());
-					attendances.add(volunteerDTO);
+				for (Attendance attendance : waitingAttendances) {
+					AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
+					attendances.add(attendanceDTO);
 				}
 			} else {
 				throw new UsernameNotFoundException(
@@ -798,5 +829,112 @@ public class TaskServiceImpl implements TaskService {
 			throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
 		}
 		return attendances;
+	}
+
+	
+	@Override
+	public List<AttendanceDTO> getAttendancesByActivity(String token, Long id) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		List<AttendanceDTO> attendances = new ArrayList<>();
+		// Logged as ONG
+		if (ong != null) {
+			Optional<Task> optionalTask = taskRepository.findById(id);
+			List<Attendance> aceptedAttendances = attendanceRepository.findByTaskIdAndState(id, PetitionState.ACEPTADA);
+			// If the task you are searching for is part of your ONG
+			if (optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
+				for (Attendance attendance : aceptedAttendances) {
+					AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
+					attendances.add(attendanceDTO);
+				}
+			} else {
+				throw new UsernameNotFoundException(
+						"You cannot get information about an ONG which you do not belong to.");
+			}
+		} else {
+			throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
+		}
+		return attendances;
+	}
+
+	@Override
+	public List<AttendanceDTO> getAllAttendancesByWorkshop(String token, Long id) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		List<AttendanceDTO> attendances = new ArrayList<>();
+		// Logged as ONG
+		if (ong != null) {
+			Optional<Task> optionalTask = taskRepository.findById(id);
+			// If the task you are searching for is part of your ONG
+			if (optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
+				for (Attendance attendance : optionalTask.get().getAttendance()) {
+					AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
+					attendances.add(attendanceDTO);
+				}
+			} else {
+				throw new UsernameNotFoundException(
+						"You cannot get information about an ONG which you do not belong to.");
+			}
+		} else {
+			throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
+		}
+		return attendances;
+	}
+	
+	@Override
+	public List<AttendanceDTO> getAllAttendancesByCourse(String token, Long id) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		List<AttendanceDTO> attendances = new ArrayList<>();
+		// Logged as ONG
+		if (ong != null) {
+			Optional<Task> optionalTask = taskRepository.findById(id);
+			// If the task you are searching for is part of your ONG
+			if (optionalTask.isPresent() && ong.getTasks().contains(optionalTask.get())) {
+				for (Attendance attendance : optionalTask.get().getAttendance()) {
+					AttendanceDTO attendanceDTO = new AttendanceDTO(attendance);
+					attendances.add(attendanceDTO);
+				}
+			} else {
+				throw new UsernameNotFoundException(
+						"You cannot get information about an ONG which you do not belong to.");
+			}
+		} else {
+			throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
+		}
+		return attendances;
+	}
+
+	@Override
+	public AttendanceDTO getPetitionStateByVolunteer(String token, Long idTask) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Person person = personRepository.findByUsername(username);
+		if (person != null) {
+			Optional<Attendance> attendance = attendanceRepository.findByPersonIdAndTaskId(idTask,person.getId());
+			if(attendance.isPresent()) {
+				return new AttendanceDTO(attendance.get());
+			}else {
+				return new AttendanceDTO(
+						PetitionState.NO_SOLICITADA,
+						person.getId(),
+						idTask
+				);
+			}
+		}else throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
+	}
+	
+	
+	@Override
+	public AttendanceDTO getPetitionStateByONG(String token, Long idPerson, Long idTask) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		if (ong != null) {
+			Optional<Attendance> attendance = attendanceRepository.findByPersonIdAndTaskId(idTask, idPerson);
+			if(attendance.isPresent()) {
+				if(attendance.get().getTask().getOng().equals(ong)) {
+					return new AttendanceDTO(attendance.get());
+				}else throw new UsernameNotFoundException("You cannot get information about an ONG which you do not belong to.");
+			}else throw new UsernameNotFoundException("This voluntary doesnt have an attendance on this Activity!!");
+		}else throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
 	}
 }

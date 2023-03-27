@@ -69,6 +69,10 @@ public class TaskDTO implements Serializable{
 	private String place;
 	
 	
+	@JsonProperty("ongId")
+	@NotNull
+	private Long ongId;
+	
 	public TaskDTO(Task task) {
 		this.id = task.getId();
 		this.name = task.getName();
@@ -81,6 +85,7 @@ public class TaskDTO implements Serializable{
 		this.numParticipants = task.getNumParticipants();
 		this.type = task.getType();
 		this.place = task.getPlace();
+		this.ongId = task.getOng().getId();
 	}
 	
 
@@ -88,7 +93,7 @@ public class TaskDTO implements Serializable{
 
 	public TaskDTO(Long id, @NotNull @NotBlank @Size(max = 32) String name, 	@NotNull LocalDateTime date, @NotNull String teacher,
 			@NotNull Boolean certificate, @Length(max = 256) String observations, @Length(max = 256) String incidences,
-			@NotNull String coordinator, Integer numParticipants, TaskType taskType, @NotNull String place) {
+			@NotNull String coordinator, Integer numParticipants, TaskType taskType, @NotNull String place, @NotNull Long ongId) {
 		
 		this.id = id;
 		this.name = name;
@@ -101,5 +106,6 @@ public class TaskDTO implements Serializable{
 		this.numParticipants = numParticipants;
 		this.type = taskType;
 		this.place = place;
+		this.ongId = ongId;
 	}
 }
