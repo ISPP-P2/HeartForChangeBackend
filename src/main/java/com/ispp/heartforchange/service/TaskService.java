@@ -44,12 +44,22 @@ public interface TaskService {
 
 	List<TaskDTO> getCursoByOng(String token);
 
-	List<AttendanceDTO> getAllAttendancesVolunteerByVolunteer(String token);
+	List<TaskDTO> getAllAttendancesVolunteerByVolunteer(String token);
 
 	List<VolunteerDTO> getAllVoluntariesByTask(String token, Long id);
 
 	List<BeneficiaryDTO> getAllBeneficiariesByTask(String token, Long id);
 	
-	List<VolunteerDTO> getPetitionsByTask(String token, Long id);
+	List<AttendanceDTO> getPetitionsByTask(String token, Long id);
+
+	List<AttendanceDTO> getAttendancesByActivity(String token, Long id);
+
+	List<AttendanceDTO> getAllAttendancesByWorkshop(String token, Long id);
+
+	List<AttendanceDTO> getAllAttendancesByCourse(String token, Long id);
+
+	AttendanceDTO getPetitionStateByVolunteer(String token, Long id);
+
+	AttendanceDTO getPetitionStateByONG(String token, Long idPerson, Long idTask);
 
 }
