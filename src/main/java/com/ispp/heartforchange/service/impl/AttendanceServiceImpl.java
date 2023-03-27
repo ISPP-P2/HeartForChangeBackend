@@ -300,7 +300,20 @@ public class AttendanceServiceImpl implements AttendanceService{
 	 * @Param Long idPerson
 	 * @Param String token
 	 */
-	
+	public void deleteAttendanceByVolunteer(Long idTask, String token) {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Person person = personRepository.findByUsername(username);
+
+		Optional<Attendance> attendance = attendanceRepository.findByPersonIdAndTaskId(idTask, person.getId());
+		if(attendance.isEmpty()){
+			throw new UsernameNotFoundException("This attendance not exist!");
+		}
+		if (attendance.get().getTask().getOng().getId() != person.getOng().getId()) {
+			throw new UsernameNotFoundException("Error deleting attendance");
+		}
+		attendanceRepository.delete(attendance.get());
+
+	}
 	@Override
 	public void deleteBeneficiary(Long idTask, String token, Long idPerson) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);

@@ -46,7 +46,12 @@ public class AttendanceDTO implements Serializable{
 	private Long taskId;
 
 	
-	
+	public AttendanceDTO(PetitionState state, Long personId,Long taskId){
+		this.state = state;
+		this.personId = personId;
+		this.taskId = taskId;
+	}
+
 	public AttendanceDTO(Attendance attendance) {
 		this.id = attendance.getId();
 		this.state = attendance.getState();

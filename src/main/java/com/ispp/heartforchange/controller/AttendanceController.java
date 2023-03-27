@@ -280,6 +280,23 @@ public class AttendanceController {
 		attendanceService.deleteBeneficiary(idTask, jwt, idPerson);
 		return ResponseEntity.ok("Attendance Deleted");
 	}
+
+	@PostMapping("/quit/activity/{idTask}")
+	public ResponseEntity<?> deleteAttendanceByAttendance(HttpServletRequest request,
+											   @PathVariable("idTask") Long idTask) {
+		String jwt = null;
+		String headerAuth = request.getHeader("Authorization");
+		System.out.println("hola");
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
+		}
+		System.out.println("hola");
+		attendanceService.deleteAttendanceByVolunteer(idTask, jwt);
+		return ResponseEntity.ok("Attendance Deleted");
+	}
 	
 	
 	

@@ -792,8 +792,11 @@ public class TaskServiceImpl implements TaskService {
 			throw new UsernameNotFoundException("You cannot get information about an ONG which is not yours.");
 		}
 
-		List<Task> tasks = taskRepository.findByOngAndDateAfterAndType(loggedOng, LocalDateTime.now(),
+		List<Task> tasks = taskRepository.findByOngAndDateAfterAndType(
+				ong,
+				LocalDateTime.now(),
 				TaskType.ACTIVIDAD);
+
 		List<TaskDTO> tasksDTO = new ArrayList<TaskDTO>();
 		for (Task task : tasks) {
 			TaskDTO tasktDTO = new TaskDTO(task);
@@ -910,7 +913,13 @@ public class TaskServiceImpl implements TaskService {
 			Optional<Attendance> attendance = attendanceRepository.findByPersonIdAndTaskId(idTask,person.getId());
 			if(attendance.isPresent()) {
 				return new AttendanceDTO(attendance.get());
-			}else throw new UsernameNotFoundException("You dont have attendance on this Activity!!");
+			}else {
+				return new AttendanceDTO(
+						PetitionState.NO_SOLICITADA,
+						person.getId(),
+						idTask
+				);
+			}
 		}else throw new UsernameNotFoundException("You must be logged as an ONG to make this operation.");
 	}
 	
