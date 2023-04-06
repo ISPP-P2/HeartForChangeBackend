@@ -1,6 +1,8 @@
 package com.ispp.heartforchange.dto;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,6 +39,9 @@ public class AttendanceDTO implements Serializable{
 	@NotNull
 	private PetitionState state;
 	
+	@JsonProperty("date")
+	private LocalDate date;
+	
 	@JsonProperty("personId")
 	@NotNull
 	private Long personId;
@@ -58,5 +63,6 @@ public class AttendanceDTO implements Serializable{
 		this.type = attendance.getType();
 		this.personId = attendance.getPerson().getId();
 		this.taskId = attendance.getTask().getId();
+		this.date = attendance.getDate();
 	}
 }

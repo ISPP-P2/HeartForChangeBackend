@@ -2,6 +2,7 @@ package com.ispp.heartforchange.entity;
 
 
 import java.io.Serializable;
+import java.time.LocalDate;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -12,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -44,6 +47,10 @@ public class Attendance implements Serializable {
 	private Task task;
 	
 	@NotNull
+	@DateTimeFormat
+	private LocalDate date;
+	
+	@NotNull
 	private PetitionState state;
 
 	public Attendance(@NotNull Person person, @NotNull Task task) {
@@ -51,6 +58,7 @@ public class Attendance implements Serializable {
 		this.state = PetitionState.ESPERA;
 		this.person = person;
 		this.task = task;
+		this.date = LocalDate.now();
 	}
 	
 	public Attendance(@NotNull Person person, @NotNull Task task, @NotNull PetitionState state) {
@@ -58,6 +66,7 @@ public class Attendance implements Serializable {
 		this.state = state;
 		this.person = person;
 		this.task = task;
+		this.date = LocalDate.now();
 	}
 	
 }
