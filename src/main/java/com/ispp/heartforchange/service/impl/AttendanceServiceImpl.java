@@ -259,12 +259,9 @@ public class AttendanceServiceImpl implements AttendanceService{
 	}
 	
 	/*
-	 * Add beneficiary for attendance by a ONG.
-	 * @Param Long idTask
-	 * @Param Long idPerson
-	 * @Param String token
-	 * @Return AttendanceDTO
+	 * Auxiliary method to create an accepted atendance
 	 */
+	
 	public AttendanceDTO createAcceptedAttendance(Person person, Task task) {
 		Attendance attendance = new Attendance(person, task, PetitionState.ACEPTADA);
 		attendance.setId(Long.valueOf(0));
@@ -276,6 +273,14 @@ public class AttendanceServiceImpl implements AttendanceService{
 			throw new UsernameNotFoundException(e.getMessage());
 		}
 	}
+	
+	/*
+	 * Add Person for attendance by a ONG.
+	 * @Param Long idTask
+	 * @Param Long idPerson
+	 * @Param String token
+	 * @Return AttendanceDTO
+	 */
 	
 	@Override
 	public AttendanceDTO addPerson(Long idTask, String token, Long idPerson) {
