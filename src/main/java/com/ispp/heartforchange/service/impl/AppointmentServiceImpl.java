@@ -122,38 +122,32 @@ public class AppointmentServiceImpl implements AppointmentService {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<List<Appointment>> appointments = appointmentRepository.findAppointmentsByBeneficiaryId(beneficiaryId);
-		
-		List<Beneficiary> auxBeneficiaries = beneficiaryRepository.findAll();
- 		boolean exception = true;
- 		for(Beneficiary b: auxBeneficiaries) {
- 			if (b.getId() == beneficiaryId){
- 				exception = false;
- 			}
- 		}
-
- 		if(exception==true) {
- 			throw new UsernameNotFoundException("Not Found: The Beneficiary with this ID doesn't exist!");
- 		}
+		Optional<Beneficiary> beneficiary = beneficiaryRepository.findById(beneficiaryId);
 		
  		if(ong!=null) {
-			List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
-			if (!appointments.isPresent()) {
-				throw new UsernameNotFoundException("Not Found: Appointments not exist for the beneficiary!");
-			} else {
-				if(appointments.get().size() == 0) {
-					throw new UsernameNotFoundException("This beneficiary has not appointments!");
-				}else {
-					if(appointments.get().get(0).getBeneficiary().getOng().getId() == ong.getId()) {
-						for (Appointment appointment : appointments.get()) {
-							AppointmentDTO appointmentDTO = new AppointmentDTO(appointment);
-							appointmentsDTO.add(appointmentDTO);
-						}
-						return appointmentsDTO;
-					}else {
-						throw new UsernameNotFoundException("You don't have access!");
-					}
-				}
-			}
+ 			if(beneficiary.isPresent()) {
+ 				List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
+ 				if (!appointments.isPresent()) {
+ 					throw new UsernameNotFoundException("Not Found: Appointments not exist for the beneficiary!");
+ 				} else {
+ 					if(appointments.get().size() == 0) {
+ 						throw new UsernameNotFoundException("This beneficiary has not appointments!");
+ 					}else {
+ 						if(appointments.get().get(0).getBeneficiary().getOng().getId() == ong.getId()) {
+ 							for (Appointment appointment : appointments.get()) {
+ 								AppointmentDTO appointmentDTO = new AppointmentDTO(appointment);
+ 								appointmentsDTO.add(appointmentDTO);
+ 							}
+ 							return appointmentsDTO;
+ 						}else {
+ 							throw new UsernameNotFoundException("You don't have access!");
+ 						}
+ 					}
+ 				}
+ 			}else {
+ 				throw new UsernameNotFoundException("Not Found: The Beneficiary with this ID doesn't exist!");
+ 			}
+			
  		}else{
  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
 		}
@@ -174,26 +168,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     	
     	Appointment appointment = new Appointment(appointmentDTO);
     	appointment.setId(Long.valueOf(0));
-        List<Beneficiary> beneficiaries = beneficiaryRepository.findAll();
-        Beneficiary beneficiaryAux = new Beneficiary();
-        boolean exception = true;
-        for (Beneficiary beneficiary: beneficiaries) {
-            if(beneficiary.getId() == beneficiaryId) {
-            	beneficiaryAux = beneficiary;
-            	appointment.setBeneficiary(beneficiary);
-            	exception = false;
-            }
-        }
-        
-        if(exception==true) {
- 			throw new UsernameNotFoundException("Not Found: The beneficiary with this ID doesn't exist!");
-
- 		}
+        Optional<Beneficiary> beneficiary = beneficiaryRepository.findById(beneficiaryId);
 
         if(ong!=null) {
 	        try {
-	        	if(beneficiaryAux.getId() != null) {
-	        		if(beneficiaryAux.getOng().getId() == ong.getId()) {
+	        	if(beneficiary.isPresent()) {
+	        		if(beneficiary.get().getOng().getId() == ong.getId()) {
+	        			appointment.setBeneficiary(beneficiary.get());
 	        			logger.info("Appointment saved associated with beneficiay id={}", beneficiaryId);
 		        		Appointment appointmentSaved = appointmentRepository.save(appointment);
 		                return new AppointmentDTO(appointmentSaved);
@@ -201,8 +182,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 	        			throw new UsernameNotFoundException("You don't have access!");
 	        		}
 	        	}else {
-	        		throw new UsernameNotFoundException("Not Found: The beneficiary with this ID doesn't exist");
-	        	}
+		        	throw new UsernameNotFoundException("Not Found: The beneficiary with this ID doesn't exist");
+		        }
 	        } catch (Exception e) {
 	            throw new UsernameNotFoundException(e.getMessage());
 	        }
