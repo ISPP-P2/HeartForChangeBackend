@@ -24,5 +24,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long>{
 	Optional<Attendance> findByPersonId(Long id);
 
 	List<Attendance> findByTaskId(Long id);
+	
+	List<Attendance> findAllByPersonId(Long id);
 
 }

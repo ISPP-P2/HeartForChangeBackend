@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
 import com.ispp.heartforchange.entity.Appointment;
+import com.ispp.heartforchange.entity.Attendance;
 import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.Account;
 import com.ispp.heartforchange.entity.Beneficiary;
@@ -21,6 +22,7 @@ import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.AppointmentRepository;
+import com.ispp.heartforchange.repository.AttendanceRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
@@ -40,12 +42,13 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	private WorkExperienceRepository workExperienceRepository;	
 	private AcademicExperienceRepository academicExperienceRepository;
 	private ComplementaryFormationRepository complementaryFormationRepository;
+	private AttendanceRepository attendanceRepository;
 	private PasswordEncoder encoder;
 	
 
 	public BeneficiaryServiceImpl(BeneficiaryRepository beneficiaryRepository,ONGRepository ongRepository, PasswordEncoder encoder, 
 		  ComplementaryFormationRepository complementaryFormationRepository, WorkExperienceRepository workExperienceRepository, AccountRepository accountRepository, 
-		  AcademicExperienceRepository academicExperienceRepository,AppointmentRepository appointmentRepository) {
+		  AcademicExperienceRepository academicExperienceRepository,AppointmentRepository appointmentRepository, AttendanceRepository attendanceRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.beneficiaryRepository = beneficiaryRepository;
@@ -55,6 +58,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		this.academicExperienceRepository = academicExperienceRepository;
 		this.appointmentRepository = appointmentRepository;
 		this.accountRepository = accountRepository;
+		this.attendanceRepository = attendanceRepository;
 	}
 	
   
@@ -388,7 +392,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		List<Appointment> appointments = appointmentRepository.findAppointmentsByBeneficiaryId(beneficiaryToDelete.getId()).get();
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByBeneficiaryId(beneficiaryToDelete.getId()).get();
 		List<ComplementaryFormation> complementaryFormationList = complementaryFormationRepository.findComplementaryFormationByBeneficiary(beneficiaryToDelete.getId()).get();
-
+		List<Attendance> attendances = attendanceRepository.findAllByPersonId(beneficiaryToDelete.getId());
         
     try {
 	    	for(Appointment a : appointments) {
@@ -396,6 +400,9 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	    	}
 			for(AcademicExperience a: acadExps) {
 				academicExperienceRepository.delete(a);
+			}
+			for(Attendance a : attendances) {
+				attendanceRepository.delete(a);
 			}
 			for(WorkExperience w : workExperiencesList) {
 				workExperienceRepository.delete(w);
