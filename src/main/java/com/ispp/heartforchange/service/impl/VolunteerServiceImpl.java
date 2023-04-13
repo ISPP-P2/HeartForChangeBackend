@@ -12,6 +12,7 @@ import com.ispp.heartforchange.dto.UpdatePasswordDTO;
 import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.Account;
+import com.ispp.heartforchange.entity.Attendance;
 import com.ispp.heartforchange.entity.ComplementaryFormation;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
@@ -19,6 +20,7 @@ import com.ispp.heartforchange.entity.Volunteer;
 import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.repository.AccountRepository;
+import com.ispp.heartforchange.repository.AttendanceRepository;
 import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.VolunteerRepository;
@@ -40,6 +42,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 	private WorkExperienceRepository workExperienceRepository;
 	private AccountRepository accountRepository;
 	private JwtUtils jwtUtils;
+	private AttendanceRepository attendanceRepository;
 	
 
 	
@@ -48,7 +51,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 	 */
 	public VolunteerServiceImpl(VolunteerRepository volunteerRepository, PasswordEncoder encoder,	WorkExperienceRepository workExperienceRepository, 
   ComplementaryFormationRepository complementaryFormationRepository, ONGRepository ongRepository, AcademicExperienceRepository academicExperienceRepository, AccountRepository accountRepository,
-  JwtUtils jwtUtils) {
+  JwtUtils jwtUtils, AttendanceRepository attendanceRepository) {
 		super();
 		this.ongRepository = ongRepository;
 		this.volunteerRepository = volunteerRepository;
@@ -59,6 +62,7 @@ public class VolunteerServiceImpl implements VolunteerService{
 		this.academicExperienceRepository = academicExperienceRepository;
 		this.accountRepository = accountRepository;
 		this.jwtUtils = jwtUtils;
+		this.attendanceRepository = attendanceRepository;
 	}
   
 	
@@ -298,8 +302,9 @@ public class VolunteerServiceImpl implements VolunteerService{
 
 		List<WorkExperience> workExperiencesList = workExperienceRepository.findWorkExperienceByVolunteerId(volunteerToDelete.getId()).get();
 		List<ComplementaryFormation> complementaryFormations = complementaryFormationRepository.findComplementaryFormationByVolunteer(volunteerToDelete.getId()).get();
-
+		List<Attendance> attendance = attendanceRepository.findAllByPersonId(volunteerToDelete.getId());
 		try {
+			
 			for(AcademicExperience a: academicExps) {
 				academicExperienceRepository.delete(a);
 			}
@@ -314,6 +319,9 @@ public class VolunteerServiceImpl implements VolunteerService{
       
 		    for(ComplementaryFormation c : complementaryFormations) {
 				complementaryFormationRepository.delete(c);
+		    }
+		    for(Attendance a : attendance) { 
+			    attendanceRepository.delete(a);
 		    }
 			volunteerRepository.delete(volunteerToDelete);
 		
