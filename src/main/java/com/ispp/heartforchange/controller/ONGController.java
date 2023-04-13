@@ -55,7 +55,7 @@ public class ONGController {
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/get")
-	public ResponseEntity<?> getOngById(HttpServletRequest request) throws OperationNotAllowedException {
+	public ResponseEntity<?> getOng(HttpServletRequest request) throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -91,7 +91,7 @@ public class ONGController {
 			logger.info("ONG saved with username={}", ongSaved.getUsername());
 			return ResponseEntity.ok(ongSaved);
 		}catch(IllegalArgumentException e) {
-			return new ResponseEntity<String>("That account already exists: "+e.toString(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<String>("This account already exists or any field is wrong: "+e.toString(), HttpStatus.BAD_REQUEST);
 		}catch(Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}

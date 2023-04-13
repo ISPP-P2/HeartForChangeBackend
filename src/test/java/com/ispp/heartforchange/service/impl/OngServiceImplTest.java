@@ -35,8 +35,6 @@ import com.ispp.heartforchange.security.jwt.JwtUtils;
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class OngServiceImplTest {
 	
-	//private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
-	
 	@InjectMocks
 	private OngServiceImpl ongServiceImpl;
 	
