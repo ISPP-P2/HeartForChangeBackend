@@ -1,10 +1,9 @@
 package com.ispp.heartforchange.service.impl;
 
-import java.util.List;
+import java.util.List; 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -141,23 +140,18 @@ public class OngServiceImpl implements OngService{
 			//Get all the volunteers that belong to the Ong to delete
 			List<Volunteer> volunteerList = volunteerRepository.findVolunteersByOng(loggedOng.getUsername());
 			List<Beneficiary> beneficiariesONG = beneficiaryRepository.findBeneficiariesByOng(loggedOng.getUsername());
-			List<Appointment> appointments = appointmentRepository.findAppointmentsByOngId(loggedOng.getId()).get();
-			try {
-				for( Beneficiary b : beneficiariesONG) {
-					beneficiaryRepository.delete(b);
-				}
-				for(Volunteer volunteer: volunteerList) {
-					accountRepository.deleteById(volunteer.getId());
-	            }
-				for( Appointment a : appointments) {
-					appointmentRepository.delete(a); 
-				}
-				logger.info("Deleting ONG with id={}", loggedOng.getId());
-				ongRepository.delete(loggedOng);	
-			} catch (Exception e) {
-				throw new UsernameNotFoundException(e.getMessage());
-
-			} 
+			List<Appointment> appointments = appointmentRepository.findByOng(loggedOng);
+			for( Beneficiary b : beneficiariesONG) {
+				beneficiaryRepository.delete(b);
+			}
+			for(Volunteer volunteer: volunteerList) {
+				accountRepository.deleteById(volunteer.getId());
+            }
+			for( Appointment a : appointments) {
+				appointmentRepository.delete(a); 
+			}
+			logger.info("Deleting ONG with id={}", loggedOng.getId());
+			ongRepository.delete(loggedOng);	
 		} else {
 			throw new OperationNotAllowedException("You must be logged as ONG to use this method.");
 		}
