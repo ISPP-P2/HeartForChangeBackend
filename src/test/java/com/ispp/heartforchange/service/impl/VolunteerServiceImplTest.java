@@ -10,22 +10,17 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.ispp.heartforchange.dto.OngDTO;
 import com.ispp.heartforchange.dto.PersonDTO;
-import com.ispp.heartforchange.dto.SigninRequestDTO;
 import com.ispp.heartforchange.dto.SigninResponseDTO;
 import com.ispp.heartforchange.dto.UpdatePasswordDTO;
 import com.ispp.heartforchange.dto.VolunteerDTO;
@@ -33,12 +28,14 @@ import com.ispp.heartforchange.entity.AcademicExperience;
 import com.ispp.heartforchange.entity.Account;
 import com.ispp.heartforchange.entity.Attendance;
 import com.ispp.heartforchange.entity.CivilStatus;
+import com.ispp.heartforchange.entity.ComplementaryFormation;
 import com.ispp.heartforchange.entity.DocumentType;
 import com.ispp.heartforchange.entity.Gender;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.Person;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Volunteer;
+import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.repository.AccountRepository;
@@ -47,9 +44,7 @@ import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.VolunteerRepository;
 import com.ispp.heartforchange.repository.WorkExperienceRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
-import com.ispp.heartforchange.service.VolunteerService;
 
-import io.jsonwebtoken.lang.Arrays;
 
 @DataJpaTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -109,7 +104,7 @@ public class VolunteerServiceImplTest {
 		return ong;
 	}
 	
-	/*@Test
+	@Test
 	public void testInsertVolunteer() throws OperationNotAllowedException {
 		Ong ong = createOng();
 		Person person = new Person(Long.valueOf(0), LocalDate.of(2010, 03, 12), "Garcia", "Rodriguez", "Mario", DocumentType.DNI, "78675456P", Gender.MALE, LocalDate.of(2001, 03, 12), CivilStatus.DIVORCED, 0, "Prado", "12893", "Calera", "Sevilla", "698745670", LocalDate.of(2012, 03, 12), "B", "Ninguna", ong, new ArrayList<Attendance>());
@@ -151,7 +146,7 @@ public class VolunteerServiceImplTest {
 		when(volunteerRepository.findAll()).thenReturn(new ArrayList<>());
 		people = volunteerService.getVolunteersByOng("test");
 		assertTrue(people.isEmpty());
-	}*/
+	}
 	
 
 	
@@ -179,8 +174,53 @@ public class VolunteerServiceImplTest {
 		assertNotNull(volunteerDTO);
 	}
 	
+	@Test
+	public void getVolunteerByIdWithoutPermissionTest() throws OperationNotAllowedException {
+		Ong ong = createOng();
+		Person person = new Person(Long.valueOf(0), LocalDate.of(2010, 03, 12), "Garcia", "Rodriguez", "Mario", DocumentType.DNI, "78675456P", Gender.MALE, LocalDate.of(2001, 03, 12), CivilStatus.DIVORCED, 0, "Prado", "12893", "Calera", "Sevilla", "698745670", LocalDate.of(2012, 03, 12), "B", "Ninguna", ong, new ArrayList<Attendance>());
+		PersonDTO personDto = new PersonDTO(person);
+		Volunteer volunteer = new Volunteer(personDto, "10:00 y 11:00", false);
+		volunteer.setEmail("mario@hotmail.com");
+		volunteer.setUsername("mario2");
+		volunteer.setPassword("asdasd");
+		volunteer.setRolAccount(RolAccount.VOLUNTEER);
+		String token = "tokenprueba";
+		volunteer.setOng(ong);
+		ong.setRolAccount(RolAccount.BENEFICIARY);
+		
+		Account account = new Account(ong.getId(), ong.getEmail(), ong.getUsername(), ong.getPassword(), ong.getRolAccount());
+		when(jwtUtils.getUserNameFromJwtToken(token)).thenReturn("test");
+		when(ongRepository.findByUsername("test")).thenReturn(ong);
+		when(accountRepository.findByUsername("test")).thenReturn(account);
+		when(volunteerRepository.findById(Long.valueOf(1))).thenReturn(Optional.of(volunteer));
+		
 	
-	/*@Test
+		assertThrows(UsernameNotFoundException.class,() -> volunteerService.getVolunteerById(Long.valueOf(0), "test"));
+
+	}
+	
+    @Test()
+    public void testGetVolunteerByIdPermissionDenied() throws OperationNotAllowedException {
+    	Ong ong = createOng();
+		Person person = new Person(Long.valueOf(0), LocalDate.of(2010, 03, 12), "Garcia", "Rodriguez", "Mario", DocumentType.DNI, "78675456P", Gender.MALE, LocalDate.of(2001, 03, 12), CivilStatus.DIVORCED, 0, "Prado", "12893", "Calera", "Sevilla", "698745670", LocalDate.of(2012, 03, 12), "B", "Ninguna", ong, new ArrayList<Attendance>());
+		PersonDTO personDto = new PersonDTO(person);
+		Volunteer volunteer = new Volunteer(personDto, "10:00 y 11:00", false);
+		volunteer.setEmail("mario@hotmail.com");
+		volunteer.setUsername("mario2");
+		volunteer.setPassword("asdasd");
+		volunteer.setRolAccount(RolAccount.VOLUNTEER);
+        
+		Account account = new Account(volunteer.getId(), volunteer.getEmail(), volunteer.getUsername(), volunteer.getPassword(), volunteer.getRolAccount());
+
+		
+        when(volunteerRepository.findById(volunteer.getId())).thenReturn(Optional.of(volunteer));
+        when(accountRepository.findByUsername(volunteer.getUsername())).thenReturn(account);
+        Mockito.when(volunteerRepository.findByUsername(volunteer.getUsername())).thenReturn(new Volunteer());
+        
+		assertThrows(UsernameNotFoundException.class,() -> volunteerService.getVolunteerById(volunteer.getId(), volunteer.getUsername()));
+    }
+	
+	@Test
 	public void updateVolunteerTest() throws OperationNotAllowedException{
 		Ong ong = createOng();
 		Person person = new Person(Long.valueOf(0), LocalDate.of(2010, 03, 12), "Garcia", "Rodriguez", "Mario", DocumentType.DNI, "78675456P", Gender.MALE, LocalDate.of(2001, 03, 12), CivilStatus.DIVORCED, 0, "Prado", "12893", "Calera", "Sevilla", "698745670", LocalDate.of(2012, 03, 12), "B", "Ninguna", ong, new ArrayList<Attendance>());
@@ -323,79 +363,30 @@ public class VolunteerServiceImplTest {
 		when(accountRepository.findByUsername("test")).thenReturn(account);
 
 		assertThrows(UsernameNotFoundException.class,() -> volunteerService.updateVolunteer(Long.valueOf(1), volunteerDTO, "test"));
-	}*/
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*@Test
+	@Test
 	public void deleteVolunteerTest() throws OperationNotAllowedException {
 		Ong ong = createOng();
+        Account account = new Account(ong.getId(), ong.getEmail(), ong.getUsername(), ong.getPassword(), ong.getRolAccount());
 		Person person = new Person(Long.valueOf(0), LocalDate.of(2010, 03, 12), "Garcia", "Rodriguez", "Mario", DocumentType.DNI, "78675456P", Gender.MALE, LocalDate.of(2001, 03, 12), CivilStatus.DIVORCED, 0, "Prado", "12893", "Calera", "Sevilla", "698745670", LocalDate.of(2012, 03, 12), "B", "Ninguna", ong, new ArrayList<Attendance>());
 		PersonDTO personDto = new PersonDTO(person);
 		Volunteer volunteer = new Volunteer(personDto, "10:00 y 11:00", false);
-		volunteer.setEmail("mario@hotmail.com");
-		volunteer.setUsername("mario2");
-		volunteer.setPassword("asdasd");
-		volunteer.setRolAccount(RolAccount.VOLUNTEER);
-		Account account = new Account(ong.getId(), ong.getEmail(), ong.getUsername(), ong.getPassword(), ong.getRolAccount());
-		String token = "tokenprueba";
-		
-		when(jwtUtils.getUserNameFromJwtToken(token)).thenReturn("test");
-		when(ongRepository.findByUsername("test")).thenReturn(ong);
-		when(accountRepository.findByUsername("test")).thenReturn(account);
-		when(volunteerRepository.findById(Long.valueOf(1))).thenReturn(Optional.of(volunteer));
-		
-		volunteerService.deleteVolunteer(Long.valueOf(1), "test");
-	}*/
-	
-	/*@Test
-	public void deleteVolunteerTest() throws OperationNotAllowedException {
-		Ong ong = createOng();
-		Person person = new Person(Long.valueOf(0), LocalDate.of(2010, 03, 12), "Garcia", "Rodriguez", "Mario", DocumentType.DNI, "78675456P", Gender.MALE, LocalDate.of(2001, 03, 12), CivilStatus.DIVORCED, 0, "Prado", "12893", "Calera", "Sevilla", "698745670", LocalDate.of(2012, 03, 12), "B", "Ninguna", ong, new ArrayList<Attendance>());
-		PersonDTO personDto = new PersonDTO(person);
-		Volunteer volunteer = new Volunteer(personDto, "10:00 y 11:00", false);
-		volunteer.setEmail("mario@hotmail.com");
-		volunteer.setUsername("mario2");
-		volunteer.setPassword("asdasd");
-		volunteer.setRolAccount(RolAccount.VOLUNTEER);
-		Account account = new Account(ong.getId(), ong.getEmail(), ong.getUsername(), ong.getPassword(), ong.getRolAccount());
-		String token = "tokenprueba";
 		volunteer.setOng(ong);
 		
 		AcademicExperience ae = new AcademicExperience(Long.valueOf(0), "Degree 1", 2010, 2014, "Universidad", null, volunteer);
-		ae.setVolunteer(volunteer);
+		WorkExperience we = new WorkExperience(Long.valueOf(1), "Trabajo", "10:30", "Sevilla", "Ninguna", volunteer, null);
+		ComplementaryFormation cf = new ComplementaryFormation(Long.valueOf(1), "Nombre", "Organiacion", LocalDate.of(2012, 01, 01), "Sevilla", null, volunteer);
 		
-		when(jwtUtils.getUserNameFromJwtToken(token)).thenReturn("test");
-		when(ongRepository.findByUsername("test")).thenReturn(ong);
+		when(academicExperienceRepository.findAcademicExperienceByVolunteerId(Long.valueOf(1))).thenReturn(Optional.of(java.util.Arrays.asList(ae)));
+		when(workExperienceRepository.findWorkExperienceByVolunteerId(Long.valueOf(1))).thenReturn(Optional.of(java.util.Arrays.asList(we)));
+		when(complementaryFormationRepository.findComplementaryFormationByVolunteer(Long.valueOf(1))).thenReturn(Optional.of(java.util.Arrays.asList(cf)));
 		when(accountRepository.findByUsername("test")).thenReturn(account);
-		when(accountRepository.findByUsername("mario2")).thenReturn(new Account(volunteer.getId(), volunteer.getEmail(), volunteer.getUsername(), volunteer.getPassword(), volunteer.getRolAccount()));
+		when(ongRepository.findByUsername("test")).thenReturn(ong);
 		when(volunteerRepository.findById(Long.valueOf(1))).thenReturn(Optional.of(volunteer));
-		when(academicExperienceRepository.findAcademicExperienceByVolunteerId(volunteer.getId())).thenReturn(Optional.of(java.util.Arrays.asList(ae)));
-		when(workExperienceRepository.findWorkExperienceByVolunteerId(volunteer.getId())).thenReturn(Optional.of(new ArrayList<>()));
-		when(complementaryFormationRepository.findComplementaryFormationByVolunteer(volunteer.getId())).thenReturn(Optional.of(new ArrayList<>()));
-		when(volunteerRepository.findById(Long.valueOf(1))).thenReturn(Optional.of(volunteer));
+		when(volunteerRepository.findByUsername("test")).thenReturn(volunteer);
 		
 		volunteerService.deleteVolunteer(Long.valueOf(1), "test");
-	}*/
+	}
 	
 }
