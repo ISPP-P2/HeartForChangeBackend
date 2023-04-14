@@ -117,6 +117,51 @@ public class AppointmentServiceImpl implements AppointmentService {
 		}	
 	}
 
+	
+	/*
+	 * Get beneficiary by appointment by id
+	 * @Params Long id
+	 * @Params String token
+	 * @Return AppointmentDTO
+	 */
+	@Override
+	public BeneficiaryDTO getBeneficiaryByAppointmentId(Long id, String token) throws OperationNotAllowedException {
+		String username = jwtUtils.getUserNameFromJwtToken(token);
+		Ong ong = ongRepository.findByUsername(username);
+		Optional<Appointment> appointment = appointmentRepository.findById(id);
+
+		if(ong!=null) {
+			if (!appointment.isPresent()) {
+				throw new UsernameNotFoundException("Not Found: Appointment not exist!");
+			} else {
+				if(appointment.get().getBeneficiary().getOng().getId() == ong.getId()) {
+					Beneficiary beneficiary = appointment.get().getBeneficiary();
+					return new BeneficiaryDTO(beneficiary, 
+							beneficiary.getId(), 
+							beneficiary.getNationality(), 
+							beneficiary.isDoubleNationality(), 
+							beneficiary.getArrivedDate(), 
+							beneficiary.isEuropeanCitizenAuthorization(), 
+							beneficiary.isTouristVisa(), 
+							beneficiary.getDateTouristVisa(), 
+							beneficiary.isHealthCard(), 
+							beneficiary.getEmploymentSector(), 
+							beneficiary.getPerceptionAid(), 
+							beneficiary.isSavingsPossesion(),
+							beneficiary.isSaeInscription(),
+							beneficiary.isWorking(), 
+							beneficiary.isComputerKnowledge(),
+							beneficiary.getOwnedDevices(), 
+							beneficiary.getLanguages());
+				}else {
+					throw new UsernameNotFoundException("You don't have access!");
+				}
+			}
+		}else{
+ 			throw new OperationNotAllowedException("You must be an ONG to use this method.");
+		}	
+	}
+	
 	/*
 	 * Get appointments by ong
 	 * @Params Long ongId
@@ -300,5 +345,5 @@ public class AppointmentServiceImpl implements AppointmentService {
  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
 		}
 	}
-	
+  
 }
