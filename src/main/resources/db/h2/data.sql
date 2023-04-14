@@ -1,2 +1,0 @@
--- ONG
-INSERT INTO pettypes
