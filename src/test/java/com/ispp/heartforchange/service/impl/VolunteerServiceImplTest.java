@@ -39,6 +39,7 @@ import com.ispp.heartforchange.entity.WorkExperience;
 import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.repository.AccountRepository;
+import com.ispp.heartforchange.repository.AttendanceRepository;
 import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.VolunteerRepository;
@@ -72,6 +73,10 @@ public class VolunteerServiceImplTest {
 	
 	@Mock
 	private AcademicExperienceRepository academicExperienceRepository;
+	
+
+	@Mock
+	private AttendanceRepository attendanceRepository;
 	
 	@Mock
 	private WorkExperienceRepository workExperienceRepository;
@@ -377,7 +382,7 @@ public class VolunteerServiceImplTest {
 		AcademicExperience ae = new AcademicExperience(Long.valueOf(0), "Degree 1", 2010, 2014, "Universidad", null, volunteer);
 		WorkExperience we = new WorkExperience(Long.valueOf(1), "Trabajo", "10:30", "Sevilla", "Ninguna", volunteer, null);
 		ComplementaryFormation cf = new ComplementaryFormation(Long.valueOf(1), "Nombre", "Organiacion", LocalDate.of(2012, 01, 01), "Sevilla", null, volunteer);
-		
+		Attendance a = new Attendance();
 		when(academicExperienceRepository.findAcademicExperienceByVolunteerId(Long.valueOf(1))).thenReturn(Optional.of(java.util.Arrays.asList(ae)));
 		when(workExperienceRepository.findWorkExperienceByVolunteerId(Long.valueOf(1))).thenReturn(Optional.of(java.util.Arrays.asList(we)));
 		when(complementaryFormationRepository.findComplementaryFormationByVolunteer(Long.valueOf(1))).thenReturn(Optional.of(java.util.Arrays.asList(cf)));
@@ -385,7 +390,7 @@ public class VolunteerServiceImplTest {
 		when(ongRepository.findByUsername("test")).thenReturn(ong);
 		when(volunteerRepository.findById(Long.valueOf(1))).thenReturn(Optional.of(volunteer));
 		when(volunteerRepository.findByUsername("test")).thenReturn(volunteer);
-		
+		when(attendanceRepository.findByPersonId(Long.valueOf(0))).thenReturn(Optional.of(a));
 		volunteerService.deleteVolunteer(Long.valueOf(1), "test");
 	}
 	
