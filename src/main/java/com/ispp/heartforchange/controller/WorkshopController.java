@@ -52,7 +52,7 @@ public class WorkshopController {
 	 * @Return ResponseEntity
 	 */
 
-	@GetMapping("/get/{id}") // REVISAR
+	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getTaskById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -273,5 +273,27 @@ public class WorkshopController {
 			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	@GetMapping("/beneficiary/get/{id}/attendances")
+	public ResponseEntity<?> getAttendancesByPersonId(HttpServletRequest request, @PathVariable("id") Long id ) {
+		String jwt = null;
 
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			List<AttendanceDTO> attendances = taskService.getAllAttendancesByBeneficiary(jwt, id);
+			return ResponseEntity.ok(attendances);
+		}catch(IllegalArgumentException e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
+	}
 }
