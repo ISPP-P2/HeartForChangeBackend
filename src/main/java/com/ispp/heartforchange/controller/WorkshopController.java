@@ -52,7 +52,7 @@ public class WorkshopController {
 	 * @Return ResponseEntity
 	 */
 
-	@GetMapping("/get/{id}") // REVISAR
+	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getTaskById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
