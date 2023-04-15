@@ -238,7 +238,7 @@ public class AtivityControllerTest {
 		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
 
 		ResponseEntity<?> res = activityController.deleteGrant(1L, request);
-		assertEquals(res, ResponseEntity.ok("Activity deleted"));
+		assertEquals(res, ResponseEntity.ok("Task deleted"));
 	}
 	
 	@Test
@@ -338,6 +338,34 @@ public class AtivityControllerTest {
 	}
 	
 	@Test
+	public void getAttendacesByPersonIdOng2Test() throws OperationNotAllowedException {
+
+		List<TaskDTO> lista = new ArrayList<TaskDTO>();
+		
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(true);
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
+		when(taskService.getAllAttendancesVolunteerByVolunteer("oken")).thenReturn(lista);
+
+		ResponseEntity<?> res = activityController.getAttendancesByPersonId(request, 1L);
+		assertEquals(res, ResponseEntity.ok(lista));
+	}
+	
+	@Test
+	public void getAttendacesByPersonIdOng2NegativeTest() throws OperationNotAllowedException {
+
+		List<TaskDTO> lista = new ArrayList<TaskDTO>();
+		
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(false);
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
+		when(taskService.getAllAttendancesVolunteerByVolunteer("oken")).thenReturn(lista);
+
+		ResponseEntity<?> res = activityController.getAttendancesByPersonId(request, 1L);
+		assertEquals(res.getStatusCode(), HttpStatus.BAD_REQUEST);
+	}
+	
+	@Test
 	public void getAttendacesByPersonIdOngTest() throws OperationNotAllowedException {
 
 		List<TaskDTO> lista = new ArrayList<TaskDTO>();
@@ -347,7 +375,7 @@ public class AtivityControllerTest {
 		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
 		when(taskService.getAllAttendancesVolunteerByVolunteer("oken")).thenReturn(lista);
 
-		ResponseEntity<?> res = activityController.getAttendancesByPersonIdOng(request, 1L);
+		ResponseEntity<?> res = activityController.getAttendancesById(request, 1L);
 		assertEquals(res, ResponseEntity.ok(lista));
 	}
 	
@@ -361,7 +389,7 @@ public class AtivityControllerTest {
 		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
 		when(taskService.getAllAttendancesVolunteerByVolunteer("oken")).thenReturn(lista);
 
-		ResponseEntity<?> res = activityController.getAttendancesByPersonIdOng(request, 1L);
+		ResponseEntity<?> res = activityController.getAttendancesById(request, 1L);
 		assertEquals(res.getStatusCode(), HttpStatus.BAD_REQUEST);
 	}
 	

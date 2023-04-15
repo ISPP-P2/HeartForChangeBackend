@@ -52,7 +52,7 @@ public class CourseController {
 	 * @Return ResponseEntity
 	 */
 
-	@GetMapping("/get/{id}") // REVISAR
+	@GetMapping("/get/{id}")
 	public ResponseEntity<?> getTaskById(HttpServletRequest request, @PathVariable("id") Long id) {
 		String jwt = null;
 
@@ -84,7 +84,7 @@ public class CourseController {
 	 */
 
 	@PostMapping("/new")
-	public ResponseEntity<?> save(HttpServletRequest request, @Valid @RequestBody TaskDTO task) {
+	public ResponseEntity<?> save(HttpServletRequest request,  @RequestBody TaskDTO task) {
 		String jwt = null;
 
 		String headerAuth = request.getHeader("Authorization");

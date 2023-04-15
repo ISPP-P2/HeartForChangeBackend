@@ -305,6 +305,7 @@ public class TaskServiceImpl implements TaskService {
 	public TaskDTO saveCurso(String token, TaskDTO taskDTO) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
+		
 		Task newTask = new Task(taskDTO, ong, TaskType.CURSO);
 		newTask.setId(Long.valueOf(0));
 		logger.info("Starting to save Curso with name={}", newTask.getName());
