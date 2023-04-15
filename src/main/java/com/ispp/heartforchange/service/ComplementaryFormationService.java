@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ispp.heartforchange.dto.ComplementaryFormationDTO;
-import com.ispp.heartforchange.expections.OperationNotAllowedException;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 
 
 @Service
