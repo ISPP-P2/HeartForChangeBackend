@@ -22,7 +22,9 @@ import com.ispp.heartforchange.dto.BeneficiaryDTO;
 import com.ispp.heartforchange.dto.PersonDTO;
 import com.ispp.heartforchange.dto.TaskDTO;
 import com.ispp.heartforchange.dto.VolunteerDTO;
+import com.ispp.heartforchange.entity.Account;
 import com.ispp.heartforchange.entity.Attendance;
+import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.CivilStatus;
 import com.ispp.heartforchange.entity.DocumentType;
 import com.ispp.heartforchange.entity.Gender;
@@ -35,6 +37,7 @@ import com.ispp.heartforchange.entity.TaskType;
 import com.ispp.heartforchange.entity.Volunteer;
 import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.AttendanceRepository;
+import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.PersonRepository;
 import com.ispp.heartforchange.repository.TaskRepository;
@@ -68,6 +71,9 @@ public class TaskServiceImplTest {
 	
 	@Mock
 	VolunteerRepository volunteerRepository;
+	
+	@Mock
+	BeneficiaryRepository beneficiaryRepository;
 	
 	@Mock
 	AttendanceRepository attendanceRepository;
@@ -503,16 +509,19 @@ public class TaskServiceImplTest {
 		Ong ong = createOng();
 		Task task = createTask(TaskType.CURSO);
 		task.setOng(ong);
-		Volunteer volunteer = createVolunteer();
-		volunteer.setOng(ong);
-		volunteer.setRolAccount(RolAccount.VOLUNTEER);
-		volunteer.setAttendance(new ArrayList<Attendance>());
+		Account account = new Account(ong.getId(), ong.getEmail(), ong.getUsername(), ong.getPassword(), ong.getRolAccount());
+		Person person = new Person(Long.valueOf(0), LocalDate.of(2010, 03, 12), "Garcia", "Rodriguez", "Mario", DocumentType.DNI, "78675456P", Gender.MALE, LocalDate.of(2001, 03, 12), CivilStatus.DIVORCED, 0, "Prado", "12893", "Calera", "Sevilla", "698745670", LocalDate.of(2012, 03, 12), "B", "Ninguna", ong, new ArrayList<Attendance>());	    
+		PersonDTO personDto = new PersonDTO(person);
+		Beneficiary beneficiary = new Beneficiary(personDto, "España", true, LocalDate.of(2001, 1, 1),true , true,LocalDate.of(2001, 1, 1) , true, "Trabajador", "Hola", true, true, true, true, "Prueba", "Prueba");
+		BeneficiaryDTO beneficiaryDto = new BeneficiaryDTO(person, Long.valueOf(0), "España", true, LocalDate.of(2001, 1, 1),true , true,LocalDate.of(2001, 1, 1) , true, "Trabajador", "Hola", true, true, true, true, "Prueba", "Prueba");
+		beneficiary.setOng(ong);
+		beneficiary.setAttendance(new ArrayList<Attendance>());
 		
 		ong.setTasks(List.of(task));
 		String token = "tokenprueba";
 		when(jwtUtils.getUserNameFromJwtToken(token)).thenReturn("test");
 		when(ongRepository.findByUsername("test")).thenReturn(ong);
-		when(volunteerRepository.findByUsername("test")).thenReturn(volunteer);
+		when(beneficiaryRepository.findById(1L)).thenReturn(Optional.of(beneficiary));
 		when(taskRepository.findById(Long.valueOf(1))).thenReturn(Optional.of(task));
 		
 		List<AttendanceDTO> res = taskService.getAllAttendancesByBeneficiary(token, Long.valueOf(1));
