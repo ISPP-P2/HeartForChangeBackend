@@ -21,6 +21,7 @@ import org.hibernate.validator.constraints.Length;
 
 import com.ispp.heartforchange.dto.TaskDTO;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -29,6 +30,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "task")
 public class Task implements Serializable {
 	
