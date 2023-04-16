@@ -1,7 +1,6 @@
 package com.ispp.heartforchange.repository;
 
 
-import com.ispp.heartforchange.dto.AttendanceDTO;
 import org.springframework.stereotype.Repository;
 
 import com.ispp.heartforchange.entity.Ong;

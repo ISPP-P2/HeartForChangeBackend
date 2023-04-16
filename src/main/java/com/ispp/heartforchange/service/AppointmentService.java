@@ -20,4 +20,8 @@ public interface AppointmentService {
 	AppointmentDTO updateAppointment(String token, AppointmentDTO appointmentDTO, Long appointmentId) throws OperationNotAllowedException;
 
 	void deleteAppointment(Long id, String token) throws OperationNotAllowedException;
+
+
+	BeneficiaryDTO getBeneficiaryByAppointmentId(Long id, String token) throws OperationNotAllowedException;
+
 }
