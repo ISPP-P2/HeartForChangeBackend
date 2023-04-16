@@ -228,7 +228,7 @@ public class AttendanceController {
 	
 	
 	/*
-	 * Add beneficiary to Attendance by a ONG.
+	 * Add person to Attendance by a ONG.
 	 * 
 	 * @Param HttpServletRequest
 	 * @Param Long idTask
@@ -250,12 +250,12 @@ public class AttendanceController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		AttendanceDTO attendanceDTO = attendanceService.addBeneficiary(idTask, jwt, idPerson);
+		AttendanceDTO attendanceDTO = attendanceService.addPerson(idTask, jwt, idPerson);
 		return ResponseEntity.ok(attendanceDTO);
 	}
 	
 	/*
-	 * Delete beneficiary from Attendance by a ONG.
+	 * Delete person from Attendance by a ONG.
 	 * 
 	 * @Param HttpServletRequest
 	 * @Param Long idTask
@@ -277,7 +277,7 @@ public class AttendanceController {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
 		
-		attendanceService.deleteBeneficiary(idTask, jwt, idPerson);
+		attendanceService.deletePerson(idTask, jwt, idPerson);
 		return ResponseEntity.ok("Attendance Deleted");
 	}
 
