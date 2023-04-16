@@ -81,7 +81,12 @@ public class OngServiceImpl implements OngService{
 	 * @Return OngDTO
 	 */
 	@Override
-	public OngDTO saveOng(OngDTO ongDTO) throws OperationNotAllowedException {
+	public OngDTO saveOng( OngDTO ongDTO,String jwt) throws OperationNotAllowedException {
+		String username = jwtUtils.getUserNameFromJwtToken(jwt);
+		System.out.println(username);
+		if( ! username.equals("admin")) {
+			throw new UsernameNotFoundException("You don't have permision");
+		}
 		Ong ong = new Ong(ongDTO);
 		ong.setId(Long.valueOf(0));
 		ong.setRolAccount(RolAccount.ONG);

@@ -43,6 +43,7 @@ public class OngDTO extends AccountDTO {
 	@Size(max = 250)
 	@JsonProperty("description")
 	private String description;
+
 	
 	public OngDTO( Ong ong ) {
 		super(ong.getUsername(), ong.getEmail(), ong.getPassword(),ong.getRolAccount());
