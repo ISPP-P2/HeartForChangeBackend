@@ -73,10 +73,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 		}	
 	}
 	
-	
-
-	
-	
 	/*
 	 * Get appointments by ong
 	 * @Params Long ongId
