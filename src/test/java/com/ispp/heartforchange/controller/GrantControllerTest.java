@@ -13,6 +13,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.ispp.heartforchange.dto.GrantDTO;
@@ -50,6 +51,34 @@ public class GrantControllerTest {
 	}
 	
 	@Test
+	public void testInsertNeg() throws OperationNotAllowedException {
+		Grant grant = new Grant(Long.valueOf(0), true, true, GrantState.REFORMULATION, "justification", 200., null);
+		GrantDTO grantDTO = new GrantDTO(grant);
+
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(true);
+		when(grantService.saveGrant(grantDTO, "oken")).thenReturn(grantDTO);
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn(null);
+
+		ResponseEntity<?> res = grantController.saveGrant(grantDTO, request);
+		assertEquals(res, new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
+	}
+	
+	@Test
+	public void testInsertNeg2() throws OperationNotAllowedException {
+		Grant grant = new Grant(Long.valueOf(0), true, true, GrantState.REFORMULATION, "justification", 200., null);
+		GrantDTO grantDTO = new GrantDTO(grant);
+
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(false);
+		when(grantService.saveGrant(grantDTO, "oken")).thenReturn(grantDTO);
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
+
+		ResponseEntity<?> res = grantController.saveGrant(grantDTO, request);
+		assertEquals(res, new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
+	}
+	
+	@Test
 	public void updateTest() throws OperationNotAllowedException {
 		Grant grant = new Grant(Long.valueOf(0), true, true, GrantState.REFORMULATION, "justification", 200., null);
 		GrantDTO grantDTO = new GrantDTO(grant);
@@ -61,6 +90,34 @@ public class GrantControllerTest {
 
 		ResponseEntity<?> res = grantController.updateGrant(grantDTO, request, Long.valueOf(1));
 		assertEquals(res, ResponseEntity.ok(grantDTO));
+	}
+	
+	@Test
+	public void updateTestNeg() throws OperationNotAllowedException {
+		Grant grant = new Grant(Long.valueOf(0), true, true, GrantState.REFORMULATION, "justification", 200., null);
+		GrantDTO grantDTO = new GrantDTO(grant);
+
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(true);
+		when(grantService.updateGrant("oken", grantDTO, Long.valueOf(1))).thenReturn(grantDTO);
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn(null);
+
+		ResponseEntity<?> res = grantController.updateGrant(grantDTO, request, Long.valueOf(1));
+		assertEquals(res,  new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
+	}
+	
+	@Test
+	public void updateTestNeg2() throws OperationNotAllowedException {
+		Grant grant = new Grant(Long.valueOf(0), true, true, GrantState.REFORMULATION, "justification", 200., null);
+		GrantDTO grantDTO = new GrantDTO(grant);
+
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(false);
+		when(grantService.updateGrant("oken", grantDTO, Long.valueOf(1))).thenReturn(grantDTO);
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
+
+		ResponseEntity<?> res = grantController.updateGrant(grantDTO, request, Long.valueOf(1));
+		assertEquals(res,  new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
 	}
 
 	@Test
@@ -80,6 +137,38 @@ public class GrantControllerTest {
 	}
 	
 	@Test
+	public void getGrantsByOngTestNeg() throws OperationNotAllowedException {
+		Grant grant = new Grant(Long.valueOf(0), true, true, GrantState.REFORMULATION, "justification", 200., null);
+		GrantDTO grantDTO = new GrantDTO(grant);
+		List<GrantDTO> grants = List.of(grantDTO);
+
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn(null);
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(true);
+		when(grantService.getGrantsByOng("oken")).thenReturn(grants);
+
+		ResponseEntity<?> res = grantController.getGrantsByOng(request);
+
+		assertEquals(res, new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
+	}
+	
+	@Test
+	public void getGrantsByOngTestNeg2() throws OperationNotAllowedException {
+		Grant grant = new Grant(Long.valueOf(0), true, true, GrantState.REFORMULATION, "justification", 200., null);
+		GrantDTO grantDTO = new GrantDTO(grant);
+		List<GrantDTO> grants = List.of(grantDTO);
+
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(false);
+		when(grantService.getGrantsByOng("oken")).thenReturn(grants);
+
+		ResponseEntity<?> res = grantController.getGrantsByOng(request);
+
+		assertEquals(res, new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
+	}
+	
+	@Test
 	public void getTotalAmountAcceptedGrantsByOngTest() throws OperationNotAllowedException {
 
 		HttpServletRequest request = mock(HttpServletRequest.class);
@@ -90,6 +179,32 @@ public class GrantControllerTest {
 		ResponseEntity<?> res = grantController.getTotalAmountAcceptedGrantsByOng(request);
 
 		assertEquals(res, ResponseEntity.ok(200.));
+	}
+	
+	@Test
+	public void getTotalAmountAcceptedGrantsByOngTestNeg() throws OperationNotAllowedException {
+
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn(null);
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(true);
+		when(grantService.getTotalAmountAcceptedGrantsByOng("oken")).thenReturn(200.);
+
+		ResponseEntity<?> res = grantController.getTotalAmountAcceptedGrantsByOng(request);
+
+		assertEquals(res, new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
+	}
+	
+	@Test
+	public void getTotalAmountAcceptedGrantsByOngTestNeg2() throws OperationNotAllowedException {
+
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(false);
+		when(grantService.getTotalAmountAcceptedGrantsByOng("oken")).thenReturn(200.);
+
+		ResponseEntity<?> res = grantController.getTotalAmountAcceptedGrantsByOng(request);
+
+		assertEquals(res, new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
 	}
 
 	@Test
@@ -108,6 +223,36 @@ public class GrantControllerTest {
 	}
 	
 	@Test
+	public void getGrantsByIdTestNeg() throws OperationNotAllowedException {
+		Grant grant = new Grant(Long.valueOf(0), true, true, GrantState.REFORMULATION, "justification", 200., null);
+		GrantDTO grantDTO = new GrantDTO(grant);
+
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn(null);
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(true);
+		when(grantService.getGrantById(Long.valueOf(1), "oken")).thenReturn(grantDTO);
+
+		ResponseEntity<?> res = grantController.getGrantById(request, Long.valueOf(1));
+
+		assertEquals(res, new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
+	}
+	
+	@Test
+	public void getGrantsByIdTestNeg2() throws OperationNotAllowedException {
+		Grant grant = new Grant(Long.valueOf(0), true, true, GrantState.REFORMULATION, "justification", 200., null);
+		GrantDTO grantDTO = new GrantDTO(grant);
+
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(false);
+		when(grantService.getGrantById(Long.valueOf(1), "oken")).thenReturn(grantDTO);
+
+		ResponseEntity<?> res = grantController.getGrantById(request, Long.valueOf(1));
+
+		assertEquals(res, new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
+	}
+	
+	@Test
 	public void deleteGrantTest() throws OperationNotAllowedException {
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
@@ -116,5 +261,27 @@ public class GrantControllerTest {
 		ResponseEntity<?> res = grantController.deleteGrant( Long.valueOf(1), request);
 
 		assertEquals(res, ResponseEntity.ok("Grant deleted"));
+	}
+	
+	@Test
+	public void deleteGrantTestNeg() throws OperationNotAllowedException {
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn(null);
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(true);
+
+		ResponseEntity<?> res = grantController.deleteGrant( Long.valueOf(1), request);
+
+		assertEquals(res, new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
+	}
+	
+	@Test
+	public void deleteGrantTestNeg2() throws OperationNotAllowedException {
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
+		when(jwtUtils.validateJwtToken("oken")).thenReturn(false);
+
+		ResponseEntity<?> res = grantController.deleteGrant( Long.valueOf(1), request);
+
+		assertEquals(res, new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST));
 	}
 }

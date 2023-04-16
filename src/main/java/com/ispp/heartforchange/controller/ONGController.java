@@ -85,9 +85,19 @@ public class ONGController {
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/signup")
-	public ResponseEntity<?> saveOng(@Valid @RequestBody OngDTO ong) throws OperationNotAllowedException {
+	public ResponseEntity<?> saveOng(HttpServletRequest request,@Valid @RequestBody OngDTO ong) throws OperationNotAllowedException {
+		String jwt = null;
+
+		String headerAuth = request.getHeader("Authorization");
+
+		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
+			jwt = headerAuth.substring(7, headerAuth.length());
+		}
+		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
+			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
+		}
 		try {
-			OngDTO ongSaved = ongServiceImpl.saveOng(ong);
+			OngDTO ongSaved = ongServiceImpl.saveOng(ong, jwt);
 			logger.info("ONG saved with username={}", ongSaved.getUsername());
 			return ResponseEntity.ok(ongSaved);
 		}catch(IllegalArgumentException e) {
