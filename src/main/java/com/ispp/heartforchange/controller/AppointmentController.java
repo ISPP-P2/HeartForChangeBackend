@@ -106,9 +106,6 @@ public class AppointmentController {
 		
 	}
 	
-
-	
-	
 	/*
      * Get all appointments by ong
      * 
