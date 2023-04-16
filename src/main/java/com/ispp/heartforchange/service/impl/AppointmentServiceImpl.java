@@ -73,6 +73,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 		}	
 	}
 
+	
 	/*
 	 * Get beneficiary by appointment by id
 	 * @Params Long id
@@ -174,7 +175,7 @@ public class AppointmentServiceImpl implements AppointmentService {
  					throw new UsernameNotFoundException("Not Found: Appointments not exist for the beneficiary!");
  				} else {
  					if(appointments.get().size() == 0) {
- 						return appointmentsDTO;
+ 						throw new UsernameNotFoundException("This beneficiary has not appointments!");
  					}else {
  						if(appointments.get().get(0).getBeneficiary().getOng().getId() == ong.getId()) {
  							for (Appointment appointment : appointments.get()) {
