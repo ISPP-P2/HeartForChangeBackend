@@ -38,6 +38,7 @@ import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.AppointmentRepository;
+import com.ispp.heartforchange.repository.AttendanceRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ComplementaryFormationRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
@@ -62,6 +63,9 @@ public class BeneficiaryServiceImplTest {
 	AcademicExperienceRepository academicExperienceRepository;
 	
 	@Mock
+	AttendanceRepository attendanceRepository;
+	
+	@Mock
 	WorkExperienceRepository workExperienceRepository;
 	
 	@Mock
@@ -75,6 +79,7 @@ public class BeneficiaryServiceImplTest {
 	
 	@Mock
 	AccountRepository accountRepository;
+	
 	
 	@Mock
 	PasswordEncoder encoder;
@@ -186,6 +191,7 @@ public class BeneficiaryServiceImplTest {
 
 	}
 	
+	
 	@Test
 	public void deleteBeneficiaryTest() throws OperationNotAllowedException{
 		
@@ -195,12 +201,13 @@ public class BeneficiaryServiceImplTest {
 		PersonDTO personDto = new PersonDTO(person);
 		Beneficiary beneficiary = new Beneficiary(personDto, "España", true, LocalDate.of(2001, 1, 1),true , true,LocalDate.of(2001, 1, 1) , true, "Trabajador", "Hola", true, true, true, true, "Prueba", "Prueba");
 		beneficiary.setOng(ong);
+		Attendance a = new Attendance();
 
 		when(academicExperienceRepository.findAcademicExperienceByBeneficiaryId(Long.valueOf(1))).thenReturn(Optional.of(new ArrayList<AcademicExperience>()));
 		when(appointmentRepository.findAppointmentsByBeneficiaryId(Long.valueOf(1))).thenReturn(Optional.of(new ArrayList<Appointment>()));
 		when(workExperienceRepository.findWorkExperienceByBeneficiaryId(Long.valueOf(1))).thenReturn(Optional.of(new ArrayList<WorkExperience>()));
 		when(complementaryFormationRepository.findComplementaryFormationByBeneficiary(Long.valueOf(1))).thenReturn(Optional.of(new ArrayList<ComplementaryFormation>()));
-
+		when(attendanceRepository.findAllByPersonId(Long.valueOf(1))).thenReturn(List.of(a));
 		when(accountRepository.findByUsername("test")).thenReturn(account);
 		when(ongRepository.findByUsername("test")).thenReturn(ong);
 		when(beneficiaryRepository.findById(Long.valueOf(1))).thenReturn(Optional.of(beneficiary));
