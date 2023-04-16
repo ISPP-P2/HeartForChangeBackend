@@ -260,5 +260,7 @@ public class AppointmentServiceImpl implements AppointmentService {
  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
 		}
 	}
+
+
   
 }

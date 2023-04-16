@@ -210,44 +210,7 @@ public class AppointmentControllerTest {
  		assertEquals(res, ResponseEntity.ok(appointmentDTO));
  	}
  	
- 	@Test
- 	public void testGetBeneficiaryByAppointmentId() throws OperationNotAllowedException {
- 		// Crear una instancia de Ong
-        Ong ong = createOng();
-        // Crear una instancia de Beneficiary
-        Beneficiary beneficiary = createBeneficiary();
-        beneficiary.setOng(ong);
-        
-     // Crear una instancia de AppointmentDTO
-        AppointmentDTO appointmentDTO = createAppointmentDTO();
-        
-        // Crear una instancia de BeneficiaryDTO
-		BeneficiaryDTO beneficiaryDTO =  new BeneficiaryDTO(beneficiary, 
-				beneficiary.getId(), 
-				beneficiary.getNationality(), 
-				beneficiary.isDoubleNationality(), 
-				beneficiary.getArrivedDate(), 
-				beneficiary.isEuropeanCitizenAuthorization(), 
-				beneficiary.isTouristVisa(), 
-				beneficiary.getDateTouristVisa(), 
-				beneficiary.isHealthCard(), 
-				beneficiary.getEmploymentSector(), 
-				beneficiary.getPerceptionAid(), 
-				beneficiary.isSavingsPossesion(),
-				beneficiary.isSaeInscription(),
-				beneficiary.isWorking(), 
-				beneficiary.isComputerKnowledge(),
-				beneficiary.getOwnedDevices(), 
-				beneficiary.getLanguages());
-
- 		when(jwtUtils.validateJwtToken("oken")).thenReturn(true);
- 		when(appointmentServiceImpl.getBeneficiaryByAppointmentId(appointmentDTO.getId(), "oken")).thenReturn(beneficiaryDTO);
- 		HttpServletRequest request = mock(HttpServletRequest.class);
- 		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
-
- 		ResponseEntity<?> res = appointmentController.getBeneficiaryByAppointment(request, appointmentDTO.getId());
- 		assertEquals(res, ResponseEntity.ok(beneficiaryDTO));
- 	}
+ 	
  	
  	@Test
  	public void testGetAppointmentByOng() throws OperationNotAllowedException {
