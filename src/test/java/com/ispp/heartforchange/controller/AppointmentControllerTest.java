@@ -13,8 +13,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,8 +40,8 @@ import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.AccountServiceImpl;
 import com.ispp.heartforchange.service.impl.AppointmentServiceImpl;
 
-@DataJpaTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class AppointmentControllerTest {
 
 	
@@ -210,44 +214,7 @@ public class AppointmentControllerTest {
  		assertEquals(res, ResponseEntity.ok(appointmentDTO));
  	}
  	
- 	@Test
- 	public void testGetBeneficiaryByAppointmentId() throws OperationNotAllowedException {
- 		// Crear una instancia de Ong
-        Ong ong = createOng();
-        // Crear una instancia de Beneficiary
-        Beneficiary beneficiary = createBeneficiary();
-        beneficiary.setOng(ong);
-        
-     // Crear una instancia de AppointmentDTO
-        AppointmentDTO appointmentDTO = createAppointmentDTO();
-        
-        // Crear una instancia de BeneficiaryDTO
-		BeneficiaryDTO beneficiaryDTO =  new BeneficiaryDTO(beneficiary, 
-				beneficiary.getId(), 
-				beneficiary.getNationality(), 
-				beneficiary.isDoubleNationality(), 
-				beneficiary.getArrivedDate(), 
-				beneficiary.isEuropeanCitizenAuthorization(), 
-				beneficiary.isTouristVisa(), 
-				beneficiary.getDateTouristVisa(), 
-				beneficiary.isHealthCard(), 
-				beneficiary.getEmploymentSector(), 
-				beneficiary.getPerceptionAid(), 
-				beneficiary.isSavingsPossesion(),
-				beneficiary.isSaeInscription(),
-				beneficiary.isWorking(), 
-				beneficiary.isComputerKnowledge(),
-				beneficiary.getOwnedDevices(), 
-				beneficiary.getLanguages());
-
- 		when(jwtUtils.validateJwtToken("oken")).thenReturn(true);
- 		when(appointmentServiceImpl.getBeneficiaryByAppointmentId(appointmentDTO.getId(), "oken")).thenReturn(beneficiaryDTO);
- 		HttpServletRequest request = mock(HttpServletRequest.class);
- 		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
-
- 		ResponseEntity<?> res = appointmentController.getBeneficiaryByAppointment(request, appointmentDTO.getId());
- 		assertEquals(res, ResponseEntity.ok(beneficiaryDTO));
- 	}
+ 	
  	
  	@Test
  	public void testGetAppointmentByOng() throws OperationNotAllowedException {

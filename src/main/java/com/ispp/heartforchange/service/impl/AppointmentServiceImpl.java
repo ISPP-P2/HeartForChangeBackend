@@ -73,6 +73,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 		}	
 	}
 
+
 	
 	/*
 	 * Get beneficiary by appointment by id
@@ -117,6 +118,7 @@ public class AppointmentServiceImpl implements AppointmentService {
  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
 		}	
 	}
+
 	
 	/*
 	 * Get appointments by ong
@@ -301,5 +303,7 @@ public class AppointmentServiceImpl implements AppointmentService {
  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
 		}
 	}
+
+
   
 }

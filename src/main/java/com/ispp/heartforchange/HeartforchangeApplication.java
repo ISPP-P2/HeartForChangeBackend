@@ -1,13 +1,10 @@
 package com.ispp.heartforchange;
 
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-
 
 @SpringBootApplication
 public class HeartforchangeApplication {
@@ -15,18 +12,15 @@ public class HeartforchangeApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(HeartforchangeApplication.class, args);
 	}
-	
+
 	@Bean
 	public WebMvcConfigurer corsConfigurer() {
 		return new WebMvcConfigurer() {
 			public void addCorsMappings(CorsRegistry registry) {
-				registry.addMapping("/**").allowedOrigins("http://localhost:5173", "http://34.70.27.83")
-				.allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
+				registry.addMapping("/**").allowedOrigins("http://localhost:5173", "https://ispp-380414.oa.r.appspot.com")
+						.allowedMethods("HEAD", "GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS");
 			}
 		};
 	}
-
-	
-	
 
 }

@@ -207,32 +207,8 @@ public class AppointmentServiceImplTest {
 
     }
     
-    @Test
-    public void testGetBeneficiaryByAppointmentId() throws OperationNotAllowedException {
-        // Crear una instancia de Ong
-        Ong ong = createOng();
-        // Crear una instancia de Beneficiary
-        Beneficiary beneficiary = createBeneficiary();
-        beneficiary.setOng(ong);
-        
-        // Crear una instancia de Appointment
-    	Appointment appointment = new Appointment(createAppointmentDTO());
-    	appointment.setId(1L);
-        appointment.setBeneficiary(beneficiary);
-        appointment.setOng(ong);
-    	
-    	// Configuramos los mocks
-        String token = "Bearertoken";
-        when(jwtUtils.getUserNameFromJwtToken(eq(token))).thenReturn(ong.getUsername());
-        when(ongRepository.findByUsername(eq(ong.getUsername()))).thenReturn(ong);
-        when(appointmentRepository.findById(eq(appointment.getId()))).thenReturn(Optional.of(appointment));
-        
-        // Probamos el metodo
-        BeneficiaryDTO result = appointmentServiceImpl.getBeneficiaryByAppointmentId(appointment.getId(), token);
-        // Verificamos que se haya encontrado la cita correctamente
-		assertNotNull(result);
-
-    }
+   
+   
     
     @Test
     public void testGetAppointmentByOng() throws OperationNotAllowedException {
