@@ -15,7 +15,7 @@ import com.ispp.heartforchange.entity.ComplementaryFormation;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Volunteer;
-import com.ispp.heartforchange.expections.OperationNotAllowedException;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ComplementaryFormationRepository;

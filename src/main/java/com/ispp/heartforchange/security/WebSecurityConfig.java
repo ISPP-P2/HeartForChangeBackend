@@ -60,7 +60,7 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 		http.cors().and().csrf().disable().exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
 				.antMatchers("/accounts/signin/**").permitAll()
-				.antMatchers("/ongs/signup/**").permitAll()
+				.antMatchers("/ongs/signup/**").hasAnyAuthority("ONG")
 				.antMatchers("/ongs/**").permitAll()
 				.antMatchers("/volunteer/signup/**").hasAnyAuthority("ONG")
 				.antMatchers("/tasks/volunteer/get/{id}/attendances").hasAnyAuthority("ONG", "VOLUNTEER")

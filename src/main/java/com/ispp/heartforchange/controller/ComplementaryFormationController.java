@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.ispp.heartforchange.dto.ComplementaryFormationDTO;
-import com.ispp.heartforchange.expections.OperationNotAllowedException;
+import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.ComplementaryFormationServiceImpl;
 
