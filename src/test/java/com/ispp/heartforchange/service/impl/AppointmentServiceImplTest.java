@@ -356,5 +356,3 @@ public class AppointmentServiceImplTest {
 		appointmentServiceImpl.deleteAppointment(appointment.getId(), token);
     }
 }
-
-

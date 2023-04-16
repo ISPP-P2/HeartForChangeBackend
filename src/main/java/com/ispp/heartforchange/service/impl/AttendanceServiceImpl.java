@@ -16,7 +16,6 @@ import com.ispp.heartforchange.entity.AttendanceType;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.Person;
 import com.ispp.heartforchange.entity.PetitionState;
-import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Task;
 import com.ispp.heartforchange.entity.TaskType;
 import com.ispp.heartforchange.repository.AttendanceRepository;
@@ -259,48 +258,37 @@ public class AttendanceServiceImpl implements AttendanceService{
 	}
 	
 	/*
-	 * Auxiliary method to create an accepted atendance
-	 */
-	
-	public AttendanceDTO createAcceptedAttendance(Person person, Task task) {
-		Attendance attendance = new Attendance(person, task, PetitionState.ACEPTADA);
-		attendance.setId(Long.valueOf(0));
-		logger.info("Create Petition on Task with name={} by User with username={}", task.getName(), person.getUsername());
-		try {
-			Attendance attendanceSaved = attendanceRepository.save(attendance); 
-			return new AttendanceDTO(attendanceSaved);
-		} catch (Exception e) {
-			throw new UsernameNotFoundException(e.getMessage());
-		}
-	}
-	
-	/*
-	 * Add Person for attendance by a ONG.
+	 * Add beneficiary for attendance by a ONG.
 	 * @Param Long idTask
 	 * @Param Long idPerson
 	 * @Param String token
 	 * @Return AttendanceDTO
 	 */
 	
+	
 	@Override
-	public AttendanceDTO addPerson(Long idTask, String token, Long idPerson) {
+	public AttendanceDTO addBeneficiary(Long idTask, String token, Long idPerson) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Person> person = personRepository.findById(idPerson);
 		Optional<Task> task = taskRepository.findById(idTask);
 		if (task.isPresent() && person.isPresent()) {
-			if(task.get().getOng().getId() == ong.getId() && person.get().getOng().equals(ong)) {
-				if(person.get().getRolAccount().equals(RolAccount.BENEFICIARY) && (task.get().getType() == TaskType.CURSO || task.get().getType() == TaskType.TALLER)) {
+			if(task.get().getType() == TaskType.CURSO || task.get().getType() == TaskType.TALLER) {
+				if(task.get().getOng().getId() == ong.getId() && person.get().getOng().equals(ong)) {
 					
-					createAcceptedAttendance(person.get(), task.get());
+					Attendance attendance = new Attendance(person.get(), task.get(), PetitionState.ACEPTADA);
+					attendance.setId(Long.valueOf(0));
+					logger.info("Create Petition on Task with name={} by User with username={}", task.get().getName());
+					try {
+						Attendance attendanceSaved = attendanceRepository.save(attendance); 
+						return new AttendanceDTO(attendanceSaved);
+					} catch (Exception e) {
+						throw new UsernameNotFoundException(e.getMessage());
+					}
 				}
-				if(person.get().getRolAccount().equals(RolAccount.VOLUNTEER) && task.get().getType() == TaskType.ACTIVIDAD) {
-					
-					createAcceptedAttendance(person.get(), task.get());
-				}
-				throw new UsernameNotFoundException("This person cant be add to this Task!");
+				throw new UsernameNotFoundException("You dont have the permissions!");
 			}
-			throw new UsernameNotFoundException("You dont have the permissions!");
+			throw new UsernameNotFoundException("This task isnt a CURSO or a TALLER!");
 		}
 		throw new UsernameNotFoundException("Attendance or Person doesn't exist!");
 		
@@ -327,20 +315,16 @@ public class AttendanceServiceImpl implements AttendanceService{
 
 	}
 	@Override
-	public void deletePerson(Long idTask, String token, Long idPerson) {
+	public void deleteBeneficiary(Long idTask, String token, Long idPerson) {
 		String username = jwtUtils.getUserNameFromJwtToken(token);
 		Ong ong = ongRepository.findByUsername(username);
 		Optional<Attendance> attendance = attendanceRepository.findByPersonIdAndTaskId(idTask, idPerson);
 		if (attendance.isPresent()) {
 			if (attendance.get().getTask().getOng().getId() == ong.getId()) {
-				try {
-					
-					attendanceRepository.delete(attendance.get());
-				} catch (Exception e) {
-					throw new UsernameNotFoundException(e.getMessage());
-				}
+				System.out.println(attendance);
+				attendanceRepository.delete(attendance.get());
 			} else {
-				throw new UsernameNotFoundException("You dont have the permissions");
+				throw new UsernameNotFoundException("Error deleting attendance");
 			}
 
 		} else {
