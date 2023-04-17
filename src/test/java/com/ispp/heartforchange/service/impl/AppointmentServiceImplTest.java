@@ -233,6 +233,7 @@ public class AppointmentServiceImplTest {
 		assertNotNull(result);
 
     }
+   
     
     @Test
     public void testGetAppointmentByOng() throws OperationNotAllowedException {
@@ -356,5 +357,3 @@ public class AppointmentServiceImplTest {
 		appointmentServiceImpl.deleteAppointment(appointment.getId(), token);
     }
 }
-
-

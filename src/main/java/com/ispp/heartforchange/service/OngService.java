@@ -10,7 +10,7 @@ public interface OngService {
 
 	OngDTO getOng(String token) throws OperationNotAllowedException;
 	
-	OngDTO saveOng(OngDTO ongDTO) throws OperationNotAllowedException;
+	OngDTO saveOng(OngDTO ongDTO, String jwt) throws OperationNotAllowedException;
 	
 	OngDTO updateOng(String token, OngDTO ongDTO) throws OperationNotAllowedException;
 	

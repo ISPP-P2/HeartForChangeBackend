@@ -75,6 +75,7 @@ public class AppointmentController {
 		
 	}
 	
+
 	/*
 	 * Get beneficiary by appointment id
 	 * 
@@ -105,8 +106,6 @@ public class AppointmentController {
  		}
 		
 	}
-	
-
 	
 	
 	/*

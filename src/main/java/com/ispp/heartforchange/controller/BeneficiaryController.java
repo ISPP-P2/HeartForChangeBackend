@@ -137,7 +137,6 @@ public class BeneficiaryController {
 	@PostMapping("/signup")
 	public ResponseEntity<?> saveBeneficiary(HttpServletRequest request,  @RequestBody BeneficiaryDTO beneficiary) {
 		String jwt = null;
-
 		String headerAuth = request.getHeader("Authorization");
 
 		if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer")) {
@@ -145,7 +144,7 @@ public class BeneficiaryController {
 		}
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
-		}
+		} 
 		String username = jwtUtils.getUserNameFromJwtToken(jwt);
 		String[] randomUUID = UUID.randomUUID().toString().split("-");
 
@@ -154,6 +153,7 @@ public class BeneficiaryController {
 		beneficiary.setUsername(usernameGenerated);
 
 		BeneficiaryDTO beneficiarySaved = beneficiaryServiceImpl.saveBeneficiary(beneficiary, username);
+		System.out.println(beneficiarySaved);
 		logger.info("Beneficiary saved with username={}", beneficiarySaved.getUsername());
 		return ResponseEntity.ok(beneficiarySaved);
 	}

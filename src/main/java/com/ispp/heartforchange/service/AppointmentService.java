@@ -21,5 +21,7 @@ public interface AppointmentService {
 
 	void deleteAppointment(Long id, String token) throws OperationNotAllowedException;
 
+
 	BeneficiaryDTO getBeneficiaryByAppointmentId(Long id, String token) throws OperationNotAllowedException;
+
 }

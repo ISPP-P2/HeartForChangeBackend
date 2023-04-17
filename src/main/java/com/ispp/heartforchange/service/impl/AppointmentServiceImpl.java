@@ -72,6 +72,8 @@ public class AppointmentServiceImpl implements AppointmentService {
  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
 		}	
 	}
+
+
 	
 	/*
 	 * Get beneficiary by appointment by id
@@ -117,7 +119,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 		}	
 	}
 
-	
 	
 	/*
 	 * Get appointments by ong
@@ -176,7 +177,7 @@ public class AppointmentServiceImpl implements AppointmentService {
  					throw new UsernameNotFoundException("Not Found: Appointments not exist for the beneficiary!");
  				} else {
  					if(appointments.get().size() == 0) {
- 						return appointmentsDTO;
+ 						throw new UsernameNotFoundException("This beneficiary has not appointments!");
  					}else {
  						if(appointments.get().get(0).getBeneficiary().getOng().getId() == ong.getId()) {
  							for (Appointment appointment : appointments.get()) {
@@ -302,5 +303,7 @@ public class AppointmentServiceImpl implements AppointmentService {
  			throw new OperationNotAllowedException("You must be an ONG to use this method.");
 		}
 	}
+
+
   
 }

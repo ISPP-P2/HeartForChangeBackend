@@ -71,8 +71,8 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	 */
 	@Override
 	public BeneficiaryDTO getBeneficiaryById(Long id, String username) {
-		Optional<Beneficiary> optBenficiary = beneficiaryRepository.findById(id);
 		
+		Optional<Beneficiary> optBenficiary = beneficiaryRepository.findById(id);
 		
 		if(!optBenficiary.isPresent()) {
 			throw new UsernameNotFoundException("This Beneficiary not exist!");
@@ -90,7 +90,7 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 				res = false;
 			}else {
 				res = true;
-			}
+			} 
 			
 		}else if(account.getRolAccount().equals(RolAccount.BENEFICIARY)) {
 			Beneficiary beneficiaryById = optBenficiary.get();
@@ -144,12 +144,12 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 	 */
 	@Override
 	public BeneficiaryDTO saveBeneficiary(BeneficiaryDTO beneficiaryDTO, String username ) {
+		
 		if(!accountRepository.findByUsername(username).getRolAccount().equals(RolAccount.ONG)) {
 			throw new UsernameNotFoundException("You are not an ONG");
 		}
 
 		Ong ong = ongRepository.findByUsername(username);
-		
 		
 		Beneficiary beneficiary = new Beneficiary(beneficiaryDTO, 
 				beneficiaryDTO.getNationality(), 

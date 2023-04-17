@@ -25,7 +25,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "grant")
+@Table(name = "grants")
 public class Grant implements Serializable {
 
 	private static final long serialVersionUID = 1L;
