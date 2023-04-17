@@ -136,7 +136,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 			List<Appointment> appointments = appointmentRepository.findByOng(ong);
 	
 			if (appointments.isEmpty()) {
-				throw new UsernameNotFoundException("Appointments do not exist for this ONG!");
+				return appointmentsDTO;
 			} else {
 				if(appointments.size() == 0) {
 					return appointmentsDTO;
