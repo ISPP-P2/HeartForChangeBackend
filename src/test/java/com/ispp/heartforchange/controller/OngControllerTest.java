@@ -1,6 +1,7 @@
 package com.ispp.heartforchange.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -15,7 +16,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
 
 import com.ispp.heartforchange.dto.OngDTO;
 import com.ispp.heartforchange.entity.Ong;
@@ -34,6 +37,9 @@ public class OngControllerTest {
 	
 	@Mock
 	private ONGRepository ongRepository;
+	
+	@Mock
+	private AuthenticationManager authenticationManager;
 
 	@Mock
 	private JwtUtils jwtUtils;
@@ -104,7 +110,7 @@ public class OngControllerTest {
 		assertEquals(res, ResponseEntity.ok(ongDTO));
 	}
 	
-	/*@Test
+	@Test
 	public void updateOngTest() throws OperationNotAllowedException {
 		Ong newOng = createValidOng();
 		newOng.setDescription("Descripción actualizada");
@@ -115,10 +121,15 @@ public class OngControllerTest {
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		when(request.getHeader("Authorization")).thenReturn("Bearertoken");
 		when(jwtUtils.getUserNameFromJwtToken("oken")).thenReturn(newOng.getUsername());
-
+		when(jwtUtils.generateJwtToken(any())).thenReturn("Token2");
+		when(jwtUtils.generateJwtRefreshToken(any())).thenReturn("Refresh");
+		
 		ResponseEntity<?> res = ongController.updateOng(request, newOngDTO);
-		assertEquals(res, ResponseEntity.ok(newOngDTO));
-	}*/
+	    HttpHeaders responseHeaders = new HttpHeaders();
+	    responseHeaders.set("Authorization", "Token2");
+	    responseHeaders.set("Refresh", "Refresh");
+		assertEquals(res, ResponseEntity.ok().headers(responseHeaders).body(newOngDTO));
+	}
 	
 	@Test
 	public void deleteOngTest() throws OperationNotAllowedException {

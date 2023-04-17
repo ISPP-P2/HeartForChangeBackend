@@ -10,14 +10,12 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -31,7 +29,6 @@ import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.entity.Volunteer;
 import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
-import com.ispp.heartforchange.repository.AcademicExperienceRepository;
 import com.ispp.heartforchange.repository.BeneficiaryRepository;
 import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.repository.VolunteerRepository;
@@ -319,11 +316,7 @@ public class AcademicExperienceControllerTest {
 	
 	@Test
 	public void getAcademicExperienceByBeneficiaryIDWithOutBeingONGTest_negative() throws OperationNotAllowedException {
-		
-		Beneficiary beneficiary = createBeneficiary();
-		
-		AcademicExperience academicExperience = new AcademicExperience(1L, "Comer", 2009, 2, "Bach", beneficiary, null);
- 
+				
 		when(jwtUtils.validateJwtToken("valid_token")).thenReturn(true); // Simular un token válido
 		when(academicExperienceService.getAcademicExperienceByBeneficiary(1L, "valid_token")).thenThrow(new OperationNotAllowedException("You must be an ONG or volunteer to use this method.")); // Simular una excepción cuando el usuario no es una ONG
 		HttpServletRequest request = mock(HttpServletRequest.class);
@@ -377,11 +370,7 @@ public class AcademicExperienceControllerTest {
 	
 	@Test
 	public void getAcademicExperienceByVolunteerIDWithOutBeingONGOrVolunteerTest_negative() throws OperationNotAllowedException {
-		
-		Volunteer volunteer = createVolunteer();
-		
-		AcademicExperience academicExperience = new AcademicExperience(1L, "Comer", 2009, 2, "Bach", null, volunteer);
- 
+		 
 		when(jwtUtils.validateJwtToken("valid_token")).thenReturn(true); // Simular un token válido
 		when(academicExperienceService.getAcademicExperienceByVolunteer(1L, "valid_token")).thenThrow(new OperationNotAllowedException("You must be an ONG or volunteer to use this method.")); // Simular una excepción cuando el usuario no es una ONG
 		HttpServletRequest request = mock(HttpServletRequest.class);

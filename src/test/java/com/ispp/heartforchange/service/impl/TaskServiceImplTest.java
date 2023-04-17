@@ -11,14 +11,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.ispp.heartforchange.dto.AttendanceDTO;
@@ -26,7 +24,6 @@ import com.ispp.heartforchange.dto.BeneficiaryDTO;
 import com.ispp.heartforchange.dto.PersonDTO;
 import com.ispp.heartforchange.dto.TaskDTO;
 import com.ispp.heartforchange.dto.VolunteerDTO;
-import com.ispp.heartforchange.entity.Account;
 import com.ispp.heartforchange.entity.Attendance;
 import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.CivilStatus;
@@ -513,11 +510,9 @@ public class TaskServiceImplTest {
 		Ong ong = createOng();
 		Task task = createTask(TaskType.CURSO);
 		task.setOng(ong);
-		Account account = new Account(ong.getId(), ong.getEmail(), ong.getUsername(), ong.getPassword(), ong.getRolAccount());
 		Person person = new Person(Long.valueOf(0), LocalDate.of(2010, 03, 12), "Garcia", "Rodriguez", "Mario", DocumentType.DNI, "78675456P", Gender.MALE, LocalDate.of(2001, 03, 12), CivilStatus.DIVORCED, 0, "Prado", "12893", "Calera", "Sevilla", "698745670", LocalDate.of(2012, 03, 12), "B", "Ninguna", ong, new ArrayList<Attendance>());	    
 		PersonDTO personDto = new PersonDTO(person);
 		Beneficiary beneficiary = new Beneficiary(personDto, "España", true, LocalDate.of(2001, 1, 1),true , true,LocalDate.of(2001, 1, 1) , true, "Trabajador", "Hola", true, true, true, true, "Prueba", "Prueba");
-		BeneficiaryDTO beneficiaryDto = new BeneficiaryDTO(person, Long.valueOf(0), "España", true, LocalDate.of(2001, 1, 1),true , true,LocalDate.of(2001, 1, 1) , true, "Trabajador", "Hola", true, true, true, true, "Prueba", "Prueba");
 		beneficiary.setOng(ong);
 		beneficiary.setAttendance(new ArrayList<Attendance>());
 		

@@ -3,18 +3,12 @@ package com.ispp.heartforchange.controller;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,8 +21,6 @@ import com.ispp.heartforchange.service.impl.TaskServiceImpl;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
-	
-	private static final Logger logger = LoggerFactory.getLogger(AccountController.class);
 
 	private TaskServiceImpl taskService;
 	private JwtUtils jwtUtils;
