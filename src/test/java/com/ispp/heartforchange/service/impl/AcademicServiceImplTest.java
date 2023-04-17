@@ -634,7 +634,6 @@ public class AcademicServiceImplTest {
 		academicExperience.setBeneficiary(beneficiary);
 
 		String token = "tokenprueba";
-		Ong ong = createOng();
 		List<AcademicExperience> academicExperiences = List.of(academicExperience);
 
 		when(jwtUtils.getUserNameFromJwtToken(token)).thenReturn("angel123");
@@ -726,7 +725,6 @@ public class AcademicServiceImplTest {
 		academicExperience.setVolunteer(volunteer);
 
 		String token = "tokenprueba";
-		Ong ong = createOng();
 		List<AcademicExperience> academicExperiences = List.of(academicExperience);
 
 		when(jwtUtils.getUserNameFromJwtToken(token)).thenReturn("angel123");

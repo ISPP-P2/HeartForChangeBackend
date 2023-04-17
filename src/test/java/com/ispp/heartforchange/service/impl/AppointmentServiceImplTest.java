@@ -256,7 +256,7 @@ public class AppointmentServiceImplTest {
         when(jwtUtils.getUserNameFromJwtToken(eq(token))).thenReturn(ong.getUsername());
         when(ongRepository.findByUsername(eq(ong.getUsername()))).thenReturn(ong);
         when(beneficiaryRepository.findById(eq(beneficiary.getId()))).thenReturn(Optional.of(beneficiary));
-        when(appointmentRepository.findAppointmentsByOngId(eq(ong.getId()))).thenReturn(Optional.of(appointments));
+        when(appointmentRepository.findByOng(eq(ong))).thenReturn(appointments);
         
         // Probamos el metodo
         List<AppointmentDTO> result = appointmentServiceImpl.getAppointmentsByONG(token);

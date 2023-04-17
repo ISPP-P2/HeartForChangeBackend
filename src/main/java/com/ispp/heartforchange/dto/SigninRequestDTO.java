@@ -34,7 +34,7 @@ public class SigninRequestDTO implements Serializable {
 	
 	@NotNull
 	@NotBlank
-	@Size(max = 20)
+	@Size(max = 120)
 	@JsonProperty("password")
 	private String password;
 }
