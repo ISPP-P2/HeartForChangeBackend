@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +47,7 @@ public class AcademicExperienceController {
 	 * Get all academics experiences of a volunteer
 	 * 
 	 * @Param HttpServletRequest request
+	 * 
 	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
@@ -64,23 +64,24 @@ public class AcademicExperienceController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		
+
 		try {
 			List<AcademicExperienceDTO> acadExp = academicExpServImpl.getAcademicExperienceByVolunteer(id, jwt);
 			return ResponseEntity.ok(acadExp);
-        }catch(OperationNotAllowedException e) {
-			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
-		}catch(Exception e) {
+		} catch (OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.",
+					HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
 
-		
 	}
 
 	/*
 	 * Get all academics experiences of a beneficiary
 	 * 
 	 * @Param HttpServletRequest request
+	 * 
 	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
@@ -99,11 +100,13 @@ public class AcademicExperienceController {
 		}
 
 		try {
-        	List<AcademicExperienceDTO> academicExperiences = academicExpServImpl.getAcademicExperienceByBeneficiary(id, jwt);
-            return ResponseEntity.ok(academicExperiences);
-        }catch(OperationNotAllowedException e) {
-			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
-		}catch(Exception e) {
+			List<AcademicExperienceDTO> academicExperiences = academicExpServImpl.getAcademicExperienceByBeneficiary(id,
+					jwt);
+			return ResponseEntity.ok(academicExperiences);
+		} catch (OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.",
+					HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -112,12 +115,14 @@ public class AcademicExperienceController {
 	 * Get Academic Experience by id
 	 * 
 	 * @Param HttpServletRequest request
+	 * 
 	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
 	 */
 	@GetMapping("/get/{id}")
-	public ResponseEntity<?> getAcademicExperienceById(HttpServletRequest request, @PathVariable("id") Long id) throws OperationNotAllowedException{
+	public ResponseEntity<?> getAcademicExperienceById(HttpServletRequest request, @PathVariable("id") Long id)
+			throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -127,16 +132,16 @@ public class AcademicExperienceController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		
+
 		try {
 			AcademicExperienceDTO academicExperienceDTO = academicExpServImpl.getAcademicExpByID(id, jwt);
 			return ResponseEntity.ok(academicExperienceDTO);
-		}catch(OperationNotAllowedException e) {
-			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.", HttpStatus.BAD_REQUEST);
-		}catch(Exception e) {
+		} catch (OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG or a volunteer to use this method.",
+					HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
-
 
 	}
 
@@ -144,15 +149,17 @@ public class AcademicExperienceController {
 	 * Save academic experience
 	 * 
 	 * @Param AcademicExperienceDTO academicExperienceDTO
+	 * 
 	 * @Param HttpServletRequest request
+	 * 
 	 * @Param Long id
 	 * 
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/save/{id}")
 	public ResponseEntity<?> saveAcademicExperience(HttpServletRequest request,
-			@Valid @RequestBody AcademicExperienceDTO academicExperienceDTO,
-			@PathVariable("id") Long id) throws OperationNotAllowedException {
+			@Valid @RequestBody AcademicExperienceDTO academicExperienceDTO, @PathVariable("id") Long id)
+			throws OperationNotAllowedException {
 
 		String jwt = null;
 
@@ -166,12 +173,13 @@ public class AcademicExperienceController {
 		}
 
 		try {
-	    	AcademicExperienceDTO academicExperienceSaved = academicExpServImpl.saveAcademicExperience(academicExperienceDTO, id, jwt);
-	         logger.info("Academic Experience saved associated with id={}", id);
-	         return ResponseEntity.ok(academicExperienceSaved);
-	    }catch(OperationNotAllowedException e) {
-	    	return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
-		}catch(Exception e) {
+			AcademicExperienceDTO academicExperienceSaved = academicExpServImpl
+					.saveAcademicExperience(academicExperienceDTO, id, jwt);
+			logger.info("Academic Experience saved associated with id={}", id);
+			return ResponseEntity.ok(academicExperienceSaved);
+		} catch (OperationNotAllowedException e) {
+			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -180,7 +188,9 @@ public class AcademicExperienceController {
 	 * Update Academic Experience
 	 * 
 	 * @Param AcademicExperienceDTO academicExperienceDTO
+	 * 
 	 * @Param HttpServletRequest request
+	 * 
 	 * @Param String token
 	 * 
 	 * @Return ResponseEntity
@@ -199,12 +209,13 @@ public class AcademicExperienceController {
 		}
 
 		try {
-			AcademicExperienceDTO academicExperienSaved = academicExpServImpl.updateAcademicExperience(academicExperienceDTO, jwt, id);
+			AcademicExperienceDTO academicExperienSaved = academicExpServImpl
+					.updateAcademicExperience(academicExperienceDTO, jwt, id);
 			logger.info("Academic Experience updated with id={}", academicExperienSaved.getId());
 			return ResponseEntity.ok(academicExperienSaved);
-		}catch(OperationNotAllowedException e) {
+		} catch (OperationNotAllowedException e) {
 			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
 	}
@@ -213,12 +224,14 @@ public class AcademicExperienceController {
 	 * Delete academic experience
 	 * 
 	 * @Param Long id
+	 * 
 	 * @Param HttpServletRequest request
 	 * 
 	 * @Return ResponseEntity
 	 */
 	@PostMapping("/delete/{id}")
-	public ResponseEntity<?> deleteAcademicExperience(@PathVariable("id") Long id, HttpServletRequest request) throws OperationNotAllowedException{
+	public ResponseEntity<?> deleteAcademicExperience(@PathVariable("id") Long id, HttpServletRequest request)
+			throws OperationNotAllowedException {
 		String jwt = null;
 		String headerAuth = request.getHeader("Authorization");
 
@@ -232,9 +245,9 @@ public class AcademicExperienceController {
 		try {
 			academicExpServImpl.deleteAcademicExperience(id, jwt);
 			return ResponseEntity.ok("Academic Experience deleted");
-		}catch(OperationNotAllowedException e) {
+		} catch (OperationNotAllowedException e) {
 			return new ResponseEntity<String>("You must be an ONG to use this method.", HttpStatus.BAD_REQUEST);
-		}catch(Exception e) {
+		} catch (Exception e) {
 			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
 		}
 	}
