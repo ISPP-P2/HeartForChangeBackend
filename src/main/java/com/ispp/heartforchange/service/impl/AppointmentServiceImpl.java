@@ -133,16 +133,16 @@ public class AppointmentServiceImpl implements AppointmentService {
 		
  		if(ong!=null) {
 			List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
-			Optional<List<Appointment>> appointments = appointmentRepository.findAppointmentsByOngId(ong.getId());
+			List<Appointment> appointments = appointmentRepository.findByOng(ong);
 	
-			if (!appointments.isPresent()) {
+			if (appointments.isEmpty()) {
 				throw new UsernameNotFoundException("Appointments do not exist for this ONG!");
 			} else {
-				if(appointments.get().size() == 0) {
+				if(appointments.size() == 0) {
 					return appointmentsDTO;
 				}else {
-					if(appointments.get().get(0).getBeneficiary().getOng().getId() == ong.getId()) {
-						for (Appointment appointment : appointments.get()) {
+					if(appointments.get(0).getBeneficiary().getOng().getId() == ong.getId()) {
+						for (Appointment appointment : appointments) {
 							AppointmentDTO appointmentDTO = new AppointmentDTO(appointment);
 							appointmentsDTO.add(appointmentDTO);
 						}

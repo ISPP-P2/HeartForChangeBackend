@@ -1,7 +1,6 @@
 package com.ispp.heartforchange.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -12,22 +11,16 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
-import com.ispp.heartforchange.dto.PersonDTO;
-import com.ispp.heartforchange.entity.Account;
 import com.ispp.heartforchange.entity.Attendance;
-import com.ispp.heartforchange.entity.Beneficiary;
 import com.ispp.heartforchange.entity.CivilStatus;
 import com.ispp.heartforchange.entity.DocumentType;
 import com.ispp.heartforchange.entity.Gender;

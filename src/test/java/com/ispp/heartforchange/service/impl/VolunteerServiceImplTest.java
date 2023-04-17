@@ -1,7 +1,12 @@
 package com.ispp.heartforchange.service.impl;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -9,17 +14,13 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -53,8 +54,6 @@ import com.ispp.heartforchange.security.jwt.JwtUtils;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class VolunteerServiceImplTest {
-
-	private static final Logger logger = LoggerFactory.getLogger(AccountServiceImpl.class);
 	
 	@InjectMocks
 	private VolunteerServiceImpl volunteerService;
@@ -294,7 +293,6 @@ public class VolunteerServiceImplTest {
 		volunteer.setRolAccount(RolAccount.VOLUNTEER);
 		UpdatePasswordDTO updatePasswordDTO = new UpdatePasswordDTO();
 		updatePasswordDTO.setPassword("nueva");
-		VolunteerDTO volunteerDTO = new VolunteerDTO(person, null, null);
 		
 		String token = "tokenprueba";
 		volunteer.setOng(ong);
