@@ -1,7 +1,6 @@
 package com.ispp.heartforchange.controller;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -10,19 +9,15 @@ import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.http.ResponseEntity;
 
-import com.ispp.heartforchange.dto.GrantDTO;
 import com.ispp.heartforchange.dto.OngDTO;
-import com.ispp.heartforchange.entity.Grant;
-import com.ispp.heartforchange.entity.GrantState;
 import com.ispp.heartforchange.entity.Ong;
 import com.ispp.heartforchange.entity.RolAccount;
 import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
@@ -30,9 +25,8 @@ import com.ispp.heartforchange.repository.ONGRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.OngServiceImpl;
 
-@DataJpaTest
-@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class OngControllerTest {
 
 	@Mock
@@ -84,7 +78,7 @@ public class OngControllerTest {
 		OngDTO ongDTO = new OngDTO(ong);
 		
 		HttpServletRequest request = mock(HttpServletRequest.class);
-		when(request.getHeader("Authorization")).thenReturn("aaaaaaaAdminToken");
+		when(request.getHeader("Authorization")).thenReturn("BearerrAdminToken");
 		when(jwtUtils.validateJwtToken("AdminToken")).thenReturn(true);
 		when(ongServiceImpl.getOng("AdminToken")).thenReturn(ongDTO);
 		
