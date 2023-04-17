@@ -174,10 +174,10 @@ public class AppointmentServiceImpl implements AppointmentService {
  			if(beneficiary.isPresent()) {
  				List<AppointmentDTO> appointmentsDTO = new ArrayList<>();
  				if (!appointments.isPresent()) {
- 					throw new UsernameNotFoundException("Not Found: Appointments not exist for the beneficiary!");
+ 					return appointmentsDTO;
  				} else {
  					if(appointments.get().size() == 0) {
- 						throw new UsernameNotFoundException("This beneficiary has not appointments!");
+ 						return appointmentsDTO;
  					}else {
  						if(appointments.get().get(0).getBeneficiary().getOng().getId() == ong.getId()) {
  							for (Appointment appointment : appointments.get()) {

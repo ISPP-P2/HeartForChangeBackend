@@ -28,7 +28,6 @@ import com.ispp.heartforchange.service.impl.AcademicExperienceServiceImpl;
 
 @RestController
 @RequestMapping("/academicExperiences")
-@CrossOrigin(origins = {"http://localhost:5173", "https://ispp-380414.oa.r.appspot.com"})
 public class AcademicExperienceController {
 	private static final Logger logger = LoggerFactory.getLogger(AcademicExperienceController.class);
 

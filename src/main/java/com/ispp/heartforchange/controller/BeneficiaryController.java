@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ispp.heartforchange.dto.BeneficiaryDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.BeneficiaryServiceImpl;
-@CrossOrigin(origins = {"http://localhost:5173", "https://ispp-380414.oa.r.appspot.com"})
+
 @RestController
 @RequestMapping("/beneficiaries")
 public class BeneficiaryController {

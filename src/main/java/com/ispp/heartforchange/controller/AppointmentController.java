@@ -23,7 +23,7 @@ import com.ispp.heartforchange.dto.BeneficiaryDTO;
 import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.AppointmentServiceImpl;
-@CrossOrigin(origins = {"http://localhost:5173", "https://ispp-380414.oa.r.appspot.com"})
+
 @Controller
 @RequestMapping("/appointments")
 public class AppointmentController {

@@ -21,7 +21,7 @@ import com.ispp.heartforchange.dto.VolunteerDTO;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.VolunteerServiceImpl;
 
-@CrossOrigin(origins = {"http://localhost:5173", "https://ispp-380414.oa.r.appspot.com"})
+
 @RestController
 @RequestMapping("/volunteers")
 public class VolunteerController {

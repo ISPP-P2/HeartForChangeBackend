@@ -28,7 +28,7 @@ import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.security.service.AccountDetailsServiceImpl;
 import com.ispp.heartforchange.service.impl.AccountServiceImpl;
-@CrossOrigin(origins = {"http://localhost:5173", "https://ispp-380414.oa.r.appspot.com"})
+
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {

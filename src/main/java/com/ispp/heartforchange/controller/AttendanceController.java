@@ -22,7 +22,7 @@ import com.ispp.heartforchange.entity.AttendanceType;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.AttendanceServiceImpl;
 
-@CrossOrigin(origins = {"http://localhost:5173", "https://ispp-380414.oa.r.appspot.com"})
+
 @Controller
 @RequestMapping("/attendances")
 public class AttendanceController {
