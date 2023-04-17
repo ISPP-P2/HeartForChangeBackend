@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.http.ResponseEntity;
 
@@ -28,6 +31,7 @@ import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.OngServiceImpl;
 
 @DataJpaTest
+@EnableAutoConfiguration(exclude={DataSourceAutoConfiguration.class})
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class OngControllerTest {
 
@@ -79,9 +83,15 @@ public class OngControllerTest {
 		Ong ong = createValidOng();
 		OngDTO ongDTO = new OngDTO(ong);
 		
-		when(ongServiceImpl.saveOng(ongDTO)).thenReturn(ongDTO);
+		HttpServletRequest request = mock(HttpServletRequest.class);
+		when(request.getHeader("Authorization")).thenReturn("aaaaaaaAdminToken");
+		when(jwtUtils.validateJwtToken("AdminToken")).thenReturn(true);
+		when(ongServiceImpl.getOng("AdminToken")).thenReturn(ongDTO);
+		
+		String token = "AdminToken";
+		when(ongServiceImpl.saveOng(ongDTO, token)).thenReturn(ongDTO);
 
-		ResponseEntity<?> res = ongController.saveOng(ongDTO);
+		ResponseEntity<?> res = ongController.saveOng(request, ongDTO);
 		assertEquals(res, ResponseEntity.ok(ongDTO));
 	}
 	

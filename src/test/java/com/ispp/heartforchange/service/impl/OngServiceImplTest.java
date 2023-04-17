@@ -103,8 +103,12 @@ public class OngServiceImplTest {
 		    ong.setId(1L);
 		    return ong;
 		});
+		
+		String token = "AdminToken";
+		Mockito.when(signinResponseDTO.getToken()).thenReturn("AdminToken");
+		Mockito.when(jwtUtils.getUserNameFromJwtToken("AdminToken")).thenReturn("admin");
 
-		OngDTO result = ongServiceImpl.saveOng(ongDTO);
+		OngDTO result = ongServiceImpl.saveOng(ongDTO, token);
 
 		assertNotNull(result);
 		assertEquals(1L, result.getId().longValue());
@@ -123,7 +127,11 @@ public class OngServiceImplTest {
 
 	    OngDTO ongDTO = new OngDTO(createInvalidOng()); 
 
-	    assertThrows(IllegalArgumentException.class, () -> ongServiceImpl.saveOng(ongDTO));
+		String token = "AdminToken";
+		Mockito.when(signinResponseDTO.getToken()).thenReturn("AdminToken");
+		Mockito.when(jwtUtils.getUserNameFromJwtToken("AdminToken")).thenReturn("admin");
+		
+	    assertThrows(IllegalArgumentException.class, () -> ongServiceImpl.saveOng(ongDTO, token));
 	}
 	
 	@Test
