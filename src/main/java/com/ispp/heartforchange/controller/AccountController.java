@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,7 +28,7 @@ import com.ispp.heartforchange.repository.AccountRepository;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.security.service.AccountDetailsServiceImpl;
 import com.ispp.heartforchange.service.impl.AccountServiceImpl;
-
+@CrossOrigin(origins = {"http://localhost:5173", "https://ispp-380414.oa.r.appspot.com"})
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {

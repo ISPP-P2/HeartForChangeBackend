@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,7 +23,7 @@ import com.ispp.heartforchange.dto.ComplementaryFormationDTO;
 import com.ispp.heartforchange.exceptions.OperationNotAllowedException;
 import com.ispp.heartforchange.security.jwt.JwtUtils;
 import com.ispp.heartforchange.service.impl.ComplementaryFormationServiceImpl;
-
+@CrossOrigin(origins = {"http://localhost:5173", "https://ispp-380414.oa.r.appspot.com"})
 @Controller
 @RequestMapping("/complementaryFormations")
 public class ComplementaryFormationController {
