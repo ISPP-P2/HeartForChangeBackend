@@ -217,6 +217,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         Optional<Beneficiary> beneficiary = beneficiaryRepository.findById(beneficiaryId);
 
         if(ong!=null) {
+        	appointment.setOng(ong);
 	        try {
 	        	if(beneficiary.isPresent()) {
 	        		if(beneficiary.get().getOng().getId() == ong.getId()) {
