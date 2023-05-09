@@ -340,12 +340,6 @@ public class VolunteerServiceImpl implements VolunteerService{
 	public String existsVolunteer(String email, String username) {
 		Boolean isUsername = accountRepository.existsByUsername(username);
 		Boolean isEmail = accountRepository.existsByEmail(email);
-		System.out.println("-------------------------------------------------------------");
-		System.out.println(email);
-		System.out.println(isEmail);
-		System.out.println(username);
-		System.out.println(isUsername);
-		System.out.println("-------------------------------------------------------------");
 
 		if(isUsername && isEmail){
 			return "El dni y email ya existe";
