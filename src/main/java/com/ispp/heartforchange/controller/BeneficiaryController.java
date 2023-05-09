@@ -64,7 +64,10 @@ public class BeneficiaryController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT not valid", HttpStatus.BAD_REQUEST);
 		}
-		
+
+
+
+
 		try {
 			username = jwtUtils.getUserNameFromJwtToken(jwt);
 		}catch(Exception e){
@@ -143,16 +146,29 @@ public class BeneficiaryController {
 		}
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
-		} 
+		}
+
+
+
+
 		String username = jwtUtils.getUserNameFromJwtToken(jwt);
 		String[] randomUUID = UUID.randomUUID().toString().split("-");
+
+
+
+
+
+
 
 		String usernameGenerated = beneficiary.getName().toLowerCase().substring(0, 3) + "-" + randomUUID[0].substring(0, 3);
 		beneficiary.setPassword(usernameGenerated);
 		beneficiary.setUsername(usernameGenerated);
 
+		String alreadyExists = beneficiaryServiceImpl.existsBeneficiary(beneficiary.getEmail(), beneficiary.getUsername());
+		if(alreadyExists!= null){
+			return ResponseEntity.status(436).body(alreadyExists);
+		}
 		BeneficiaryDTO beneficiarySaved = beneficiaryServiceImpl.saveBeneficiary(beneficiary, username);
-		System.out.println(beneficiarySaved);
 		logger.info("Beneficiary saved with username={}", beneficiarySaved.getUsername());
 		return ResponseEntity.ok(beneficiarySaved);
 	}

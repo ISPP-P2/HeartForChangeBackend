@@ -419,6 +419,23 @@ public class BeneficiaryServiceImpl implements BeneficiaryService{
 		
 	}
 
+	public String existsBeneficiary(String email, String username) {
+		Boolean isUsername = 	accountRepository.existsByUsername(username);
+		Boolean isEmail = 	accountRepository.existsByEmail(email);
+
+		if(isUsername && isEmail){
+			return "El usuario y email ya existe";
+		}
+		if(isUsername){
+			return "El usuario ya existe";
+		}
+
+		if(isEmail){
+			return "El email ya existe";
+		}
+
+		return null;
+	}
 
 
 

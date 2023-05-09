@@ -96,6 +96,14 @@ public class ONGController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
+
+		String alreadyExists = ongServiceImpl.existsOng(ong.getEmail(), ong.getUsername());
+
+		if(alreadyExists!= null){
+			return ResponseEntity.status(436).body(alreadyExists);
+		}
+
+
 		try {
 			OngDTO ongSaved = ongServiceImpl.saveOng(ong, jwt);
 			logger.info("ONG saved with username={}", ongSaved.getUsername());

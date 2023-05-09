@@ -5,6 +5,7 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import com.ispp.heartforchange.exceptions.AlreadyExists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -140,10 +141,19 @@ public class VolunteerController {
 		if (jwt == null || !jwtUtils.validateJwtToken(jwt)) {
 			return new ResponseEntity<String>("JWT no valid to refresh", HttpStatus.BAD_REQUEST);
 		}
+
+		try{
+			VolunteerDTO volunteerSave = volunteerServiceImpl.saveVolunteer(volunteer, jwt);
+			logger.info("Volunteer saved with username={}", volunteerSave.getUsername());
+			return ResponseEntity.ok(volunteerSave);
+		}catch(AlreadyExists e) {
+			System.out.println(e);
+			return ResponseEntity.status(436).body(e.getMessage());
+		}catch(Exception e) {
+			return new ResponseEntity<String>(e.toString(), HttpStatus.BAD_REQUEST);
+		}
 		
-		VolunteerDTO volunteerSave = volunteerServiceImpl.saveVolunteer(volunteer, jwt);
-		logger.info("Volunteer saved with username={}", volunteerSave.getUsername());
-		return ResponseEntity.ok(volunteerSave);
+
 	}
 	 
 	/*

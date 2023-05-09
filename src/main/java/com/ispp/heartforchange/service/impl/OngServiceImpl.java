@@ -162,5 +162,23 @@ public class OngServiceImpl implements OngService{
 			throw new OperationNotAllowedException("You must be logged as ONG to use this method.");
 		}
 	}
+
+	public String existsOng(String email, String username) {
+		Boolean isUsername = 	accountRepository.existsByUsername(username);
+		Boolean isEmail = 	accountRepository.existsByEmail(email);
+
+		if(isUsername && isEmail){
+			return "El usuario y email ya existe";
+		}
+		if(isUsername){
+			return "El usuario ya existe";
+		}
+
+		if(isEmail){
+			return "El email ya existe";
+		}
+
+		return null;
+	}
 	 
 }

@@ -3,6 +3,8 @@ package com.ispp.heartforchange.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import com.ispp.heartforchange.exceptions.AlreadyExists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -185,7 +187,12 @@ public class VolunteerServiceImpl implements VolunteerService{
 		volunteer.setRolAccount(RolAccount.VOLUNTEER);
 		volunteer.setPassword(encoder.encode(volunteerDTO.getPassword()));
 		volunteer.setOng(ong);
-		
+
+		String alreadyExists = this.existsVolunteer(volunteer.getEmail(), usernameGenerated);
+
+		if(alreadyExists!= null){
+			throw new AlreadyExists(alreadyExists);
+		}
 		
 		try {
 			volunteer.setUsername(usernameGenerated);
@@ -328,5 +335,29 @@ public class VolunteerServiceImpl implements VolunteerService{
 		} catch (Exception e) {
 			throw new UsernameNotFoundException(e.getMessage());
 		}
+	}
+
+	public String existsVolunteer(String email, String username) {
+		Boolean isUsername = accountRepository.existsByUsername(username);
+		Boolean isEmail = accountRepository.existsByEmail(email);
+		System.out.println("-------------------------------------------------------------");
+		System.out.println(email);
+		System.out.println(isEmail);
+		System.out.println(username);
+		System.out.println(isUsername);
+		System.out.println("-------------------------------------------------------------");
+
+		if(isUsername && isEmail){
+			return "El dni y email ya existe";
+		}
+		if(isUsername){
+			return "El DNI ya existe";
+		}
+
+		if(isEmail){
+			return "El email ya existe";
+		}
+
+		return null;
 	}
 }
